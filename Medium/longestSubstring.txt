@@ -1,0 +1,42 @@
+Given a string s, find the length of the longest substring without repeating characters.
+
+Explanation :
+
+This solution uses a sliding window approach, where we maintain a set of characters we've seen in the current substring and a pair of indices (start and end) that mark the start and end of the current substring. We move the end index forward one character at a time, adding each character to the set. If we encounter a character that we've seen before, we remove the start character from the set and increment the start index. 
+This way, we ensure that the set only contains unique characters at any given time. We also keep track of the maximum length of the substring as we go.
+In this case, a Set is a data structure that stores a collection of unique elements. 
+It's similar to an array, but the elements in a Set are not in any particular order, and each element can only appear once.
+
+Solution : 
+
+function lengthOfLongestSubstring(s: string): number {
+ // Set to store the characters we've seen so far
+  const seenChars = new Set<string>();
+
+  // Start and end indices of the current substring
+  let start = 0;
+  let end = 0;
+
+  // Length of the longest substring
+  let maxLength = 0;
+
+  while (end < s.length) {
+    const endChar = s[end];
+
+    // If we haven't seen the character before, add it to the set and move on
+    if (!seenChars.has(endChar)) {
+      seenChars.add(endChar);
+      end++;
+    } else {
+      // If we have seen the character before, remove the start character from the set
+      // and increment the start index
+      seenChars.delete(s[start]);
+      start++;
+    }
+
+    // Update the max length
+    maxLength = Math.max(maxLength, end - start);
+  }
+
+  return maxLength;
+};

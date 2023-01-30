@@ -1,0 +1,75 @@
+You are given two non-empty linked lists representing two non-negative integers. The digits are stored in reverse order, and each of their nodes contains a single digit. Add the two numbers and return the sum as a linked list.
+
+You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+
+
+
+Here is a simple explanation of the algorithm:
+
+We want to add two numbers that are represented as linked lists, where each node in the linked list contains a single digit. The digits are stored in reverse order, so the least significant digit is at the head of the list.
+
+To do this, we can iterate through both linked lists at the same time, adding the values of the nodes and carrying over any excess value. We will create a new linked list to store the result.
+
+We start by initializing a carry variable to 0, and setting up pointers to the head nodes of both input linked lists. 
+Then, we enter a loop that will continue until both pointers are null (which means we have reached the end of both lists).
+
+Inside the loop, we initialize a sum variable to the value of carry. If the pointer for list 1 is not null, we add the value of the current node to sum and advance the pointer to the next node. 
+If the pointer for list 2 is not null, we do the same thing.
+
+Then, we compute the new carry value by dividing sum by 10 (since each node can only hold a single digit), and we add the remainder of this division (sum % 10) to the result list.
+
+After the loop, if carry is greater than 0, we add it to the result list as well. Finally, we return the result list.
+
+This algorithm has a time complexity of O(max(n, m)), where n and m are the lengths of the linked lists, and a space complexity of O(max(n, m)), as the result list may be as long as the longer of the two input lists.
+
+
+Solution (ChatGPT solution) 
+
+function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | null {
+let result: ListNode | null = null;
+    let current: ListNode | null = null;
+    let carry = 0;
+    while (l1 || l2 || carry > 0) {
+        let sum = carry;
+        if (l1) {
+            sum += l1.val;
+            l1 = l1.next;
+        }
+        if (l2) {
+            sum += l2.val;
+            l2 = l2.next;
+        }
+        carry = Math.floor(sum / 10);
+        const newNode = new ListNode(sum % 10);
+        if (!result) {
+            result = newNode;
+            current = result;
+        } else {
+            current.next = newNode;
+            current = current.next;
+        }
+    }
+    return result;
+};
+
+
+
+Fastest solution : 
+function addTwoNumbers(l1: ListNode | null, l2: ListNode | null): ListNode | null {
+    var root = new ListNode(0, null)
+    var p1 = l1, p2 = l2, curr = root, lead = 0
+    while (p1 != null || p2 != null || lead != 0) {
+        var sum = (p1 ? p1.val: 0) + (p2? p2.val: 0) + lead
+        if (sum >= 10) {
+            sum -= 10
+            lead = 1
+        } else {
+            lead = 0
+        }
+        curr.next = new ListNode(sum, null)
+        curr = curr.next
+        if (p1 != null) {p1 = p1.next}
+        if (p2 != null) {p2 = p2.next}
+    }
+    return root.next
+};
