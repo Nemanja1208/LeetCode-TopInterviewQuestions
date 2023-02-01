@@ -1,0 +1,80 @@
+Given a string s, return the longest palindromic substring in s.
+
+Result:
+
+function longestPalindromicSubstring(s: string): string {
+  const n = s.length;
+  let longest = '';
+  const dp = Array.from({ length: n }, () => Array(n).fill(false));
+
+  for (let i = n - 1; i >= 0; i--) {
+    for (let j = i; j < n; j++) {
+      dp[i][j] = s[i] === s[j] && (j - i <= 2 || dp[i + 1][j - 1]);
+
+      if (dp[i][j] && j - i + 1 > longest.length) {
+        longest = s.substring(i, j + 1);
+      }
+    }
+  }
+
+  return longest;
+}
+
+
+Explanation :
+
+A palindrome is a word, phrase, number, or other sequence of characters which reads the same backward or forward. 
+For example, the word "racecar" is a palindrome because it reads the same backward as forward. Another example is the number "121", which is also a palindrome. 
+Palindromes are often used in computer science and mathematics for various tasks and algorithms.
+
+- n is the length of the input string s.
+- longest is the variable that keeps track of the longest palindromic substring found so far.
+- dp is a two-dimensional boolean array with n rows and n columns. dp[i][j] represents whether the substring s[i..j] is a palindrome or not.-
+- The outer loop i starts from n - 1 and decrements to 0.
+- The inner loop j starts from i and increments to n - 1.
+- The dp[i][j] is calculated based on whether the current characters at i and j are equal and the substring s[i + 1][j - 1] is a palindrome (i.e., dp[i + 1][j - 1] is true). If s[i] is equal to s[j] and j - i <= 2, it means the substring s[i..j] with length at most 2 is always a palindrome.
+- Finally, if dp[i][j] is true and j - i + 1 is greater than the length of longest, update longest with the current substring s.substring(i, j + 1).
+
+Note: The time complexity of this solution is O(n^2) and the space complexity is O(n^2).
+
+
+Fastest result :
+
+function longestPalindrome(s: string): string {
+  if (s.length === 1) {
+    return s;
+  }
+
+  let longestStart = 0;
+  let longestEnd = 0;
+  let i = 0;
+
+  while (i < s.length - 1) {
+    let start = i;
+    let end = start;
+
+    while (s[start] === s[end + 1]) {
+      ++end;
+    }
+
+    i = end;
+
+    while (
+      start > 0 &&
+      end < s.length - 1 &&
+      s[start - 1] === s[end + 1]
+    ) {
+      --start;
+      ++end;
+    }
+
+    if (end - start > longestEnd - longestStart) {
+      longestEnd = end;
+      longestStart = start;
+    }
+
+    i++;
+  }
+
+  return s.slice(longestStart, longestEnd + 1);
+};
