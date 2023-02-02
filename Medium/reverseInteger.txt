@@ -1,0 +1,45 @@
+Given a signed 32-bit integer x, return x with its digits reversed. 
+If reversing x causes the value to go outside the signed 32-bit integer range [-231, 231 - 1], then return 0.
+
+Assume the environment does not allow you to store 64-bit integers (signed or unsigned).
+
+Result :
+
+function reverse(x: number): number {
+  let result = 0;
+  while (x !== 0) {
+    result = result * 10 + x % 10;
+    x = Math.trunc(x / 10);
+    if (result > 2147483647 || result < -2147483648) {
+      return 0;
+    }
+  }
+  return result;
+}
+
+
+Fastest result :
+
+const reverse = (x: number) => {
+  const xStr = x.toString();
+  let result = '';
+  if (xStr[0] === '-') {
+    result += '-';
+  }
+  for (let i = xStr.length - 1; i >= 0; i--) result += xStr[i];
+  const rInt = parseInt(result);
+  if (rInt < -2147483648 || rInt > 2147483647) return 0;
+  return rInt;
+};
+
+
+Explanation:
+
+Initialize a result variable to store the reversed integer, initialized to 0.
+
+Use a while loop to continuously reverse the digits of x and add them to result as long as x is not equal to 0.
+
+In each iteration, x % 10 gives the last digit of x, which is then added to result after multiplying result by 10.
+x is then updated to its integer division by 10, effectively removing the last digit.
+The if statement checks if the reversed number is within the signed 32-bit integer range. If it's not, the function returns 0.
+Return the value of result after the while loop has finished.
