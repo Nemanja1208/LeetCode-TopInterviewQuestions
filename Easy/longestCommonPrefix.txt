@@ -1,0 +1,65 @@
+Write a function to find the longest common prefix string amongst an array of strings.
+
+If there is no common prefix, return an empty string "".
+
+Example 1:
+
+Input: strs = ["flower","flow","flight"]
+Output: "fl"
+Example 2:
+
+Input: strs = ["dog","racecar","car"]
+Output: ""
+Explanation: There is no common prefix among the input strings.
+
+
+Solution > 
+
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) {
+        return "";
+    }
+
+    let prefix = strs[0];
+
+    for (let i = 1; i < strs.length; i++) {
+        while (strs[i].indexOf(prefix) !== 0) {
+            prefix = prefix.substring(0, prefix.length - 1);
+            if (prefix === "") {
+                return "";
+            }
+        }
+    }
+
+    return prefix;
+}
+
+
+Explanation >
+
+First, we check if the input strs array is empty. If it is, we return an empty string "" as there can be no common prefix.
+
+Next, we initialize a variable prefix to the first string in the strs array. This will be our starting point for finding the common prefix.
+
+We use a for loop to iterate through the rest of the strings in the strs array.
+
+Within the for loop, we use a while loop to continuously shorten the value of prefix until it is a common prefix of the current string in the strs array.
+
+Within the while loop, we use the indexOf method to check if prefix is a prefix of the current string. If it is not, we shorten prefix by one character and repeat the check.
+
+If prefix becomes an empty string, we return an empty string "" as there is no common prefix.
+
+Finally, after the for loop has completed, prefix will be the longest common prefix of all the strings in the strs array, so we return prefix.
+
+
+Fastest solution > 
+
+function longestCommonPrefix(strs: string[]): string {
+    let prefix = strs[0];
+    for(let i = 1; i < strs.length; i++) {
+        while(strs[i].indexOf(prefix) !== 0) {
+            prefix = prefix.substring(0, prefix.length - 1);
+        }
+    }
+    return prefix;
+};
