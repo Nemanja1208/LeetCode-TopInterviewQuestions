@@ -1,0 +1,71 @@
+Given the head of a linked list, remove the nth node from the end of the list and return its head.
+
+Image src
+https://assets.leetcode.com/uploads/2020/10/03/remove_ex1.jpg
+
+
+Solution >
+
+class ListNode {
+    val: number;
+    next: ListNode | null;
+    constructor(val?: number, next?: ListNode | null) {
+        this.val = (val===undefined ? 0 : val)
+        this.next = (next===undefined ? null : next)
+    }
+}
+
+function removeNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+    let dummy = new ListNode();
+    dummy.next = head;
+    let first = dummy;
+    let second = dummy;
+
+    // Advances first pointer so that the gap between first and second is n nodes apart
+    for (let i = 1; i <= n + 1; i++) {
+        first = first.next;
+    }
+
+    // Move first to the end, maintaining the gap
+    while (first != null) {
+        first = first.next;
+        second = second.next;
+    }
+
+    second.next = second.next!.next;
+    return dummy.next;
+}
+
+Explanation >
+
+We initialize two pointers, first and second, both starting at the dummy node.
+We then advance the first pointer n + 1 steps ahead of the second pointer. 
+This way, when first reaches the end of the list, second will be pointing to the (n+1)th node from the end, which is the node we want to remove.
+We then move both pointers together until first reaches the end of the list.
+Finally, we remove the node that second is pointing to by setting its next pointer to skip over the node we want to remove.
+The dummy node is used as a placeholder so that we don't have to worry about edge cases (i.e. removing the first node of the list).
+
+
+Fastest solution >
+
+function removeNthFromEnd(head: ListNode, n: number): ListNode {
+    let first = head;
+    let second = head;
+
+    for (let i = 0; i < n; i++) {
+        first = first.next as ListNode;
+    }
+
+    if (first === null) {
+        return head.next;
+    }
+
+    while (first.next !== null) {
+        first = first.next as ListNode;
+        second = second.next as ListNode;
+    }
+
+    second.next = (second.next as ListNode).next;
+
+    return head;
+}
