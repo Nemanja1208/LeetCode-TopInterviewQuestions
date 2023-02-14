@@ -1,0 +1,93 @@
+Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+
+An input string is valid if:
+
+Open brackets must be closed by the same type of brackets.
+Open brackets must be closed in the correct order.
+Every close bracket has a corresponding open bracket of the same type.
+
+Solution >
+
+function isValid(s: string): boolean {
+  const stack: string[] = [];
+  const pairs: {[key: string]: string} = {
+    ')': '(',
+    '}': '{',
+    ']': '['
+  };
+  for (let i = 0; i < s.length; i++) {
+    const c = s[i];
+    if (c in pairs) { // closing bracket
+      if (stack.pop() !== pairs[c]) {
+        return false;
+      }
+    } else { // opening bracket
+      stack.push(c);
+    }
+  }
+  return stack.length === 0;
+}
+
+
+
+Explanation >
+
+The idea of the solution is to use a stack to keep track of the opening brackets we have seen so far. Whenever we encounter a closing bracket, we check if it matches the last opening bracket on the stack (by using a lookup table pairs). If it does, we remove the opening bracket from the stack and continue. If it doesn't, we know that the input string is invalid and we can return false immediately.
+
+At the end, we also need to make sure that the stack is empty, because that means we have matched all opening brackets with closing brackets. If the stack is not empty, that means there are still unmatched opening brackets, so we return false.
+
+Let's go over the code line by line:
+
+function isValid(s: string): boolean {
+This is a function called isValid that takes a string s as input and returns a boolean (true if the string is valid, false otherwise).
+
+const stack: string[] = [];
+This creates an empty array called stack, which we will use as a stack to keep track of the opening brackets we have seen so far.
+
+
+const pairs: {[key: string]: string} = {
+  ')': '(',
+  '}': '{',
+  ']': '['
+};
+This creates a lookup table called pairs that maps closing brackets to their corresponding opening brackets. 
+For example, pairs[')'] is '('. We need this table to check if a closing bracket matches the last opening bracket on the stack.
+
+for (let i = 0; i < s.length; i++) {
+  const c = s[i];
+  if (c in pairs) { // closing bracket
+    if (stack.pop() !== pairs[c]) {
+      return false;
+    }
+  } else { // opening bracket
+    stack.push(c);
+  }
+}
+This is a loop that goes through each character in the input string s. For each character c, we check if it is a closing bracket by looking it up in the pairs table. 
+If it is, we pop the last opening bracket from the stack and check if it matches the closing bracket. If it doesn't, we know the input string is invalid and we can return false.
+
+If c is not a closing bracket, it must be an opening bracket, so we push it onto the stack.
+
+return stack.length === 0;
+Finally, we check if the stack is empty. If it is, that means we have matched all opening brackets with closing brackets, so we return true. 
+If it is not empty, that means there are still unmatched opening brackets, so we return false.
+
+I hope this explanation helps! Let me know if you have any further questions.
+
+
+Fastest solution >
+
+function isValid(s: string): boolean {
+    const stack = []
+    for (const n of s) {
+        if (n === '{') stack.push('}')
+        else if (n === '(') stack.push(')')
+        else if (n === '[') stack.push(']')
+        else {
+            if (stack.length === 0 || n !== stack.pop()) {
+                return false
+            }
+        }
+    }
+    return stack.length === 0
+};
