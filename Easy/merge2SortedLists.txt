@@ -1,0 +1,99 @@
+You are given the heads of two sorted linked lists list1 and list2.
+
+Merge the two lists in a one sorted list. The list should be made by splicing together the nodes of the first two lists.
+
+Return the head of the merged linked list.
+
+
+Solution > 
+
+class ListNode {
+  val: number;
+  next: ListNode | null;
+
+  constructor(val?: number, next?: ListNode | null) {
+    this.val = val === undefined ? 0 : val;
+    this.next = next === undefined ? null : next;
+  }
+}
+
+function mergeTwoLists(list1: ListNode | null, list2: ListNode | null): ListNode | null {
+  // create a dummy node to serve as the head of the merged list
+  const dummy = new ListNode();
+  // create a pointer to the current node in the merged list
+  let current = dummy;
+
+  // iterate through both lists, comparing values and appending nodes to the merged list
+  while (list1 !== null && list2 !== null) {
+    if (list1.val <= list2.val) {
+      current.next = list1;
+      list1 = list1.next;
+    } else {
+      current.next = list2;
+      list2 = list2.next;
+    }
+    current = current.next;
+  }
+
+  // append any remaining nodes from list1 or list2 to the merged list
+  current.next = list1 !== null ? list1 : list2;
+
+  // return the head of the merged list (i.e., the node after the dummy node)
+  return dummy.next;
+}
+
+
+Explanation >
+
+In TypeScript, we can represent a linked list using a class that has a val property to store the value of the current node, 
+and a next property that points to the next node in the list.
+
+Now, let's move on to the problem of merging two sorted linked lists. 
+One way to do this is to create a new linked list that has nodes in the correct order by iterating through both lists and comparing the values of the nodes at each step
+
+
+Let's walk through this code step by step. We first create a dummy node that will serve as the head of the merged list. 
+We also create a pointer to the current node in the merged list, which initially points to the dummy node.
+
+We then iterate through both lists using a while loop, comparing the values of the nodes at each step. 
+If the value of the current node in list1 is less than or equal to the value of the current node in list2, 
+we append the node from list1 to the merged list and move to the next node in list1. 
+Otherwise, we append the node from list2 to the merged list and move to the next node in list2. 
+We also update the current pointer to point to the newly added node in the merged list.
+
+After the while loop, we check if either list1 or list2 has remaining nodes that were not appended to the merged list. If so, we append these nodes to the merged list.
+
+Finally, we return the head of the merged list by returning the node after the dummy node.
+
+
+Fastest solution >
+
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     val: number
+ *     next: ListNode | null
+ *     constructor(val?: number, next?: ListNode | null) {
+ *         this.val = (val===undefined ? 0 : val)
+ *         this.next = (next===undefined ? null : next)
+ *     }
+ * }
+ */
+
+function mergeTwoLists(
+	list1: ListNode | null,
+	list2: ListNode | null
+): ListNode | null {
+	if (!list1) return list2;
+	else if (!list2) return list1;
+
+	let head: ListNode;
+	if (list1.val <= list2.val) {
+		head = list1;
+		head.next = mergeTwoLists(list1.next, list2);
+	} else {
+		head = list2;
+		head.next = mergeTwoLists(list1, list2.next);
+	}
+	return head;
+}
