@@ -1,0 +1,86 @@
+Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+
+Example 1:
+
+Input: n = 3
+Output: ["((()))","(()())","(())()","()(())","()()()"]
+
+Example 2:
+
+Input: n = 1
+Output: ["()"]
+
+
+Solution > 
+
+function generateParenthesis(n: number): string[] {
+  const result: string[] = [];
+
+  // Define a recursive helper function to generate parentheses
+  function generateHelper(str: string, open: number, close: number): void {
+    // Base case: if both open and close are equal to n, then add the current string to the result
+    if (open === n && close === n) {
+      result.push(str);
+      return;
+    }
+
+    // If there are still open parentheses available, add an open parenthesis and call the helper function again
+    if (open < n) {
+      generateHelper(str + '(', open + 1, close);
+    }
+
+    // If there are more open parentheses than close parentheses, add a close parenthesis and call the helper function again
+    if (close < open) {
+      generateHelper(str + ')', open, close + 1);
+    }
+  }
+
+  // Call the recursive helper function to generate all possible combinations of parentheses
+  generateHelper('', 0, 0);
+
+  return result;
+}
+
+
+Explanation > 
+
+We define a function generateParenthesis that takes a number n as input and returns an array of strings. 
+This array contains all possible combinations of well-formed parentheses that can be generated using n pairs of parentheses.
+
+Inside the generateParenthesis function, we define a variable result that will store the final result.
+
+We then define a recursive helper function generateHelper that takes three arguments: a string str that represents the current combination of parentheses, 
+an integer open that represents the number of open parentheses that have been added so far, 
+and an integer close that represents the number of close parentheses that have been added so far.
+
+In the generateHelper function, we first check if both open and close are equal to n. 
+If they are, then we have generated a well-formed combination of parentheses, so we add the current string to the result array and return.
+
+If both open and close are not equal to n, then we have more parentheses to add. We first check if there are still open parentheses available. 
+If there are, we add an open parenthesis to the current string and call the generateHelper function again with open + 1 and close.
+
+If there are more open parentheses than close parentheses, we add a close parenthesis to the current string and call the generateHelper function again with open and close + 1.
+
+Once the generateHelper function has finished, we call it with initial values of '' (an empty string), 0 for open, and 0 for close. 
+This will start the recursion and generate all possible combinations of well-formed parentheses.
+
+Finally, we return the result array containing all the well-formed combinations.
+
+
+Fastest solution >
+
+function generateParenthesis(n: number): string[] {
+    const res = []
+
+    function iterate(str: string, open: number, close: number) {
+        if (open > n || close > n || close > open) return
+        if (str.length === n*2 && open === close) {
+            res.push(str)
+        }
+        iterate(str + '(', open+1, close)
+        iterate(str + ')', open, close+1)
+    }
+
+    iterate('', 0, 0)
+    return res
+};
