@@ -1,0 +1,178 @@
+You are given an array of k linked-lists lists, each linked-list is sorted in ascending order.
+
+Merge all the linked-lists into one sorted linked-list and return it.
+
+Example 1:
+
+Input: lists = [[1,4,5],[1,3,4],[2,6]]
+Output: [1,1,2,3,4,4,5,6]
+Explanation: The linked-lists are:
+[
+  1->4->5,
+  1->3->4,
+  2->6
+]
+merging them into one sorted list:
+1->1->2->3->4->4->5->6
+
+Example 2:
+
+Input: lists = []
+Output: []
+
+Example 3:
+
+Input: lists = [[]]
+Output: []
+
+
+
+Solution : 
+
+class ListNode {
+  val: number;
+  next: ListNode | null;
+
+  constructor(val?: number, next?: ListNode | null) {
+    this.val = (val === undefined ? 0 : val);
+    this.next = (next === undefined ? null : next);
+  }
+}
+
+function mergeKLists(lists: Array<ListNode | null>): ListNode | null {
+  // Filter out empty lists
+  const nonEmptyLists = lists.filter(list => list !== null);
+
+  // Base case
+  if (nonEmptyLists.length === 0) {
+    return null;
+  }
+
+  // Create a min-heap
+  const heap: Array<ListNode> = [];
+  for (let i = 0; i < nonEmptyLists.length; i++) {
+    heap.push(nonEmptyLists[i]);
+  }
+  buildMinHeap(heap);
+
+  // Merge lists
+  let dummyHead = new ListNode();
+  let tail = dummyHead;
+  while (heap.length > 0) {
+    // Get the minimum node from the heap
+    const minNode = extractMin(heap);
+
+    // Add it to the merged list
+    tail.next = minNode;
+    tail = tail.next;
+
+    // If the minimum node has a next node, add it to the heap
+    if (minNode.next !== null) {
+      insert(heap, minNode.next);
+    }
+  }
+
+  return dummyHead.next;
+}
+
+// Min-heap operations
+function buildMinHeap(heap: Array<ListNode>) {
+  const n = heap.length;
+  for (let i = Math.floor(n / 2); i >= 0; i--) {
+    heapify(heap, i, n);
+  }
+}
+
+function heapify(heap: Array<ListNode>, i: number, n: number) {
+  const left = 2 * i + 1;
+  const right = 2 * i + 2;
+  let smallest = i;
+  if (left < n && heap[left].val < heap[smallest].val) {
+    smallest = left;
+  }
+  if (right < n && heap[right].val < heap[smallest].val) {
+    smallest = right;
+  }
+  if (smallest !== i) {
+    swap(heap, i, smallest);
+    heapify(heap, smallest, n);
+  }
+}
+
+function extractMin(heap: Array<ListNode>): ListNode {
+  const min = heap[0];
+  const last = heap.pop();
+  if (heap.length > 0) {
+    heap[0] = last!;
+    heapify(heap, 0, heap.length);
+  }
+  return min;
+}
+
+function insert(heap: Array<ListNode>, node: ListNode) {
+  heap.push(node);
+  let i = heap.length - 1;
+  while (i > 0 && heap[Math.floor((i - 1) / 2)].val > heap[i].val) {
+    swap(heap, i, Math.floor((i - 1) / 2));
+    i = Math.floor((i - 1) / 2);
+  }
+}
+
+function swap(heap: Array<ListNode>, i: number, j: number) {
+  const temp = heap[i];
+  heap[i] = heap[j];
+  heap[j] = temp;
+}
+
+
+Explanation : 
+
+This code is an implementation of the algorithm to merge k sorted linked lists. 
+The algorithm uses a heap data structure to efficiently select the minimum value from the set of nodes at the front of each linked list.
+
+First, a ListNode class is defined which has two properties: val and next. 
+Val is a number that represents the value of a node in the linked list, and next is a reference to the next node in the list.
+
+The main function, mergeKLists, takes an array of linked lists and returns a new linked list that is the result of merging all the input linked lists. 
+The function starts by filtering out any empty lists from the input array. If there are no non-empty lists, the function returns null.
+
+Next, a min-heap is created to hold the first node from each non-empty list. 
+The buildMinHeap function is used to convert the input array into a min-heap.
+
+Then, a new linked list is created to hold the merged nodes, starting with a dummy head node. 
+The while loop continues to extract the minimum node from the heap, add it to the merged list, and then add the next node from the same list to the heap if it exists.
+
+The remaining functions are used for heap operations. heapify is a recursive function that is used to maintain the heap property of the data structure. 
+extractMin removes the minimum value from the heap and updates the heap accordingly. 
+insert adds a new node to the heap and updates the heap to maintain the heap property. 
+Lastly, swap is used to switch the position of two nodes within the heap.
+
+Overall, the algorithm has a time complexity of O(n log k), where n is the total number of nodes in all the input lists, and k is the number of input lists. 
+This is due to the fact that the heap operations and the merge operation both take O(log k) time, and the while loop executes n times.
+
+
+Fastest solution : 
+
+function mergeKLists(lists: Array<ListNode | null>): ListNode | null {
+
+    let newArray = [];
+    let resultListNode = new ListNode();
+    let copy = resultListNode;
+
+    lists.forEach((list) => {
+
+        while(list){
+            newArray.push(list.val);
+            list = list.next
+        }
+
+    })
+
+    newArray.sort((a,b) => a - b).map((a) => {
+        copy.next = new ListNode(a)
+        copy = copy.next;
+    })
+
+    return resultListNode.next;
+
+};
