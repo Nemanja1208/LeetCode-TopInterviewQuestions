@@ -1,0 +1,107 @@
+Given an integer array nums sorted in non-decreasing order, remove the duplicates in-place such that each unique element appears only once. 
+The relative order of the elements should be kept the same.
+
+Since it is impossible to change the length of the array in some languages, you must instead have the result be placed in the first part of the array nums. 
+More formally, if there are k elements after removing the duplicates, then the first k elements of nums should hold the final result. 
+It does not matter what you leave beyond the first k elements.
+
+Return k after placing the final result in the first k slots of nums.
+
+Do not allocate extra space for another array. You must do this by modifying the input array in-place with O(1) extra memory.
+
+Custom Judge:
+
+The judge will test your solution with the following code:
+
+int[] nums = [...]; // Input array
+int[] expectedNums = [...]; // The expected answer with correct length
+
+int k = removeDuplicates(nums); // Calls your implementation
+
+assert k == expectedNums.length;
+for (int i = 0; i < k; i++) {
+    assert nums[i] == expectedNums[i];
+}
+If all assertions pass, then your solution will be accepted.
+
+Example 1:
+
+Input: nums = [1,1,2]
+Output: 2, nums = [1,2,_]
+Explanation: Your function should return k = 2, with the first two elements of nums being 1 and 2 respectively.
+It does not matter what you leave beyond the returned k (hence they are underscores).
+
+Example 2:
+
+Input: nums = [0,0,1,1,1,2,2,3,3,4]
+Output: 5, nums = [0,1,2,3,4,_,_,_,_,_]
+Explanation: Your function should return k = 5, with the first five elements of nums being 0, 1, 2, 3, and 4 respectively.
+It does not matter what you leave beyond the returned k (hence they are underscores).
+
+
+Solution :
+
+function removeDuplicates(nums: number[]): number {
+    let i = 0;
+    for (let j = 1; j < nums.length; j++) {
+        if (nums[j] !== nums[i]) {
+            i++;
+            nums[i] = nums[j];
+        }
+    }
+    return i + 1;
+}
+
+
+Explanation : 
+
+This solution uses two pointers, i and j, to traverse the array. 
+Pointer i points to the last unique element found so far, while pointer j scans the array for the next distinct element.
+
+At each step, we compare nums[j] with nums[i]. If they are different, we have found a new unique element, 
+and we increment i to move it to the next position and assign nums[j] to it. If they are the same, we simply move on to the next element.
+
+After scanning the whole array, the first i+1 elements of nums will contain the unique elements in the order they appear, so we return i+1 as the new length of the array.
+
+This algorithm has a time complexity of O(n), as it only needs to scan the array once, and a space complexity of O(1), 
+as it only needs two pointers to modify the input array in place.
+
+We can test this implementation using the provided test code, like this:
+
+const nums = [0,0,1,1,1,2,2,3,3,4];
+const expectedNums = [0,1,2,3,4];
+const k = removeDuplicates(nums);
+
+console.log(nums.slice(0, k));
+// Output: [0, 1, 2, 3, 4]
+console.log(k === expectedNums.length);
+// Output: true
+for (let i = 0; i < k; i++) {
+    console.log(nums[i] === expectedNums[i]);
+    // Output: true for every i
+}
+
+
+Fastest solution :
+
+
+function removeDuplicates(nums: number[]): number {
+    let lastUnique: number = -10000000;
+    let index = 0;
+
+    if (nums.length === 1) {
+        return nums.length;
+    } else if (nums.length === 2) {
+        return nums[0] === nums[1] ? 1 : 2;
+    }
+    
+    nums.forEach(n => {
+        if (lastUnique !== n) {
+            nums[index] = n;
+            index++;
+            lastUnique = n;
+        }
+    });
+
+    return index;
+};
