@@ -1,0 +1,86 @@
+Given two strings needle and haystack, return the index of the first occurrence of needle in haystack, or -1 if needle is not part of haystack.
+
+Example 1:
+
+Input: haystack = "sadbutsad", needle = "sad"
+Output: 0
+Explanation: "sad" occurs at index 0 and 6.
+The first occurrence is at index 0, so we return 0.
+
+
+Example 2:
+
+Input: haystack = "leetcode", needle = "leeto"
+Output: -1
+Explanation: "leeto" did not occur in "leetcode", so we return -1.
+
+
+Solution > 
+
+function findNeedleInHaystack(needle: string, haystack: string): number {
+  return haystack.indexOf(needle);
+}
+
+Explanation >
+
+Here's a TypeScript implementation of a function that uses the built-in indexOf method to find the index of the first occurrence of the needle string in the haystack string:
+
+function findNeedleInHaystack(needle: string, haystack: string): number {
+  return haystack.indexOf(needle);
+}
+The indexOf method returns the index of the first occurrence of the needle string in the haystack string, or -1 if the needle string is not found in the haystack string.
+
+You can call this function with your input strings to find the index of the first occurrence of needle in haystack, like this:
+
+const needle = "world";
+const haystack = "Hello world";
+const index = findNeedleInHaystack(needle, haystack);
+
+if (index !== -1) {
+  console.log(`"${needle}" found at index ${index}`);
+} else {
+  console.log(`"${needle}" not found in "${haystack}"`);
+}
+This will output:
+
+"world" found at index 6
+
+
+Fastest solution >
+
+function strStr(haystack: string, needle: string): number {
+    let hay_size = haystack.length
+    let need_size = needle.length
+
+    if (hay_size < need_size) {
+        return -1
+    }
+
+    if (need_size == 0) {
+        return 0
+    }
+
+    let x = 0
+    while (x < hay_size) {
+        if (haystack[x] == needle[0]) {
+            let check_point = x
+            let match_size = 0
+            while (check_point < hay_size && match_size < need_size) {
+                if (haystack[check_point] === needle[match_size]) {
+                    check_point++
+                    match_size++
+                } else {
+                    break
+                }
+            }
+
+            if (match_size == need_size) {
+                return check_point - match_size
+            }
+        }
+        
+        x++
+    }
+
+    return -1
+};
