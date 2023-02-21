@@ -1,0 +1,65 @@
+Given two integers dividend and divisor, divide two integers without using multiplication, division, and mod operator.
+
+The integer division should truncate toward zero, which means losing its fractional part. For example, 8.345 would be truncated to 8, and -2.7335 would be truncated to -2.
+
+Return the quotient after dividing dividend by divisor.
+
+Note: Assume we are dealing with an environment that could only store integers within the 32-bit signed integer range: [−231, 231 − 1]. 
+
+For this problem, if the quotient is strictly greater than 231 - 1, then return 231 - 1, and if the quotient is strictly less than -231, then return -231.
+
+ 
+
+Example 1:
+
+Input: dividend = 10, divisor = 3
+Output: 3
+Explanation: 10/3 = 3.33333.. which is truncated to 3.
+
+
+Example 2:
+
+Input: dividend = 7, divisor = -3
+Output: -2
+Explanation: 7/-3 = -2.33333.. which is truncated to -2.
+
+Solution >
+
+function divide(dividend: number, divisor: number): number {
+    const calculation = dividend/divisor
+
+    return Math.trunc(calculation >= Math.pow(2,31) ? calculation-1 :calculation) 
+};
+
+
+Explanation >
+
+This code implements integer division between two numbers dividend and divisor using JavaScript. 
+The divide function takes two numbers as input and returns the result of the integer division.
+
+Here's a step-by-step breakdown of how the code works:
+
+const calculation = dividend/divisor calculates the result of dividing dividend by divisor and stores it in the calculation variable.
+
+Math.pow(2,31) calculates the maximum value that can be represented by a signed 32-bit integer, which is 2^31.
+
+calculation >= Math.pow(2,31) checks if the result of the division is greater than or equal to 2^31.
+
+If the result is greater than or equal to 2^31, the function returns calculation-1. 
+This is done to ensure that the result is within the range of a 32-bit signed integer. If the result is not adjusted in this way, it could result in an overflow error.
+
+If the result is less than 2^31, the Math.trunc function is used to remove the decimal part of the result, giving us the integer quotient.
+
+Finally, the function returns the integer quotient as the output.
+
+So overall, the code checks if the result of dividing dividend by divisor is within the range of a 32-bit signed integer, 
+and adjusts the result if necessary before returning the integer quotient.
+
+
+Fastest solution >
+
+function divide(dividend: number, divisor: number): number {
+    const calculation = dividend/divisor
+
+    return Math.trunc(calculation >= Math.pow(2,31) ? calculation-1 :calculation) 
+};
