@@ -1,0 +1,88 @@
+Given an array of integers nums sorted in non-decreasing order, find the starting and ending position of a given target value.
+
+If target is not found in the array, return [-1, -1].
+
+You must write an algorithm with O(log n) runtime complexity.
+
+Solution >
+
+function searchRange(nums: number[], target: number): number[] {
+    let left = 0;
+    let right = nums.length - 1;
+
+    // Binary search for the target value
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+        if (nums[mid] === target) {
+            // Target value found, expand outwards to find range of indices
+            let start = mid;
+            let end = mid;
+            while (start > 0 && nums[start - 1] === target) {
+                start--;
+            }
+            while (end < nums.length - 1 && nums[end + 1] === target) {
+                end++;
+            }
+            return [start, end];
+        } else if (nums[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+
+    // Target value not found
+    return [-1, -1];
+}
+
+Explanation > 
+
+The function takes in an array nums and a target value target, and returns an array of two numbers representing the starting and ending positions 
+of the target value in the array.
+
+The algorithm first initializes the left and right indices to the start and end of the array, respectively. 
+It then performs a modified binary search for the target value by repeatedly dividing the search range in half and checking the value at the midpoint.
+
+If the midpoint value is equal to the target, then we have found the target value and we can expand outwards from that position to find 
+the range of indices where the target value occurs. We initialize start and end indices to the midpoint index, 
+and then we use two while loops to expand these indices outwards until we reach the beginning and end of the range of target values.
+
+If the midpoint value is less than the target, then we narrow the search range to the right half of the array by updating the left index to be mid + 1.
+
+If the midpoint value is greater than the target, then we narrow the search range to the left half of the array by updating the right index to be mid - 1.
+
+If we exhaust the search range without finding the target value, then we return [-1, -1] to indicate that the target value was not found.
+
+The time complexity of this algorithm is O(log n) because we are performing a binary search to find the target value, and then we are expanding 
+outwards from that position to find the range of target values, which takes O(k) time where k is the number of target values in the array. 
+
+Since k is at most n, the overall time complexity is still O(log n).
+
+
+Fastest solution >
+
+function searchRange(nums: number[], target: number): number[] {
+    const ans = [nums.length, -1];
+
+    function search(start: number, end: number) {
+        if(start > end) return;
+
+        const mid = Math.floor((start + end) / 2);
+        if(target === nums[mid]) {
+            if(mid < ans[0]) {
+                ans[0] = mid;
+                search(start, mid - 1);
+            }
+            if(mid > ans[1]) {
+                ans[1] = mid;
+                search(mid + 1, end);
+            }
+        } else if(target > nums[mid]) {
+            search(mid + 1, end);
+        } else {
+            search(start, mid - 1);
+        }
+    }
+    search(0, nums.length - 1);
+    return ans[1] === -1 ? [-1, -1] : ans;
+};
