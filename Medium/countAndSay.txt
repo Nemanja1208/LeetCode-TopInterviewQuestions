@@ -1,0 +1,100 @@
+The count-and-say sequence is a sequence of digit strings defined by the recursive formula:
+
+countAndSay(1) = "1"
+
+countAndSay(n) is the way you would "say" the digit string from countAndSay(n-1), which is then converted into a different digit string.
+To determine how you "say" a digit string, split it into the minimal number of substrings such that each substring contains exactly one unique digit. 
+Then for each substring, say the number of digits, then say the digit. Finally, concatenate every said digit.
+
+Example 1:
+
+Input: n = 1
+Output: "1"
+Explanation: This is the base case.
+
+
+Example 2:
+
+Input: n = 4
+Output: "1211"
+Explanation:
+countAndSay(1) = "1"
+countAndSay(2) = say "1" = one 1 = "11"
+countAndSay(3) = say "11" = two 1's = "21"
+countAndSay(4) = say "21" = one 2 + one 1 = "12" + "11" = "1211"
+
+Solution > 
+
+function countAndSay(n: number): string {
+  if (n === 1) {
+    return "1";
+  }
+  
+  const prev = countAndSay(n - 1);
+  let curr = "";
+  let count = 1;
+
+  for (let i = 0; i < prev.length; i++) {
+    if (prev[i] === prev[i + 1]) {
+      count++;
+    } else {
+      curr += count + prev[i];
+      count = 1;
+    }
+  }
+
+  return curr;
+}
+
+Explanation > 
+
+Let's go through the implementation step by step.
+
+The function countAndSay takes a positive integer n as input and returns a string. The first base case is when n is 1, in which case the function returns the string "1".
+
+If n is greater than 1, the function recursively calls itself with the argument n - 1, and stores the result in the variable prev.
+
+The variables curr and count are initialized to empty string and 1, respectively.
+
+Then, the function loops through the characters of the string prev. For each character, it checks if the next character is the same. 
+If it is, it increments the count variable. If it isn't, it adds the current count and the current character to the curr string, and resets the count variable to 1.
+
+Finally, the function returns the curr string.
+
+To better understand this, let's take an example:
+
+Suppose n is 4. Then prev is the result of calling countAndSay(3). To compute prev, the function calls itself with the argument 2, which calls itself with the argument 1, 
+which returns "1". Therefore, prev is "21", because when you say "1", it becomes "11", and when you say "11", it becomes "21".
+
+Now we loop through the characters of "21". Initially, curr is empty and count is 1. We encounter the character "2", which is not the same as the next character "1", 
+so we add "1" and "2" to curr (since there is one "2"), and reset count to 1. Then we encounter the character "1", which is not the same as the next character 
+(which does not exist), so we add "1" and "1" to curr (since there is one "1"), and reset count to 1. Therefore, curr is "1211", which is the result of calling countAndSay(4).
+
+Fastest solution >
+
+function countAndSay(n: number): string {
+  if (n === 1) {
+    return "1";
+  }
+
+  return say(countAndSay(n - 1));
+}
+
+function say(digitString: string) {
+  const digitStringSize = digitString.length;
+  let result = "";
+  let i = 0;
+
+  while (i < digitStringSize) {
+    const startIndex = i;
+    const firstChar = digitString[startIndex];
+
+    while (i < digitStringSize && digitString[i] === firstChar) {
+      i += 1;
+    }
+
+    result += `${i - startIndex}${firstChar}`;
+  }
+
+  return result;
+}
