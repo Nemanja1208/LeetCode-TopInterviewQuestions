@@ -1,0 +1,108 @@
+Given an input string (s) and a pattern (p), implement wildcard pattern matching with support for '?' and '*' where:
+
+'?' Matches any single character.
+'*' Matches any sequence of characters (including the empty sequence).
+The matching should cover the entire input string (not partial).
+
+ 
+
+Example 1:
+
+Input: s = "aa", p = "a"
+Output: false
+Explanation: "a" does not match the entire string "aa".
+
+
+Example 2:
+
+Input: s = "aa", p = "*"
+Output: true
+Explanation: '*' matches any sequence.
+
+
+Example 3:
+
+Input: s = "cb", p = "?a"
+Output: false
+Explanation: '?' matches 'c', but the second letter is 'a', which does not match 'b'.
+
+
+Solution > 
+
+function isMatch(s: string, p: string): boolean {
+    let sIndex = 0;
+    let pIndex = 0;
+    let starIndex = -1;
+    let matchIndex = -1;
+    
+    while (sIndex < s.length) {
+        if (pIndex < p.length && (s[sIndex] === p[pIndex] || p[pIndex] === '?')) {
+            sIndex++;
+            pIndex++;
+        } else if (pIndex < p.length && p[pIndex] === '*') {
+            starIndex = pIndex;
+            matchIndex = sIndex;
+            pIndex++;
+        } else if (starIndex !== -1) {
+            pIndex = starIndex + 1;
+            matchIndex++;
+            sIndex = matchIndex;
+        } else {
+            return false;
+        }
+    }
+    
+    while (pIndex < p.length && p[pIndex] === '*') {
+        pIndex++;
+    }
+    
+    return pIndex === p.length;
+}
+
+Explanation > 
+
+We use two pointers, sIndex and pIndex, to iterate through s and p respectively.
+
+We also use two variables, starIndex and matchIndex, to keep track of the last * encountered in p and the last index in s that matched the *, respectively.
+
+In each iteration of the loop, we check if the current characters in s and p match. If they do, we increment both pointers. 
+If they don't, we check if the current character in p is a *. If it is, we update starIndex and matchIndex, and move pIndex forward. 
+If it isn't, we check if there is a previous * in p. If there is, we reset pIndex to the position after the *, 
+reset matchIndex to the next character in s after the last match, and increment sIndex until it matches the current character in p. 
+If there isn't a previous *, we return false.
+
+After we have iterated through all the characters in s, we check if there are any remaining * in p. If there are, we skip them. 
+Finally, we return true if we have reached the end of p, and false otherwise.
+
+This solution has a time complexity of O(m+n), where m and n are the lengths of s and p, respectively. 
+The space complexity is O(1), as we are using only constant extra space.
+
+
+Fastest solution >
+
+function isMatch(s: string, p: string): boolean {
+    let i = 0;
+    let j = 0;
+    let star = -1;
+    let match = 0;
+    while (i < s.length) {
+        if (j < p.length && (p[j] === "?" || p[j] === s[i])) {
+            i++;
+            j++;
+        } else if (j < p.length && p[j] === "*") {
+            star = j;
+            match = i;
+            j++;
+        } else if (star !== -1) {
+            j = star + 1;
+            match++;
+            i = match;
+        } else {
+            return false;
+        }
+    }
+    while (j < p.length && p[j] === "*") {
+        j++;
+    }
+    return j === p.length;
+};
