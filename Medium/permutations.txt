@@ -1,0 +1,85 @@
+Given an array nums of distinct integers, return all the possible permutations. You can return the answer in any order.
+
+Example 1:
+
+Input: nums = [1,2,3]
+Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]
+
+
+Example 2:
+
+Input: nums = [0,1]
+Output: [[0,1],[1,0]]
+
+
+Example 3:
+
+Input: nums = [1]
+Output: [[1]]
+
+
+Solution > 
+
+function permute(nums: number[]): number[][] {
+  const result: number[][] = [];
+
+  function backtrack(start: number, end: number): void {
+    if (start === end) {
+      // reached the end of the array, add current permutation to result
+      result.push([...nums]);
+    } else {
+      // generate permutations by swapping current element with every other element
+      for (let i = start; i <= end; i++) {
+        [nums[start], nums[i]] = [nums[i], nums[start]]; // swap
+        backtrack(start + 1, end);
+        [nums[start], nums[i]] = [nums[i], nums[start]]; // backtrack by swapping back
+      }
+    }
+  }
+
+  backtrack(0, nums.length - 1);
+  return result;
+}
+
+Explanation > 
+
+Let's go through the code step by step:
+
+We start by defining a result array to store all the permutations that we generate.
+We define a recursive backtrack function that takes a start and end index as arguments. 
+The start index represents the current element that we are permuting, and the end index represents the last element in the array.
+If the start index is equal to the end index, then we have reached the end of the array and we add the current permutation to the result array 
+by creating a copy of the nums array using the spread operator.
+Otherwise, we generate permutations by swapping the current element at index start with every other element in the array (starting from index start). 
+We do this using a for loop that iterates from start to end.
+For each iteration of the loop, we swap the current element with the element at the current loop index using destructuring assignment. 
+We then recursively call the backtrack function with start + 1 as the new start index (to move on to the next element) and end as the end index.
+After the recursive call, we swap the elements back using destructuring assignment to backtrack and restore the original array order.
+Finally, we call the backtrack function with start = 0 and end = nums.length - 1 to start generating permutations from the beginning of the array.
+We return the result array, which now contains all possible permutations of the nums array.
+Here's an example usage of the permute function:
+
+const nums = [1, 2, 3];
+const permutations = permute(nums);
+console.log(permutations); // [[1,2,3],[2,1,3],[3,1,2],[1,3,2],[2,3,1],[3,2,1]]
+In this example, the nums array contains the distinct integers 1, 2, and 3. The permute function generates all possible permutations of these integers, 
+which are returned in the permutations array. The console.log statement prints the resulting permutations to the console.
+
+Fastest solution >
+
+function permute(nums: number[]): number[][] {
+    const res: number[][] = [];
+    function backtrack(n: number = 0) {
+        if (n === nums.length - 1) {
+            res.push([...nums]);
+            return;
+        }
+        for (let i: number = n; i < nums.length; i++) {
+            [nums[i], nums[n]] = [nums[n], nums[i]];
+            backtrack(n + 1);
+            [nums[i], nums[n]] = [nums[n], nums[i]];
+        }
+    }
+    backtrack();
+    return res;
+};
