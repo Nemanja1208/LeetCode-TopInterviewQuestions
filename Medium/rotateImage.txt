@@ -1,0 +1,54 @@
+You are given an n x n 2D matrix representing an image, rotate the image by 90 degrees (clockwise).
+
+You have to rotate the image in-place, which means you have to modify the input 2D matrix directly. DO NOT allocate another 2D matrix and do the rotation.
+
+Input: matrix = [[1,2,3],[4,5,6],[7,8,9]]
+Output: [[7,4,1],[8,5,2],[9,6,3]]
+
+Input: matrix = [[5,1,9,11],[2,4,8,10],[13,3,6,7],[15,14,12,16]]
+Output: [[15,13,2,5],[14,3,4,1],[12,6,8,9],[16,7,10,11]]
+
+Solution >
+
+function rotate(matrix: number[][]): void {
+  const n = matrix.length;
+  
+  // Transpose the matrix
+  for (let i = 0; i < n; i++) {
+    for (let j = i; j < n; j++) {
+      [matrix[i][j], matrix[j][i]] = [matrix[j][i], matrix[i][j]];
+    }
+  }
+  
+  // Reverse each row
+  for (let i = 0; i < n; i++) {
+    matrix[i].reverse();
+  }
+}
+
+Explanation >
+
+Let's break down the solution step by step:
+
+First, we get the length of the matrix n as we will use it multiple times.
+
+Then, we transpose the matrix by swapping the elements across the diagonal. 
+To do this, we use two nested loops where the inner loop starts from the outer loop's index (i.e., j = i) to avoid swapping elements twice.
+
+Finally, we reverse each row of the transposed matrix to get the rotated matrix. We do this using a simple loop that iterates over each row and calls the reverse method on it.
+
+It's worth noting that this solution modifies the input matrix in-place, which means we don't need to allocate another matrix to store the rotated image. 
+This approach saves memory and is more efficient than creating a new matrix and copying the elements.
+
+Fastest solution >
+
+const rotate = (matrix: number[][]): void => {
+  const n = matrix.length - 1;
+  matrix
+    .map((row, i) => row.map((_, j) => matrix[n - j][i]))
+    .forEach((row, i) => {
+	  row.forEach((entry, j) => {
+	    matrix[i][j] = entry;
+      });
+    });
+}
