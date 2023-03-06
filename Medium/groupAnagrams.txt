@@ -1,0 +1,59 @@
+Given an array of strings strs, group the anagrams together. You can return the answer in any order.
+
+An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
+
+Example 1:
+
+Input: strs = ["eat","tea","tan","ate","nat","bat"]
+Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+
+Example 2:
+
+Input: strs = [""]
+Output: [[""]]
+
+Example 3:
+
+Input: strs = ["a"]
+Output: [["a"]]
+
+
+Solution :
+
+function groupAnagrams(strs: string[]): string[][] {
+    const map: {[key: string]: string[]} = {};
+    for (let str of strs) {
+        const sortedStr = str.split("").sort().join("");
+        if (!map[sortedStr]) {
+            map[sortedStr] = [];
+        }
+        map[sortedStr].push(str);
+    }
+    return Object.values(map);
+}
+
+Explanation :
+
+Let's go through the solution step by step:
+
+We create an empty object map to store the anagrams as key-value pairs. The key will be the sorted string and the value will be an array of strings with the same characters.
+
+We loop through each string in the input array strs.
+
+We sort the characters in the string and join them back together to get a sorted string. For example, "eat" becomes "aet" and "ate" becomes "aet". 
+If two strings have the same sorted string, it means they are anagrams of each other.
+
+If the sorted string is not in the map, we create an empty array as its value.
+
+We add the original string to the array with the same sorted string.
+
+After we've looped through all the strings, we return an array of the values in the map.
+
+The values in the map are arrays of strings that are anagrams of each other.
+
+For example, if we call groupAnagrams(["eat","tea","tan","ate","nat","bat"]), we get [["eat","tea","ate"],["tan","nat"],["bat"]] as output.
+
+Notice that the output order doesn't match the order of the input strings. 
+This is because we're returning the anagram groups in any order, as stated in the problem statement.
+
+Fastest solution (same solution)
