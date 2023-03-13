@@ -1,0 +1,62 @@
+Implement pow(x, n), which calculates x raised to the power n (i.e., xn).
+
+Example 1:
+
+Input: x = 2.00000, n = 10
+Output: 1024.00000
+
+
+Example 2:
+
+Input: x = 2.10000, n = 3
+Output: 9.26100
+
+
+Example 3:
+
+Input: x = 2.00000, n = -2
+Output: 0.25000
+Explanation: 2-2 = 1/22 = 1/4 = 0.25
+
+Solution >
+
+
+function myPow(x: number, n: number): number {
+    if (n==0) return 1
+    if (n<0) {
+        n = Math.abs(n)
+        x = 1/x
+    }
+    if (n%2==0) {
+        return myPow(x*x, n/2)
+    } else {
+        return x*myPow(x*x, (n-1)/2)
+    }
+};
+
+Explanation >
+
+If "n" is 0, return 1. This is the base case of the recursion, and it represents the fact that any number raised to the 0th power is 1.
+If "n" is negative, convert it to its absolute value and take the reciprocal of "x". 
+This is because a negative exponent means the reciprocal of the number raised to the positive exponent. For example, 2^-3 is the same as 1/(2^3).
+If "n" is even, recursively call "myPow" with "xx" and "n/2". This works because x^n = (xx)^(n/2) when "n" is even. 
+This cuts the number of iterations in half, because we are essentially dividing the exponent by 2 with each call.
+If "n" is odd, recursively call "myPow" with "xx" and "(n-1)/2", and multiply the result by "x". This works because x^n = x * (xx)^((n-1)/2) when "n" is odd. 
+This reduces the exponent by 1 and makes it even, so we can apply the same logic as in step 3 to the remaining exponent.
+The algorithm works by recursively dividing the exponent in half until it becomes 0 or 1 (which corresponds to the base cases). 
+This reduces the number of multiplications required, since each recursion cuts the exponent in half. 
+The time complexity of this algorithm is O(log n), since we're dividing the exponent in half with each recursion.
+
+Fastest solution >
+function myPow(x: number, n: number): number {
+    if (n==0) return 1
+    if (n<0) {
+        n = Math.abs(n)
+        x = 1/x
+    }
+    if (n%2==0) {
+        return myPow(x*x, n/2)
+    } else {
+        return x*myPow(x*x, (n-1)/2)
+    }
+};
