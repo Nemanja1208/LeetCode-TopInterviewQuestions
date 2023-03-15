@@ -1,0 +1,129 @@
+Given an m x n matrix, return all elements of the matrix in spiral order.
+
+Example 1:
+Input: matrix = [[1,2,3],[4,5,6],[7,8,9]]
+Output: [1,2,3,6,9,8,7,4,5]
+
+Example 2:
+Input: matrix = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
+Output: [1,2,3,4,8,12,11,10,9,5,6,7]
+
+
+Solution >
+
+function spiralOrder(matrix: number[][]): number[] {
+  const result: number[] = [];
+  let top = 0;
+  let bottom = matrix.length - 1;
+  let left = 0;
+  let right = matrix[0].length - 1;
+
+  while (top <= bottom && left <= right) {
+    // Traverse Right
+    for (let i = left; i <= right; i++) {
+      result.push(matrix[top][i]);
+    }
+    top++;
+
+    // Traverse Down
+    for (let i = top; i <= bottom; i++) {
+      result.push(matrix[i][right]);
+    }
+    right--;
+
+    // Traverse Left
+    if (top <= bottom) {
+      for (let i = right; i >= left; i--) {
+        result.push(matrix[bottom][i]);
+      }
+      bottom--;
+    }
+
+    // Traverse Up
+    if (left <= right) {
+      for (let i = bottom; i >= top; i--) {
+        result.push(matrix[i][left]);
+      }
+      left++;
+    }
+  }
+
+  return result;
+}
+
+Explanation >
+
+The solution works by maintaining four variables top, bottom, left, and right, which represent the boundaries of the matrix. 
+We traverse the matrix in a spiral order by moving along the top row from left to right, then along the right column from top to bottom, 
+then along the bottom row from right to left, and finally along the left column from bottom to top. After each traversal, 
+we update the corresponding boundary variable to exclude the traversed row or column.
+
+We continue this process until all elements of the matrix have been traversed. The result array contains all the elements in the order they were traversed.
+
+Let's step through the solution with the first example:
+matrix = [[1,2,3],
+          [4,5,6],
+          [7,8,9]]
+
+top = 0
+bottom = 2
+left = 0
+right = 2
+
+// Traverse Right
+result = [1,2,3]
+top = 1
+
+// Traverse Down
+result = [1,2,3,6,9]
+right = 1
+
+// Traverse Left
+result = [1,2,3,6,9,8,7]
+bottom = 1
+
+// Traverse Up
+result = [1,2,3,6,9,8,7,4]
+left = 1
+
+// Traverse Right
+result = [1,2,3,6,9,8,7,4,5]
+top = 2
+
+// Done!
+
+The resulting array is [1,2,3,6,9,8,7,4,5], which matches the expected output. 
+The time complexity of the solution is O(mn), where m and n are the dimensions of the matrix, since we need to traverse all the elements in the matrix. 
+The space complexity is O(mn) as well, since we need to store all the elements in the result array.
+
+Fastest solution >
+
+function spiralOrder(matrix: number[][]): number[] {
+    const res: number[] = [];
+    if (matrix.length == 0 || matrix[0].length == 0) return res;
+
+    let top = 0;
+    let bottom = matrix.length - 1;
+    let left = 0;
+    let right = matrix[0].length - 1;
+
+    while (true) {
+        for (let i = left; i <= right; i++) res.push(matrix[top][i]);
+        top++;
+        if (left > right || top > bottom) break;
+
+        for (let i = top; i <= bottom; i++) res.push(matrix[i][right]);
+        right--;
+        if (left > right || top > bottom) break;
+
+        for (let i = right; i >= left; i--) res.push(matrix[bottom][i]);
+        bottom--;
+        if (left > right || top > bottom) break;
+
+        for (let i = bottom; i >= top; i--) res.push(matrix[i][left]);
+        left++;
+        if (left > right || top > bottom) break;
+    }
+
+    return res;
+}
