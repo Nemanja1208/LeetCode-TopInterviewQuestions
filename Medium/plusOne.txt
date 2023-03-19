@@ -1,0 +1,65 @@
+You are given a large integer represented as an integer array digits, where each digits[i] is the ith digit of the integer. 
+The digits are ordered from most significant to least significant in left-to-right order. 
+The large integer does not contain any leading 0's.
+
+Increment the large integer by one and return the resulting array of digits.
+
+Example 1:
+
+Input: digits = [1,2,3]
+Output: [1,2,4]
+Explanation: The array represents the integer 123.
+Incrementing by one gives 123 + 1 = 124.
+Thus, the result should be [1,2,4].
+
+Example 2:
+
+Input: digits = [4,3,2,1]
+Output: [4,3,2,2]
+Explanation: The array represents the integer 4321.
+Incrementing by one gives 4321 + 1 = 4322.
+Thus, the result should be [4,3,2,2].
+
+Example 3:
+
+Input: digits = [9]
+Output: [1,0]
+Explanation: The array represents the integer 9.
+Incrementing by one gives 9 + 1 = 10.
+Thus, the result should be [1,0].
+
+Solution >
+
+function plusOne(digits: number[]): number[] {
+    // Iterate the array in reverse order.
+    for (let i = digits.length - 1; i >= 0; i--) {
+        // Increment the current digit by 1.
+        digits[i]++;
+        // If the current digit is not 10, we're done.
+        if (digits[i] < 10) {
+            break;
+        }
+        // If the current digit is 10, set it to 0 and continue with the next digit.
+        digits[i] = 0;
+    }
+    // If the first digit is 0, we need to add a new leading 1.
+    if (digits[0] === 0) {
+        digits.unshift(1);
+    }
+    // Return the updated digits array.
+    return digits;
+}
+
+Explanation >
+
+The idea behind this solution is to start at the least significant digit and increment it by 1. 
+If the result is less than 10, we're done. Otherwise, we set the current digit to 0 and continue with the next digit.
+
+If we reach the end of the array and the first digit is 0, we need to add a new leading 1. 
+This can happen, for example, when the input array represents the number 999.
+
+Note that the input array is modified in place, and the function returns the same array as output.
+
+Fastest Solution >
+
+const plusOne = (digits: number[]): number[] => (BigInt(digits.join("")) + BigInt(1)).toString().split("").map(x=>parseInt(x,10))
