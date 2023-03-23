@@ -1,0 +1,68 @@
+Given an array nums with n objects colored red, white, or blue, sort them in-place so that objects of the same color are adjacent,
+with the colors in the order red, white, and blue.
+
+We will use the integers 0, 1, and 2 to represent the color red, white, and blue, respectively.
+
+You must solve this problem without using the library's sort function.
+
+Example 1:
+Input: nums = [2,0,2,1,1,0]
+Output: [0,0,1,1,2,2]
+
+Example 2:
+Input: nums = [2,0,1]
+Output: [0,1,2]
+
+Solution >
+
+function sortColors(nums: number[]): void {
+    let i = 0; // pointer to 0s
+    let j = 0; // pointer to 1s
+    let k = nums.length - 1; // pointer to 2s
+    
+    while (j <= k) {
+        if (nums[j] === 0) {
+            // swap nums[i] and nums[j]
+            [nums[i], nums[j]] = [nums[j], nums[i]];
+            i++;
+            j++;
+        } else if (nums[j] === 2) {
+            // swap nums[j] and nums[k]
+            [nums[j], nums[k]] = [nums[k], nums[j]];
+            k--;
+        } else {
+            j++;
+        }
+    }
+}
+
+
+Explanation >
+
+The solution uses three pointers to keep track of the positions of the 0s, 1s, and 2s in the array. The pointers i, j, and k are initialized to point to the beginning, 
+the beginning, and the end of the array respectively.
+
+The solution then enters a loop that continues until j crosses over k. In each iteration of the loop, the current element at index j is checked. 
+If it's a 0, it's swapped with the element at index i, and i and j are incremented by 1. If it's a 2, it's swapped with the element at index k, 
+and k is decremented by 1. If it's a 1, j is simply incremented by 1.
+
+By the end of the loop, all the 0s will be in the first part of the array, followed by all the 1s, and finally all the 2s.
+
+The time complexity of this algorithm is O(n), where n is the length of the array, since it performs a single pass over the array. 
+The space complexity is O(1), since the solution does not use any additional memory other than the three pointers.
+
+Fastest solution >
+
+function sortColors(nums: number[]): void {
+    let insertPos = 0;
+    for (let i = 0; i < 3; i += 1) {
+        for (let j = insertPos; j < nums.length; j += 1) {
+            if (nums[j] === i) {
+                const temp = nums[insertPos];
+                nums[insertPos] = nums[j];
+                nums[j] = temp;
+                insertPos += 1;
+            }
+        }
+    }
+};
