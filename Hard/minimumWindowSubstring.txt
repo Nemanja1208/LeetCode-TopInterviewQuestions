@@ -1,0 +1,108 @@
+Given two strings s and t of lengths m and n respectively, return the minimum window 
+substring of s such that every character in t (including duplicates) is included in the window. 
+If there is no such substring, return the empty string "".
+
+The testcases will be generated such that the answer is unique.
+
+Example 1:
+Input: s = "ADOBECODEBANC", t = "ABC"
+Output: "BANC"
+Explanation: The minimum window substring "BANC" includes 'A', 'B', and 'C' from string t.
+
+Example 2:
+Input: s = "a", t = "a"
+Output: "a"
+Explanation: The entire string s is the minimum window.
+
+Example 3:
+Input: s = "a", t = "aa"
+Output: ""
+Explanation: Both 'a's from t must be included in the window.
+Since the largest window of s only has one 'a', return empty string.
+
+Solution >
+
+function minWindow(s: string, t: string): string {
+    // Create a frequency map of characters in string t
+    const tFreqMap: {[key: string]: number} = {};
+    for (const char of t) {
+        tFreqMap[char] = (tFreqMap[char] || 0) + 1;
+    }
+
+    let left = 0;
+    let right = 0;
+    let count = t.length; // Number of characters left to find in s
+    let minWindow = '';
+
+    while (right < s.length) {
+        const char = s[right];
+        if (tFreqMap[char] !== undefined) {
+            // Found a character from t in s
+            tFreqMap[char]--; // Decrement its frequency count
+            if (tFreqMap[char] >= 0) {
+                count--; // Decrement count only if it was a required character
+            }
+        }
+
+        while (count === 0) {
+            // Found all required characters in s between left and right indices
+            const windowSize = right - left + 1;
+            if (minWindow === '' || windowSize < minWindow.length) {
+                minWindow = s.slice(left, right + 1);
+            }
+
+            const leftChar = s[left];
+            if (tFreqMap[leftChar] !== undefined) {
+                // Removing a character from the current window
+                tFreqMap[leftChar]++; // Increment its frequency count
+                if (tFreqMap[leftChar] > 0) {
+                    count++; // Increment count only if it was a required character
+                }
+            }
+            left++; // Shrink the window from the left
+        }
+
+        right++; // Expand the window to the right
+    }
+
+    return minWindow;
+}
+
+
+Explanation >
+
+The solution uses a sliding window approach to find the minimum window substring of s that includes every character in t. 
+We create a frequency map of characters in t to keep track of required characters and their frequency counts. 
+We use two pointers left and right to maintain a sliding window in s. We initialize left, right, and count to 0, and minWindow to an empty string.
+
+We move right forward one character at a time and check if the character is a required character from t. 
+If it is, we decrement its frequency count in the frequency map, and if the count is greater than or equal to 0, 
+we decrement count since we have found one required character in s. 
+We then move left forward and shrink the window until we can't shrink it any further, and then we update minWindow 
+if the current window size is smaller than the previous minWindow. We also remove the leftmost character from the current window 
+and update its frequency count and count accordingly.
+
+We repeat this process until we reach the end of s. At the end, we return minWindow.
+
+The time complexity of this solution is O(m + n) where m is the length of s and n is the length of t. 
+This is because we iterate through s once and iterate through t once to create the frequency map. 
+The space complexity is O(n) since we store the frequency map of characters in t.
+
+Fastest solution >
+
+function minWindow(s: string, t: string): string {
+  const m = s.length, n = t.length;
+  if (n > m) return "";
+  const win = Array(123).fill(0)
+  for (const c of t) win[c.charCodeAt(0)]++;
+
+  let l = 0, r = 0, start = 0, min = Infinity, count = n;
+  while (r < m) {
+    if (win[s.charCodeAt(r++)]-- > 0) count--;
+    while (count === 0) {
+      if (r - l < min) start = l, min = r - l;
+      if (win[s.charCodeAt(l++)]++ === 0) count++;
+    }
+  }
+  return min === Infinity ? '' : s.substring(start, start + min)
+};
