@@ -1,0 +1,72 @@
+Given an integer array nums of unique elements, return all possible subsets (the power set).
+
+The solution set must not contain duplicate subsets. Return the solution in any order.
+
+Example 1:
+Input: nums = [1,2,3]
+Output: [[],[1],[2],[1,2],[3],[1,3],[2,3],[1,2,3]]
+
+Example 2:
+Input: nums = [0]
+Output: [[],[0]]
+
+Solution >
+
+function subsets(nums: number[]): number[][] {
+    const result: number[][] = [[]];
+    
+    for (let i = 0; i < nums.length; i++) {
+        const len = result.length;
+        for (let j = 0; j < len; j++) {
+            const subset = [...result[j], nums[i]];
+            result.push(subset);
+        }
+    }
+    
+    return result;
+}
+
+Explanation >
+
+This solution uses the iterative approach to generate all possible subsets of the given array. 
+The result array is initially set to contain an empty subset. 
+Then, for each element in the input array, we iterate over the current subsets in result, add the current element to each subset, and push the new subsets to result.
+
+Let's break down the code line by line:
+
+function subsets(nums: number[]): number[][] {
+This function takes an array of numbers and returns an array of arrays of numbers.
+
+const result: number[][] = [[]];
+Initialize the result array with an empty subset.
+
+for (let i = 0; i < nums.length; i++) {
+    const len = result.length;
+    for (let j = 0; j < len; j++) {
+        const subset = [...result[j], nums[i]];
+        result.push(subset);
+    }
+}
+For each element in the input array, iterate over the current subsets in result, add the current element to each subset, and push the new subsets to result.
+
+return result;
+Return the final result array containing all possible subsets.
+
+This algorithm has a time complexity of O(2^n), where n is the length of the input array. 
+This is because there are 2^n possible subsets of an array of length n, and we generate all of them in this algorithm.
+
+Fastest Solution >
+
+function subsets(S: number[]): number[][] {
+    const [N, M] = [S.length, 2 ** S.length];
+    const P: number[][] = Array(M);
+    for(let i = 0; i < M; i++) {
+        const R: number[] = [];
+        for(let j = 0; j < N; j++) {
+            if((i & (1 << j)) == 0)
+                R.push(S[j]);
+        }
+        P[i] = R;
+    }
+    return P;
+};
