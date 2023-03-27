@@ -1,0 +1,116 @@
+Given an m x n grid of characters board and a string word, return true if word exists in the grid.
+
+The word can be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. 
+The same letter cell may not be used more than once.
+
+Example 1:
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCCED"
+Output: true
+
+Example 2:
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "SEE"
+Output: true
+
+Example 3:
+Input: board = [["A","B","C","E"],["S","F","C","S"],["A","D","E","E"]], word = "ABCB"
+Output: false
+
+
+Solution >
+function exist(board: string[][], word: string): boolean {
+  // define a helper function to check if a word can be formed starting from a certain position
+  function backtrack(i: number, j: number, index: number): boolean {
+    // base case: the entire word has been found
+    if (index === word.length) {
+      return true;
+    }
+    // edge case: the current position is outside the board or the current cell does not match the current character of the word
+    if (i < 0 || i >= board.length || j < 0 || j >= board[0].length || board[i][j] !== word.charAt(index)) {
+      return false;
+    }
+    // mark the current cell as visited
+    const temp = board[i][j];
+    board[i][j] = '#';
+    // recursively search for the rest of the word in the four adjacent cells
+    const result = backtrack(i + 1, j, index + 1) || backtrack(i - 1, j, index + 1) || backtrack(i, j + 1, index + 1) || backtrack(i, j - 1, index + 1);
+    // restore the original value of the current cell
+    board[i][j] = temp;
+    return result;
+  }
+  // iterate through every cell of the board
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board[0].length; j++) {
+      // if the current cell matches the first character of the word, start searching for the word starting from this position
+      if (board[i][j] === word.charAt(0) && backtrack(i, j, 0)) {
+        return true;
+      }
+    }
+  }
+  // the word cannot be found
+  return false;
+}
+
+
+Explanation >
+
+The main idea is to perform a depth-first search (DFS) to search for the given word in the board. 
+We define a helper function backtrack that takes three parameters: the current position (i, j) in the board, the current index index in the word, 
+and returns a boolean value indicating whether the remaining part of the word can be found starting from the current position.
+
+The base case of the recursion is when the entire word has been found, i.e., index === word.length. In this case, we return true. 
+The edge case is when the current position is outside the board or the current cell does not match the current character of the word. In this case, we return false.
+
+Otherwise, we mark the current cell as visited by changing its value to '#'. 
+Then, we recursively search for the rest of the word in the four adjacent cells: (i+1, j), (i-1, j), (i, j+1), and (i, j-1). 
+If any of these searches returns true, we can immediately return true because we have found the word. 
+Otherwise, we restore the original value of the current cell and return false.
+
+In the main function exist, we iterate through every cell of the board, and if the current cell matches the first character of the word, 
+we call the backtrack function to search for the word starting from this position. 
+If the backtrack function returns true, we can immediately return true because we have found the word. Otherwise, we continue searching until all cells have been searched. 
+If we still cannot find the word, we return false.
+
+Fastest solution >
+
+function exist(board: string[][], word: string): boolean {
+    let pairs = {};
+    let m = board.length;
+    let n = board[0].length;
+    board[-1] = [];
+    board[m] = [];
+    let pv = '';
+    let v = '';
+
+
+    // let memo = new Set<number>();
+    let memo = [];
+    for (let i = 0; i < board.length; i++) {
+        memo[i] = new Array(board[0].length)
+    }
+
+
+    let countStart = 0, countEnd = 0
+    if (word[0] !== word[word.length - 1]) {
+        for (let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board[i].length; j++) {
+                if (board[i][j] === word[0]) {
+                    countStart++
+                } else if (board[i][j] === word[word.length - 1]) {
+                    countEnd++
+                }
+            }
+        }
+    }
+
+    word = countEnd < countStart ? word.split('').reverse().join('') : word
+
+    for (let i = 0; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+            let [matches, dirtyMatch] = tryMatch(board, word, i, j, 0, memo)
+            if (matches && !dirtyMatch) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
