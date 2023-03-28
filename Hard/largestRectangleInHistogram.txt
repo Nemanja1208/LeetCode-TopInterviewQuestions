@@ -1,0 +1,58 @@
+Given an array of integers heights representing the histogram's bar height where the width of each bar is 1, return the area of the largest rectangle in the histogram.
+
+Example 1:
+Input: heights = [2,1,5,6,2,3]
+Output: 10
+Explanation: The above is a histogram where width of each bar is 1.
+The largest rectangle is shown in the red area, which has an area = 10 units.
+
+Example 2:
+Input: heights = [2,4]
+Output: 4
+
+Solution >
+
+function largestRectangleArea(heights: number[]): number {
+    const stack: number[] = []; // a stack of indices of bars
+    let maxArea = 0;
+
+    for (let i = 0; i <= heights.length; i++) {
+        const h = (i === heights.length ? 0 : heights[i]); // assume height=0 after last bar
+        while (stack.length > 0 && h < heights[stack[stack.length - 1]]) {
+            // pop bars that are higher than h and calculate their area
+            const height = heights[stack.pop()!];
+            const width = (stack.length === 0 ? i : i - stack[stack.length - 1] - 1);
+            maxArea = Math.max(maxArea, height * width);
+        }
+        stack.push(i);
+    }
+
+    return maxArea;
+}
+
+Explanation >
+
+The idea of the algorithm is to use a stack to keep track of bars that form rectangles, starting from the leftmost bar. 
+We scan the array of heights from left to right, and for each bar heights[i], we do the following:
+
+If the stack is empty or heights[i] is greater than or equal to the height of the bar at the top of the stack, we simply push i onto the stack, 
+because this bar can form a rectangle with bars to its left that are at least as high as it.
+
+Otherwise, if heights[i] is smaller than the height of the bar at the top of the stack, we pop bars from the stack that are higher than heights[i], 
+because those bars cannot form rectangles that include heights[i]. For each popped bar, 
+we calculate its area as the product of its height and the width of the rectangle it forms. 
+The width is the distance between the current index i and the index of the previous bar in the stack (which is the new top of the stack after the pop),
+or i if the stack becomes empty. 
+We update maxArea with the maximum area we've seen so far.
+
+After the pop loop is done, we push i onto the stack, because heights[i] may form a rectangle with bars to its left that are shorter than it.
+
+When we reach the end of the array, we assume that there is a bar of height 0 after the last bar, so that we can pop all the bars remaining in the stack 
+and calculate their areas.
+
+The time complexity of this algorithm is O(n), because each bar is pushed and popped from the stack at most once. 
+The space complexity is also O(n), because the stack can contain all bars.
+
+Fastest solution >
+
+Same
