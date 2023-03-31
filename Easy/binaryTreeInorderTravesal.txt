@@ -1,0 +1,79 @@
+Given the root of a binary tree, return the inorder traversal of its nodes' values.
+
+Example 1:
+Input: root = [1,null,2,3]
+Output: [1,3,2]
+
+Example 2:
+Input: root = []
+Output: []
+
+Example 3:
+Input: root = [1]
+Output: [1]
+
+
+Solution >
+
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+  constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+    this.val = (val === undefined ? 0 : val);
+    this.left = (left === undefined ? null : left);
+    this.right = (right === undefined ? null : right);
+  }
+}
+
+function inorderTraversal(root: TreeNode | null): number[] {
+  const result: number[] = [];
+  const traverse = (node: TreeNode | null) => {
+    if (!node) return;
+    traverse(node.left);
+    result.push(node.val);
+    traverse(node.right);
+  }
+  traverse(root);
+  return result;
+}
+
+
+Explanation >
+
+The first part of the code defines a TreeNode class, which is used to represent nodes in a binary tree. 
+Each TreeNode object has a val property, which stores the value of the node, and left and right properties, which point to the left and right child nodes, respectively. 
+If a TreeNode object is initialized with no arguments, its properties default to 0 and null.
+
+The inorderTraversal function takes a root parameter, which is the root node of the binary tree we want to traverse, 
+and returns an array of numbers representing the inorder traversal of the tree.
+
+The function initializes an empty array result, which will store the inorder traversal, and defines a helper function traverse to perform the actual traversal. 
+traverse takes a node parameter, which is the current node being visited. If node is null, the function returns immediately.
+
+Otherwise, the function first calls traverse recursively on node.left, which visits all the nodes in the left subtree of node. 
+Then, the function pushes node.val to the result array, representing the current node being visited. 
+Finally, the function calls traverse recursively on node.right, which visits all the nodes in the right subtree of node.
+
+After defining traverse, the inorderTraversal function calls traverse on the root node to start the traversal, and returns the result array.
+
+The inorder traversal of a binary tree visits the left subtree, then the root node, and then the right subtree, for each subtree recursively. 
+This results in visiting all nodes in an order which is ascending if the values are numbers.
+
+Fastest solution >
+
+function inorderTraversal(root: TreeNode | null): number[] {
+ const nodesInOrder : number[] = [];
+inOrder(root, nodesInOrder);
+
+return nodesInOrder;
+
+};
+
+function inOrder(root: TreeNode | null, accumulator: number[]){
+    if (root === null) return;
+
+    inOrder(root.left, accumulator);
+    accumulator.push(root.val);
+    inOrder(root.right, accumulator);
+}
