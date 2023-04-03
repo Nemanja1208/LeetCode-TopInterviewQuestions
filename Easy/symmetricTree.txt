@@ -1,0 +1,52 @@
+Given the root of a binary tree, check whether it is a mirror of itself (i.e., symmetric around its center).
+
+Example 1:
+Input: root = [1,2,2,3,4,4,3]
+Output: true
+
+Example 2:
+Input: root = [1,2,2,null,3,null,3]
+Output: false
+
+
+Solution >
+
+function isSymmetric(root: TreeNode | null): boolean {
+  if (!root) return true; // empty tree is symmetric
+
+  const isMirror = (node1: TreeNode | null, node2: TreeNode | null): boolean => {
+    if (!node1 && !node2) return true; // both nodes are null
+    if (!node1 || !node2) return false; // only one node is null
+    return node1.val === node2.val && isMirror(node1.left, node2.right) && isMirror(node1.right, node2.left);
+  };
+
+  return isMirror(root.left, root.right);
+}
+
+Explanation >
+
+The isSymmetric function takes a binary tree represented as a TreeNode object and returns a boolean indicating whether it is symmetric or not. 
+It first handles the case of an empty tree by returning true. 
+Then, it calls a helper function isMirror to recursively check whether the left and right subtrees of the root node are mirrors of each other.
+
+The isMirror function takes two TreeNode objects and returns a boolean indicating whether they are mirrors of each other. 
+It first handles the cases where both nodes are null or only one node is null, and returns true or false accordingly. 
+If both nodes are not null, it checks whether their values are equal and whether their left and right subtrees are mirrors of each other.
+
+The time complexity of this algorithm is O(n), where n is the number of nodes in the binary tree, since we need to visit each node once. 
+The space complexity is O(h), where h is the height of the binary tree, since we need to keep the call stack for the recursive calls. 
+In the worst case of a completely unbalanced tree, h could be as large as n, but in a balanced tree, h is logarithmic in n.
+
+Fastest solution >
+
+function isSymmetric(root: TreeNode | null): boolean {
+    return recEval(root.left, root.right)
+};
+
+function recEval(left, right): boolean {
+    if(left == null && right == null) return true
+    if(left == null) return false
+    if(right == null) return false
+    if(left.val != right.val) return false
+    return recEval(left.right, right.left) && recEval(left.left, right.right)
+} 
