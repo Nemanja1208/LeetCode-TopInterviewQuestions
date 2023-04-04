@@ -1,0 +1,84 @@
+Given the root of a binary tree, return the level order traversal of its nodes' values. (i.e., from left to right, level by level).
+
+Example 1:
+Input: root = [3,9,20,null,null,15,7]
+Output: [[3],[9,20],[15,7]]
+
+Example 2:
+Input: root = [1]
+Output: [[1]]
+
+Example 3:
+Input: root = []
+Output: []
+
+Solution >
+
+function levelOrder(root: TreeNode | null): number[][] {
+    if (!root) {
+        return [];
+    }
+    
+    const result: number[][] = [];
+    const queue: TreeNode[] = [root];
+    
+    while (queue.length) {
+        const level: number[] = [];
+        const levelSize = queue.length;
+        
+        for (let i = 0; i < levelSize; i++) {
+            const node = queue.shift()!;
+            level.push(node.val);
+            
+            if (node.left) {
+                queue.push(node.left);
+            }
+            
+            if (node.right) {
+                queue.push(node.right);
+            }
+        }
+        
+        result.push(level);
+    }
+    
+    return result;
+}
+
+Explanation >
+
+The function levelOrder takes a root node of a binary tree as an argument and returns an array of arrays representing the level order traversal of the tree. 
+If the root node is null, the function returns an empty array.
+
+The function creates an empty array called result to store the level order traversal of the tree. It also creates a queue called queue and adds the root node to it.
+
+The function then enters a while loop that continues as long as the queue is not empty. Inside the loop, 
+it creates an empty array called level to store the values of nodes in the current level of the tree. 
+It also gets the size of the current level by getting the length of the queue.
+
+The function then enters a for loop that loops through the nodes in the current level. 
+Inside the loop, it dequeues a node from the front of the queue, adds its value to the level array, and checks if it has any children. 
+If it has a left child, it adds it to the back of the queue, and if it has a right child, it also adds it to the back of the queue.
+
+After the for loop, the level array is added to the result array, representing the values of the nodes in the current level of the tree.
+
+Finally, the function returns the result array, which represents the level order traversal of the binary tree.
+
+Fastest Solution >
+
+function levelOrder(root: TreeNode | null): number[][] {
+    let res : number[][]= [];
+    let queue : TreeNode[] = [root];
+    while (queue.length > 0){
+        let queueLen: number = queue.length;
+        let level: number[]= [];
+        for(let i = 0; i< queueLen; i++){
+            let temp : TreeNode = queue.shift();
+            if(temp)level.push(temp.val);        
+            if(temp && temp.left) queue.push(temp.left);
+            if(temp && temp.right) queue.push(temp.right)
+        }
+        if(level.length > 0) res.push(level);
+    }
+    return res;
+};
