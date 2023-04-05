@@ -1,0 +1,82 @@
+Given the root of a binary tree, return the zigzag level order traversal of its nodes' values. (i.e., from left to right, then right to left for the next level and alternate between).
+
+Example 1:
+Input: root = [3,9,20,null,null,15,7]
+Output: [[3],[20,9],[15,7]]
+
+Example 2:
+Input: root = [1]
+Output: [[1]]
+
+Example 3:
+Input: root = []
+Output: []
+
+
+Solution >
+
+function zigzagLevelOrder(root: TreeNode | null): number[][] {
+    if (!root) return [];
+    const queue: TreeNode[] = [root];
+    const result: number[][] = [];
+    let zigzag = false;
+    while (queue.length) {
+        const levelSize = queue.length;
+        const levelValues = [];
+        for (let i = 0; i < levelSize; i++) {
+            const node = queue.shift();
+            if (zigzag) {
+                levelValues.unshift(node.val);
+            } else {
+                levelValues.push(node.val);
+            }
+            if (node.left) queue.push(node.left);
+            if (node.right) queue.push(node.right);
+        }
+        result.push(levelValues);
+        zigzag = !zigzag;
+    }
+    return result;
+}
+
+Explanation >
+
+We start by checking if the given root is null, if it is, we return an empty array, because there are no nodes in the tree.
+We create a queue and initialize it with the root node. We also create an empty result array, which will hold the level order traversal of the nodes.
+We create a boolean variable "zigzag" and set it to false. This variable will help us determine if we need to add the nodes in a zigzag manner or not.
+We start a while loop, which will run until the queue is empty. In each iteration, we first get the size of the current level 
+(which is the length of the queue). We create an empty array called "levelValues", which will hold the values of the nodes at the current level.
+We iterate from 0 to levelSize, and in each iteration, we remove the first node from the queue using the shift() method. 
+We then add the value of this node to the levelValues array either at the end or the beginning based on the value of the "zigzag" variable.
+We then check if the current node has left and right children. If it has, we add them to the queue.
+After the inner loop finishes, we push the levelValues array to the result array, which holds the level order traversal of the nodes.
+Finally, we toggle the value of the "zigzag" variable, which will help us add the nodes in a zigzag manner in the next level.
+At the end of the while loop, we return the result array, which holds the zigzag level order traversal of the nodes.
+
+Fastest solution >
+
+function zigzagLevelOrder(root: TreeNode | null): number[][] {
+    if (!root)
+        return [];
+    const output = [];
+    let queue = [root],
+    direction = true;
+    while (queue.length > 0) {
+        const next_queue = [],
+        next_output = [];
+        for (const node of queue) {
+            if (direction)
+                next_output.push(node.val);
+            else
+                next_output.unshift(node.val);
+            if (node.left)
+                next_queue.push(node.left);
+            if (node.right)
+                next_queue.push(node.right);
+        }
+        output.push(next_output);
+        queue = next_queue;
+        direction = !direction;
+    };
+    return output;
+};
