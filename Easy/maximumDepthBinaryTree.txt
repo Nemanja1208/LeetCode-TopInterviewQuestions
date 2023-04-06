@@ -1,0 +1,61 @@
+Given the root of a binary tree, return its maximum depth.
+
+A binary tree's maximum depth is the number of nodes along the longest path from the root node down to the farthest leaf node.
+
+Example 1:
+Input: root = [3,9,20,null,null,15,7]
+Output: 3
+
+Example 2:
+Input: root = [1,null,2]
+Output: 2
+
+
+Solution >
+
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+  constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+    this.val = val === undefined ? 0 : val;
+    this.left = left === undefined ? null : left;
+    this.right = right === undefined ? null : right;
+  }
+}
+
+function maxDepth(root: TreeNode | null): number {
+  if (root === null) {
+    return 0;
+  }
+  const leftDepth = maxDepth(root.left);
+  const rightDepth = maxDepth(root.right);
+  return Math.max(leftDepth, rightDepth) + 1;
+}
+
+
+Explanation >
+
+Let's walk through the code:
+
+We first define a TreeNode class to represent each node in the binary tree. Each TreeNode object has a val property to store the value at the node, 
+as well as left and right properties to store references to its left and right child nodes, respectively.
+
+We define a function maxDepth that takes in the root node of a binary tree as a parameter and returns its maximum depth.
+
+If the root is null, we know that the tree has no nodes, so its maximum depth is 0. We return 0 in this case.
+
+Otherwise, we recursively calculate the maximum depth of the left and right subtrees of the root. We do this by calling maxDepth on the root's left and right properties.
+
+Once we have the maximum depths of the left and right subtrees, we take the maximum of the two values and add 1 (for the root node itself) to get the maximum depth of the entire tree. We return this value.
+
+The time complexity of this solution is O(n), where n is the number of nodes in the binary tree, since we visit each node exactly once. 
+The space complexity is O(h), where h is the height of the binary tree, since the maximum number of function calls on the call stack at any given time is equal to the height of the tree. 
+In the worst case, when the tree is completely unbalanced (i.e., it is essentially a linked list), the height of the tree is n, so the space complexity is O(n).
+
+Fastest solution >
+
+function maxDepth(root: TreeNode | null): number {
+   if(!root) return 0
+    return 1 + Math.max(maxDepth(root.left), maxDepth(root.right))
+};
