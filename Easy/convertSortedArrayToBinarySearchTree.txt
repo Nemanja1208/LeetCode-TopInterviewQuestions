@@ -25,6 +25,25 @@ function sortedArrayToBST(nums: number[]): TreeNode | null {
 
 Explanation >
 
+Here is how the code works:
+
+The function first checks if the input array is empty. If it is, the function returns null, indicating that there is no BST to construct.
+
+If the input array is not empty, the function finds the index of the center element of the array using the Math.floor function, 
+which rounds down the result of dividing the length of the array by 2.
+
+The function then constructs a new TreeNode object with the value of the center element of the array as its value. 
+The TreeNode object is a node in the BST.
+
+The left child of the new TreeNode is constructed by calling sortedArrayToBST recursively with the left half of the input array, 
+which is obtained by calling the slice function with the parameters 0 and centerIndex. 
+The right child of the new TreeNode is constructed similarly, but with the right half of the input array, which is obtained by calling slice with the parameters centerIndex + 1 and the length of the array.
+
+The recursive construction process continues until all nodes in the BST have been created, at which point the function returns the root of the BST.
+
+In summary, this code uses a divide-and-conquer approach to construct a binary search tree from a sorted array of numbers. 
+The resulting BST is balanced, with the root node containing the value of the median element of the input array.
+
 Fastest solution >
 
 function sortedArrayToBST(nums: number[]): TreeNode | null {
