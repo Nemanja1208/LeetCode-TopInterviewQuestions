@@ -1,0 +1,82 @@
+Given an integer numRows, return the first numRows of Pascal's triangle.
+
+In Pascal's triangle, each number is the sum of the two numbers directly above it as shown:
+
+Example 1:
+Input: numRows = 5
+Output: [[1],[1,1],[1,2,1],[1,3,3,1],[1,4,6,4,1]]
+
+Example 2:
+Input: numRows = 1
+Output: [[1]]
+
+
+Solution >
+
+function generatePascalsTriangle(numRows: number): number[][] {
+  const triangle: number[][] = [];
+
+  for (let i = 0; i < numRows; i++) {
+    triangle[i] = Array(i + 1).fill(1);
+    for (let j = 1; j < i; j++) {
+      triangle[i][j] = triangle[i - 1][j - 1] + triangle[i - 1][j];
+    }
+  }
+
+  return triangle;
+}
+
+
+Explanation >
+
+This solution uses the same approach of generating each row of Pascal's triangle by adding the two numbers directly above it. 
+However, it uses a cleaner and more concise code with the following steps:
+
+We create an empty array called triangle to store the rows of Pascal's triangle that we generate.
+
+We use a loop to generate the rows of Pascal's triangle. The loop runs numRows times, which gives us the number of rows of Pascal's triangle that we want to generate.
+
+Inside the loop, we create a new array with length i + 1 and fill it with 1. 
+This creates an array with the correct number of values for the current row of Pascal's triangle and initializes it 
+with the correct values of 1 at the beginning and end of the row.
+
+We use another loop to update the values in the current row. The loop runs from index 1 to i - 1, which are the indices of the values that need to be updated.
+
+For each value in the row that needs to be updated, we calculate its value by adding the two values directly above it in the previous row.
+
+Once we've generated all the rows of Pascal's triangle, we return the triangle array.
+
+This function generates the first numRows of Pascal's triangle and returns them as a 2-dimensional array of numbers. 
+The code is clean and easy to read, making it a more concise and maintainable solution.
+
+Fastest solution >
+
+function generate(numRows: number): number[][] {
+ const map = new Map();
+ const build = (n: number): number[][] => {
+        if (n == 1) return [[1]];
+        if (n == 2) return [[1], [1, 1]];
+
+        let data = [];
+        if (map.has(n - 1)) {
+            data = map.get(n - 1);
+        } else {
+            data = build(n - 1);
+            map.set(n - 1, data);
+        }
+
+        const arr = data.slice(-1)[0];
+        const y = [];
+        for (let i = 0; i < arr.length + 1; i++) {
+          if (i == 0 || i == arr.length) {
+            y.push(1);
+          } else {
+            y.push(arr[i-1] + arr[i])
+          }
+        }
+        
+        return data.concat([y]);
+    };
+
+    return build(numRows);
+};
