@@ -1,0 +1,81 @@
+You are given an integer array prices where prices[i] is the price of a given stock on the ith day.
+
+On each day, you may decide to buy and/or sell the stock. You can only hold at most one share of the stock at any time. 
+However, you can buy it then immediately sell it on the same day.
+
+Find and return the maximum profit you can achieve.
+
+Example 1:
+Input: prices = [7,1,5,3,6,4]
+Output: 7
+Explanation: Buy on day 2 (price = 1) and sell on day 3 (price = 5), profit = 5-1 = 4.
+Then buy on day 4 (price = 3) and sell on day 5 (price = 6), profit = 6-3 = 3.
+Total profit is 4 + 3 = 7.
+
+Example 2:
+Input: prices = [1,2,3,4,5]
+Output: 4
+Explanation: Buy on day 1 (price = 1) and sell on day 5 (price = 5), profit = 5-1 = 4.
+Total profit is 4.
+
+Example 3:
+Input: prices = [7,6,4,3,1]
+Output: 0
+Explanation: There is no way to make a positive profit, so we never buy the stock to achieve the maximum profit of 0.
+
+
+Solution :
+
+function maxProfit(prices: number[]): number {
+    let maxProfit = 0;
+    let k = 0;
+    let cur = 0;
+    for(let i = 1;i < prices.length; i++) {
+        if(prices[i] < prices[k]) {
+            k = i;
+            continue;
+        }
+        if(prices[i]-prices[k] +  cur > cur) {
+            cur += (prices[i] - prices[k]);
+            k = i;
+        }
+        maxProfit = Math.max(maxProfit,cur);
+    }
+    return maxProfit;
+};
+
+Explanation : 
+
+This code uses a simple approach to solve the problem by iterating over the given array of stock prices and calculating the maximum profit 
+that can be achieved by buying and selling the stock on each day. Here is a detailed explanation of the code:
+
+Initialize the variables:
+
+maxProfit to 0, as we have not yet bought or sold any stock.
+k to 0, as we start iterating from the first day.
+cur to 0, as we haven't bought or sold any stock yet.
+Iterate over the array of stock prices from the second day:
+
+If the price on the current day is less than the price on day k, update k to the current day and continue to the next day. 
+This is because we can only sell the stock after buying it, and buying it at a higher price than the current day will only result in a loss.
+Otherwise, if the profit obtained by buying the stock on day k and selling it on the current day is greater than the current profit, 
+update cur to the new profit and update k to the current day (as we sell the stock on the current day).
+Update maxProfit to the maximum value between the current maxProfit and cur.
+Return the final maxProfit.
+
+Overall, this code works by keeping track of the lowest price seen so far (k) and the maximum profit that can be achieved (cur). 
+When we encounter a higher price, we calculate the profit that can be made by buying the stock on the lowest day (k) and selling it on the current day. 
+If this profit is greater than the current profit, we update the current profit and update the lowest price (k) to the current day, 
+as we sell the stock on that day. At each step, we also update the maximum profit that can be achieved.
+
+Fastest solution :
+
+function maxProfit(prices: number[]): number {
+  let profit = 0;
+  for (let i = 0; i < prices.length - 1; i++) {
+    if (prices[i] < prices[i + 1]) {
+      profit = profit + prices[i + 1] - prices[i]
+    }
+  }
+  return profit;
+};
