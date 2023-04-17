@@ -1,0 +1,63 @@
+A phrase is a palindrome if, after converting all uppercase letters into lowercase letters and removing all non-alphanumeric characters, 
+it reads the same forward and backward. Alphanumeric characters include letters and numbers.
+
+Given a string s, return true if it is a palindrome, or false otherwise.
+
+Example 1:
+Input: s = "A man, a plan, a canal: Panama"
+Output: true
+Explanation: "amanaplanacanalpanama" is a palindrome.
+
+Example 2:
+Input: s = "race a car"
+Output: false
+Explanation: "raceacar" is not a palindrome.
+
+Example 3:
+Input: s = " "
+Output: true
+Explanation: s is an empty string "" after removing non-alphanumeric characters.
+Since an empty string reads the same forward and backward, it is a palindrome.
+
+
+Solution >
+
+function isPalindrome(s: string): boolean {
+  // Convert the string to lowercase and remove all non-alphanumeric characters
+  const cleanString = s.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  // Reverse the clean string and compare it to the original
+  const reversedString = cleanString.split('').reverse().join('');
+  return cleanString === reversedString;
+}
+
+
+Explanation >
+
+The function isPalindrome takes in a string s and returns a boolean value indicating whether s is a palindrome or not.
+
+First, we convert the input string to lowercase using the toLowerCase method. Then, we remove all non-alphanumeric characters using a regular expression 
+and the replace method. The regular expression /[^a-z0-9]/g matches all characters that are not alphanumeric, 
+and the g flag ensures that the replacement is applied globally (i.e., all matches are replaced).
+
+Next, we create a new string reversedString by splitting the clean string into an array of characters, 
+reversing the order of the array using the reverse method, and then joining the characters back into a string using the join method.
+
+Finally, we compare the clean string and the reversed string to see if they are equal using the === operator. 
+If they are equal, we return true, indicating that the input string is a palindrome. If they are not equal, we return false, 
+indicating that the input string is not a palindrome.
+
+Note that we also handle the case where the input string is an empty string by returning true, since an empty string is considered a palindrome.
+
+Fastest solution >
+
+function isPalindrome(s: string): boolean {
+    s = s.replace(/[\W_]+/g,"").toLowerCase();
+
+    for(let i = 0; i< s.length/2; i++){
+        if(s[i] !== s[s.length - i - 1])
+            return false;
+    }
+
+    return true;
+}
