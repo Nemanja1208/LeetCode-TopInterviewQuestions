@@ -1,0 +1,134 @@
+Given an m x n matrix board containing 'X' and 'O', capture all regions that are 4-directionally surrounded by 'X'.
+
+A region is captured by flipping all 'O's into 'X's in that surrounded region.
+
+Example 1:
+Input: board = [["X","X","X","X"],["X","O","O","X"],["X","X","O","X"],["X","O","X","X"]]
+Output: [["X","X","X","X"],["X","X","X","X"],["X","X","X","X"],["X","O","X","X"]]
+Explanation: Notice that an 'O' should not be flipped if:
+- It is on the border, or
+- It is adjacent to an 'O' that should not be flipped.
+The bottom 'O' is on the border, so it is not flipped.
+The other three 'O' form a surrounded region, so they are flipped.
+
+Example 2:
+Input: board = [["X"]]
+Output: [["X"]]
+
+
+Solution >
+
+function solve(board: string[][]): void {
+    const rows = board.length;
+    const cols = board[0].length;
+
+    // Mark all 'O' cells on the border as 'V' (visited)
+    for (let i = 0; i < rows; i++) {
+        if (board[i][0] === 'O') {
+            markVisited(board, i, 0);
+        }
+        if (board[i][cols - 1] === 'O') {
+            markVisited(board, i, cols - 1);
+        }
+    }
+    for (let j = 0; j < cols; j++) {
+        if (board[0][j] === 'O') {
+            markVisited(board, 0, j);
+        }
+        if (board[rows - 1][j] === 'O') {
+            markVisited(board, rows - 1, j);
+        }
+    }
+
+    // Flip all unvisited 'O' cells to 'X'
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < cols; j++) {
+            if (board[i][j] === 'O') {
+                board[i][j] = 'X';
+            } else if (board[i][j] === 'V') {
+                board[i][j] = 'O';
+            }
+        }
+    }
+}
+
+function markVisited(board: string[][], row: number, col: number): void {
+    const rows = board.length;
+    const cols = board[0].length;
+    if (row < 0 || row >= rows || col < 0 || col >= cols || board[row][col] !== 'O') {
+        return;
+    }
+    board[row][col] = 'V';
+    markVisited(board, row - 1, col);
+    markVisited(board, row + 1, col);
+    markVisited(board, row, col - 1);
+    markVisited(board, row, col + 1);
+}
+
+
+Explanation >
+
+The solve function takes in a 2D array of characters representing the board, and modifies it in place to capture all regions that are 4-directionally surrounded by 'X'. 
+The approach taken here is to first mark all 'O' cells on the border as visited (using a helper function called markVisited), and then flip all unvisited 'O' cells to 'X'. 
+The reason we only flip unvisited 'O' cells is because any 'O' cell that is visited must be connected to the border and therefore cannot be surrounded by 'X'.
+
+The markVisited function is a recursive helper function that takes in a row and column index and marks the corresponding cell as visited (by changing its value to 'V'), 
+as well as any adjacent 'O' cells that have not been visited yet. The function stops recursing when it reaches the edge of the board or a cell that is not an 'O'.
+
+The time complexity of this solution is O(mn), where m is the number of rows and n is the number of columns, since we visit each cell in the board exactly once. 
+The space complexity is O(mn) as well, due to the recursive calls made by markVisited.
+
+Fastest solution >
+
+function solve(board: string[][]): void {
+
+    for(let j=0;j<board[0].length;j++){
+        protect(board,0,j);
+    }
+    for(let j=0;j<board[0].length;j++){
+        protect(board,board.length-1,j);
+    }
+    for(let i=0;i<board.length;i++){
+        protect(board,i,0);
+    }
+    for(let i=0;i<board.length;i++){
+        protect(board,i,board[0].length-1);
+    }
+
+    for(let i=1;i<board.length;i++){
+        for(let j=1;j<board[0].length;j++){
+           if(board[i][j]==='O'){
+               board[i][j]='X';
+           }
+        }
+    }
+
+    for(let i=0;i<board.length;i++){
+        for(let j=0;j<board[0].length;j++){
+            if(board[i][j]==="O_Edge"){
+                board[i][j]='O';
+            }
+        }
+    }
+};
+
+function protect(board:string[][],i:number,j:number){
+    if(board[i][j]!=='O'){
+        return;
+    }
+
+    board[i][j]="O_Edge";
+
+    if(i-1>=0 && board[i-1][j]==='O'){
+        protect(board,i-1,j);
+    }
+    if(i+1<board.length && board[i+1][j]==='O'){
+        protect(board,i+1,j);
+    }
+    if(j-1>=0 && board[i][j-1]==='O'){
+        protect(board,i,j-1);
+    }
+    if(j+1<board[0].length && board[i][j+1]==='O'){
+        protect(board,i,j+1);
+    }
+}
