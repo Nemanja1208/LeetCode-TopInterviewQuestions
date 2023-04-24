@@ -1,0 +1,114 @@
+Given a string s, partition s such that every substring of the partition is a palindrome. 
+Return all possible palindrome partitioning of s.
+
+Example 1:
+Input: s = "aab"
+Output: [["a","a","b"],["aa","b"]]
+
+Example 2:
+Input: s = "a"
+Output: [["a"]]
+
+Solution >
+
+function isPalindrome(s: string): boolean {
+  if (s.length === 0) {
+    return true;
+  }
+  const n = s.length;
+  let p1 = 0;
+  let p2 = n -1;
+  while (p1 < p2) {
+    if (s[p1] !== s[p2]) {
+      return false;
+    }
+    p1++;
+    p2--;
+  }
+  return true;
+}
+
+function partition(s: string): string[][] {
+  const length = s.length;
+  if (s.length === 0) {
+    return [];
+  }
+  let results: string[][] = [];
+  
+  const n = s.length;
+  
+  function backtrack(result: string[], curr: number) {
+    if (curr === n) {
+      results.push(result);
+    } else {
+      for (let i = curr; i < n; i++) {
+        const seg = s.slice(curr, i + 1);
+        if (isPalindrome(seg)) {
+          backtrack([...result, seg], i + 1);
+        }
+      }
+    }
+  }
+  backtrack([], 0);
+  return results;
+};
+
+Explanation >
+
+The code uses backtracking to generate all possible partitions of s. 
+The partition function takes a string s as input and returns a two-dimensional array of strings that represents all possible palindrome partitions of s. 
+If s is empty, the function returns an empty array.
+
+The isPalindrome function is a helper function that takes a string s as input and returns true if s is a palindrome, and false otherwise. 
+It uses two pointers p1 and p2 that start from the two ends of s and move towards the middle, checking if the characters at the two pointers match.
+
+The partition function initializes an empty array results to hold the final results. It then defines a nested function backtrack that takes two parameters: 
+a current partition result, which is an array of strings, and a current index curr that represents the current position in s.
+
+The backtrack function uses a for loop to try all possible substrings of s that start from the current index curr. 
+For each substring, it checks if the substring is a palindrome using the isPalindrome function. 
+If the substring is a palindrome, it adds it to the current partition result and recursively calls backtrack with the updated partition and the next index i+1. 
+When the current index curr reaches the end of s, the function adds the current partition result to the final results array.
+
+Finally, the partition function calls backtrack with an empty partition [] and the starting index 0, 
+and returns the results array containing all possible palindrome partitions of s.
+
+For example, if we call partition("aab"), the function returns [["a","a","b"],["aa","b"]], which are the two possible partitions of "aab" into palindromes. 
+The first partition is ["a","a","b"], which contains three palindromic substrings "a", "a", and "b". 
+The second partition is ["aa","b"], which contains two palindromic substrings "aa" and "b".
+
+Fastest solution >
+
+function partition(s: string): string[][] {
+    const result: string[][] = [];
+    process(s, 0, [], result);
+    return result;
+}
+
+function process(s: string, prevCut: number, path: string[], result: string[][]) {
+    if (prevCut === s.length) {
+        result.push([...path]);
+        return;
+    }
+
+    for (let nextCut = prevCut + 1; nextCut <= s.length; nextCut++) {
+        const t = s.slice(prevCut, nextCut);
+        if (isPalindrome(t)) {
+            path.push(t);
+            process(s, nextCut, path, result);
+            path.pop();
+        }
+    }
+}
+
+function isPalindrome(s: string) {
+    let left = 0;
+    let right = s.length - 1;
+    while (left < right) {
+        if (s[left++] !== s[right--]) {
+            return false;
+        }
+    }
+
+    return true;
+}
