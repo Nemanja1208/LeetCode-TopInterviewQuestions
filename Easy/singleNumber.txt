@@ -1,0 +1,49 @@
+Given a non-empty array of integers nums, every element appears twice except for one. Find that single one.
+
+You must implement a solution with a linear runtime complexity and use only constant extra space.
+
+Example 1:
+Input: nums = [2,2,1]
+Output: 1
+
+Example 2:
+Input: nums = [4,1,2,1,2]
+Output: 4
+
+Example 3:
+Input: nums = [1]
+Output: 1
+
+Solution >
+
+function singleNumber(nums: number[]): number {
+  let result = 0;
+  for (const num of nums) {
+    result ^= num;
+  }
+  return result;
+}
+
+
+Explanation >
+
+The XOR operator (^) returns a binary 1 in each bit position where the corresponding bits of both operands are different. 
+In other words, it returns 1 if the bits are different and 0 if they are the same.
+
+If we XOR all the numbers in the array, each pair of identical numbers will give 0, leaving only the number that appears once.
+
+For example, let's take the array [2,2,1]. If we XOR all the numbers, we get:
+
+2 ^ 2 ^ 1 = 1
+The two 2s cancel each other out, leaving only 1.
+
+Since XOR is associative and commutative, the order in which we perform the XOR operation doesn't matter.
+
+The time complexity of this solution is O(n), where n is the length of the input array. This is because we are looping through the array once. 
+The space complexity is O(1), since we are not using any extra memory that depends on the size of the input.
+
+Fastest solution >
+
+function singleNumber(nums: number[]): number {
+    return nums.reduce((acc, cur) => acc ^ cur);
+};
