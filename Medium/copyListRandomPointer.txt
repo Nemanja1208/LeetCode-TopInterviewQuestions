@@ -1,0 +1,108 @@
+A linked list of length n is given such that each node contains an additional random pointer, which could point to any node in the list, or null.
+
+Construct a deep copy of the list. The deep copy should consist of exactly n brand new nodes, 
+where each new node has its value set to the value of its corresponding original node. 
+Both the next and random pointer of the new nodes should point to new nodes in the copied list such that the pointers in the original list and copied list 
+represent the same list state. None of the pointers in the new list should point to nodes in the original list.
+
+For example, if there are two nodes X and Y in the original list, where X.random --> Y, then for the corresponding two nodes x and y in the copied list, x.random --> y.
+
+Return the head of the copied linked list.
+
+The linked list is represented in the input/output as a list of n nodes. Each node is represented as a pair of [val, random_index] where:
+
+val: an integer representing Node.val
+random_index: the index of the node (range from 0 to n-1) that the random pointer points to, or null if it does not point to any node.
+Your code will only be given the head of the original linked list.
+
+Example 1:
+Input: head = [[7,null],[13,0],[11,4],[10,2],[1,0]]
+Output: [[7,null],[13,0],[11,4],[10,2],[1,0]]
+
+Example 2:
+Input: head = [[1,1],[2,1]]
+Output: [[1,1],[2,1]]
+
+Example 3:
+Input: head = [[3,null],[3,0],[3,null]]
+Output: [[3,null],[3,0],[3,null]]
+
+
+Solution :
+
+function copyRandomList(head: Node | null): Node | null {
+    if (!head) return null;
+    
+    const map: Map<Node, Node> = new Map(); // store the mapping between original and copied nodes
+    let node: Node | null = head;
+
+    // Create a new copy of each node and store the mapping in the hash table
+    while (node) {
+        map.set(node, new Node(node.val));
+        node = node.next;
+    }
+
+    node = head;
+
+    // Connect the next and random pointers for the copied nodes using the mapping stored in the hash table
+    while (node) {
+        map.get(node)!.next = map.get(node.next) || null;
+        map.get(node)!.random = map.get(node.random) || null;
+        node = node.next;
+    }
+
+    return map.get(head)!;
+}
+
+Explanation :
+
+Explanation:
+
+We start by checking if the given head is null or not. If it's null, we return null.
+We create a new Map map to store the mapping between the original and copied nodes.
+We iterate over each node in the original list and create a new copy of it. We store the mapping between the original and copied nodes in the map.
+We iterate over each node in the original list again and connect the next and random pointers for the copied nodes using the mapping stored in the map.
+If the next or random pointer of the original node is null, we set the corresponding pointer for the copied node as null.
+We return the head of the copied list which can be obtained from the map using the original head as the key.
+Time Complexity: O(n) - We need to iterate over each node in the original list twice.
+
+Space Complexity: O(n) - We need to store the mapping between original and copied nodes in the map.
+
+Fastest solution :
+
+function copyRandomList(head: Node | null): Node | null {
+    if (head === null) return null;
+
+    const copyNodehashMap = new Map<Node, Node>()
+
+    const copyHead = new Node(head.val);
+    let currentNode = head;
+    let currentCopyNode = copyHead
+    copyNodehashMap.set(currentNode, currentCopyNode)
+
+    while (currentCopyNode) {
+        if (currentNode.next) {
+            if (!copyNodehashMap.has(currentNode.next)) {
+                const copyNode = new Node(currentNode.next.val)
+                copyNodehashMap.set(currentNode.next, copyNode)
+             
+            }
+
+            currentCopyNode.next = copyNodehashMap.get(currentNode.next)
+        }
+
+        if (currentNode.random) {
+            if (!copyNodehashMap.has(currentNode.random)) {
+                const copyNode = new Node(currentNode.random.val)
+                copyNodehashMap.set(currentNode.random, copyNode)
+            }
+
+            currentCopyNode.random = copyNodehashMap.get(currentNode.random)
+        }
+
+        currentNode = currentNode.next;
+        currentCopyNode = currentCopyNode.next;
+    }
+
+    return copyHead
+};
