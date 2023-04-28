@@ -1,0 +1,94 @@
+Given a string s and a dictionary of strings wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words.
+
+Note that the same word in the dictionary may be reused multiple times in the segmentation.
+
+Example 1:
+Input: s = "leetcode", wordDict = ["leet","code"]
+Output: true
+Explanation: Return true because "leetcode" can be segmented as "leet code".
+
+Example 2:
+Input: s = "applepenapple", wordDict = ["apple","pen"]
+Output: true
+Explanation: Return true because "applepenapple" can be segmented as "apple pen apple".
+Note that you are allowed to reuse a dictionary word.
+
+Example 3:
+Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
+Output: false
+
+Solution >
+
+function wordBreak(s: string, wordDict: string[]): boolean {
+    const dp = new Array(s.length + 1).fill(false);
+    dp[0] = true;
+    for (let i = 1; i <= s.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (dp[j] && wordDict.includes(s.substring(j, i))) {
+                dp[i] = true;
+                break;
+            }
+        }
+    }
+    return dp[s.length];
+}
+
+
+Explanation >
+
+The function wordBreak takes two parameters: a string s and an array of strings wordDict. It returns a boolean value indicating 
+whether s can be segmented into one or more dictionary words.
+
+The solution uses dynamic programming to solve the problem. It creates an array dp of booleans, 
+where dp[i] indicates whether the substring s[0...i-1] can be segmented into dictionary words.
+
+The base case is dp[0] = true, since an empty string can always be segmented into an empty sequence of words.
+
+For each i from 1 to s.length, the solution checks all possible partitions of the substring s[0...i-1] into two substrings s[0...j-1] and s[j...i-1], 
+where j is between 0 and i. If dp[j] is true (i.e., the first substring can be segmented into dictionary words) 
+and the second substring is a word in the dictionary, then dp[i] is set to true, and the loop breaks.
+
+Finally, the function returns dp[s.length], which indicates whether the whole string s can be segmented into dictionary words.
+
+For example, given the input "leetcode" and ["leet","code"], the function sets dp[0] = true, and then:
+
+For i = 1, j = 0, s.substring(j, i) = "l", which is not in the dictionary, so dp[1] = false.
+For i = 2, j = 0, s.substring(j, i) = "le", which is not in the dictionary, so dp[2] = false.
+For i = 3, j = 0, s.substring(j, i) = "lee", which is not in the dictionary, so dp[3] = false.
+For i = 4, j = 0, s.substring(j, i) = "leet", which is in the dictionary, so dp[4] = true.
+For i = 5, j = 4, s.substring(j, i) = "c", which is not in the dictionary, so dp[5] = false.
+For i = 6, j = 4, s.substring(j, i) = "co", which is not in the dictionary, so dp[6] = false.
+For i = 7, j = 4, s.substring(j, i) = "cod", which is not in the dictionary, so dp[7] = false.
+For i = 8, j = 4, s.substring(j, i) = "code", which is in the dictionary, so dp[8] = true.
+Therefore, the function returns true, since dp[8] is true
+
+Fastest solution >
+
+function wordBreak(s: string, wordDict: string[]): boolean {
+    const memo = new Map<string, boolean>();
+
+    const dp = (str: string): boolean => {
+        if (str === '') {
+            return true;
+        }
+
+        if (!memo.has(str)) {
+            for (const word of wordDict) {
+                if (str.startsWith(word)) {
+                    const currStr = str.substring(word.length)
+                    if (dp(currStr)) {
+                        memo.set(currStr, true);
+                        return true;
+                    }
+                }
+            }
+            memo.set(str, false);
+        }
+
+        return memo.get(str);
+    }
+
+    return dp(s);
+};
+
+// f(s) = some of f(s - wordDict[i])
