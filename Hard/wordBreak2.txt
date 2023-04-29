@@ -1,0 +1,123 @@
+Given a string s and a dictionary of strings wordDict, add spaces in s to construct a sentence where each word is a valid dictionary word. 
+Return all such possible sentences in any order.
+
+Note that the same word in the dictionary may be reused multiple times in the segmentation.
+
+Example 1:
+
+Input: s = "catsanddog", wordDict = ["cat","cats","and","sand","dog"]
+Output: ["cats and dog","cat sand dog"]
+
+Example 2:
+Input: s = "pineapplepenapple", wordDict = ["apple","pen","applepen","pine","pineapple"]
+Output: ["pine apple pen apple","pineapple pen apple","pine applepen apple"]
+Explanation: Note that you are allowed to reuse a dictionary word.
+
+Example 3:
+Input: s = "catsandog", wordDict = ["cats","dog","sand","and","cat"]
+Output: []
+
+Solution >
+
+function wordBreak(s: string, wordDict: string[]): string[] {
+    const map = new Map<string, string[]>();
+
+    function dfs(str: string): string[] {
+        if (map.has(str)) return map.get(str)!;
+        if (!str) return [''];
+        
+        const res: string[] = [];
+
+        for (const word of wordDict) {
+            if (!str.startsWith(word)) continue;
+            const substr = str.slice(word.length);
+            const subs = dfs(substr);
+            for (const sub of subs) {
+                if (!sub) res.push(word);
+                else res.push(`${word} ${sub}`);
+            }
+        }
+
+        map.set(str, res);
+        return res;
+    }
+
+    return dfs(s);
+}
+
+
+Explanation >
+
+The function wordBreak takes in two arguments: s is the string to be segmented, and wordDict is an array of strings representing the dictionary of valid words.
+
+The main algorithm used here is depth-first search (DFS) with memoization. 
+We maintain a memoization map map that maps a string str to an array of valid sentence segmentations that can be formed using words from wordDict.
+
+The DFS function dfs takes in a string str and returns an array of valid sentence segmentations. 
+We first check if map already has an entry for str; if so, we simply return the corresponding value. 
+If str is empty, we return an array containing an empty string, which represents the end of a valid sentence.
+
+For each word in wordDict, we check if str starts with that word; if not, we skip that word.
+If str does start with the word, we compute the remaining substring substr by removing the word from the start of str. 
+We then recursively call dfs on substr to get an array of valid sentence segmentations that can be formed using the remaining string.
+
+We then loop through each valid segmentation sub of substr and add the current word to the start of sub to form a new valid segmentation. 
+We add all these new segmentations to the result array res.
+
+Finally, we add the array res to the memoization map map with key str and return res as the output of dfs(s).
+
+Note that the time complexity of this algorithm is O(n^3), where n is the length of the input string s. 
+This is because there can be up to O(n^2) possible substrings of s, and for each substring, we may need to loop through all words 
+in wordDict to check if it is a valid prefix. 
+However, the use of memoization greatly reduces the number of duplicate computations we need to perform, resulting in a much faster runtime in practice.
+
+Fastest Solution >
+
+function wordBreak(s: string, wordDict: string[]): string[] {
+    const words: string[] = [];
+    const trie = new TrieNode();
+
+    for (const word of wordDict) {
+        let currentTrieNode = trie;
+
+        for (let i=0; i < word.length; i++) {
+            const letter = word[i];
+
+            if (!currentTrieNode.next.has(letter)) {
+                currentTrieNode.next.set(letter, new TrieNode());
+            }
+            currentTrieNode = currentTrieNode.next.get(letter);
+
+            if (i === word.length - 1) {
+                currentTrieNode.word = word;
+            }
+        }
+    }
+
+    const extractWords = (currentIdx: number, wordsSoFar: string[]) => {
+        let currentTrieNode = trie;
+
+        for (let i=currentIdx; i < s.length; i++) {
+            const letter = s[i];
+
+            if (!currentTrieNode.next.has(letter)) {
+                return;
+            }
+
+            currentTrieNode = currentTrieNode.next.get(letter);
+
+            if (currentTrieNode.word !== '') {
+                wordsSoFar.push(currentTrieNode.word);
+                if (i === s.length - 1) {
+                    words.push(wordsSoFar.join(' '));
+                } else {
+                    extractWords(i+1, wordsSoFar);
+                }
+                wordsSoFar.pop();
+            }
+        }
+    }
+
+    extractWords(0, []);
+    return words;
+};
