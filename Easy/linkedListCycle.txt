@@ -1,0 +1,83 @@
+Given head, the head of a linked list, determine if the linked list has a cycle in it.
+
+There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the next pointer. 
+Internally, pos is used to denote the index of the node that tail's next pointer is connected to. Note that pos is not passed as a parameter.
+
+Return true if there is a cycle in the linked list. Otherwise, return false.
+
+Example 1:
+Input: head = [3,2,0,-4], pos = 1
+Output: true
+Explanation: There is a cycle in the linked list, where the tail connects to the 1st node (0-indexed).
+
+Example 2:
+Input: head = [1,2], pos = 0
+Output: true
+Explanation: There is a cycle in the linked list, where the tail connects to the 0th node.
+
+Example 3:
+Input: head = [1], pos = -1
+Output: false
+Explanation: There is no cycle in the linked list.
+
+Solution >
+
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     val: number
+ *     next: ListNode | null
+ *     constructor(val?: number, next?: ListNode | null) {
+ *         this.val = (val===undefined ? 0 : val)
+ *         this.next = (next===undefined ? null : next)
+ *     }
+ * }
+ */
+
+function hasCycle(head: ListNode | null): boolean {
+  if (!head) return false;
+  
+  let slow = head;
+  let fast = head.next;
+  
+  while (slow !== fast) {
+    if (!fast || !fast.next) return false;
+    slow = slow.next!;
+    fast = fast.next.next!;
+  }
+  
+  return true;
+}
+
+Explanation >
+
+Let's understand the code:
+
+The function hasCycle takes a single argument head, which is a reference to the first node of the linked list. 
+We first check if the linked list is empty or has only one node, in which case there can be no cycle, and we return false immediately.
+
+Next, we initialize two pointers slow and fast to the first and second nodes of the list, respectively. 
+The slow pointer moves forward by one node at a time, while the fast pointer moves forward by two nodes at a time. 
+If the linked list has a cycle, the fast pointer will eventually catch up to the slow pointer, and they will meet at some node inside the cycle. 
+On the other hand, if the fast pointer reaches the end of the list (i.e., it encounters a null node or a node with a null next pointer), 
+then we can conclude that the list has no cycle and return false.
+
+The time complexity of this algorithm is O(n), where n is the length of the linked list, because in the worst case scenario 
+we will have to traverse the entire list to determine if it has a cycle. 
+
+The space complexity is O(1), because we are only using two pointers to the nodes of the list and some constant amount of additional memory to store temporary variables.
+
+Fastest solution >
+
+function hasCycle(head: ListNode | null): boolean {
+    let fast = head;
+    let slow = head;
+    while (fast != null && fast.next != null) {
+        slow = slow.next;
+        fast = fast.next.next;
+        if (slow == fast) {
+            return true;
+        }
+    }
+    return false;
+};
