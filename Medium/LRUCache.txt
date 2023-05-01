@@ -1,0 +1,193 @@
+Design a data structure that follows the constraints of a Least Recently Used (LRU) cache.
+
+Implement the LRUCache class:
+
+LRUCache(int capacity) Initialize the LRU cache with positive size capacity.
+int get(int key) Return the value of the key if the key exists, otherwise return -1.
+void put(int key, int value) Update the value of the key if the key exists. 
+Otherwise, add the key-value pair to the cache. If the number of keys exceeds the capacity from this operation, evict the least recently used key.
+The functions get and put must each run in O(1) average time complexity.
+
+Example 1:
+
+Input
+["LRUCache", "put", "put", "get", "put", "get", "put", "get", "get", "get"]
+[[2], [1, 1], [2, 2], [1], [3, 3], [2], [4, 4], [1], [3], [4]]
+Output
+[null, null, null, 1, null, -1, null, -1, 3, 4]
+
+Explanation
+LRUCache lRUCache = new LRUCache(2);
+lRUCache.put(1, 1); // cache is {1=1}
+lRUCache.put(2, 2); // cache is {1=1, 2=2}
+lRUCache.get(1);    // return 1
+lRUCache.put(3, 3); // LRU key was 2, evicts key 2, cache is {1=1, 3=3}
+lRUCache.get(2);    // returns -1 (not found)
+lRUCache.put(4, 4); // LRU key was 1, evicts key 1, cache is {4=4, 3=3}
+lRUCache.get(1);    // return -1 (not found)
+lRUCache.get(3);    // return 3
+lRUCache.get(4);    // return 4
+
+Solution >
+
+class LRUCache {
+  private capacity: number;
+  private cache: Map<number, number>;
+  private lru: number[];
+
+  constructor(capacity: number) {
+    this.capacity = capacity;
+    this.cache = new Map<number, number>();
+    this.lru = [];
+  }
+
+  public get(key: number): number {
+    if (!this.cache.has(key)) {
+      return -1;
+    }
+    this.updateLru(key);
+    return this.cache.get(key)!;
+  }
+
+  public put(key: number, value: number): void {
+    if (this.cache.has(key)) {
+      this.updateLru(key);
+    } else {
+      if (this.cache.size === this.capacity) {
+        const lruKey = this.lru.shift()!;
+        this.cache.delete(lruKey);
+      }
+      this.lru.push(key);
+    }
+    this.cache.set(key, value);
+  }
+
+  private updateLru(key: number): void {
+    const index = this.lru.indexOf(key);
+    this.lru.splice(index, 1);
+    this.lru.push(key);
+  }
+}
+
+
+Explanation >
+
+The LRUCache class has three private properties: capacity, which stores the maximum number of items that the cache can hold; cache, 
+which is a Map that stores the key-value pairs of the cache; and lru, which is an array that stores the keys in the order in which they were most recently accessed.
+
+The constructor initializes the capacity, cache, and lru properties.
+
+The get method first checks if the key exists in the cache. If it doesn't, it returns -1. 
+Otherwise, it updates the LRU order by calling the updateLru method, and returns the value associated with the key.
+
+The put method first checks if the key already exists in the cache. If it does, it updates the LRU order by calling the updateLru method. 
+Otherwise, if the cache is at full capacity, it removes the least recently used key by shifting the first item from the lru array and 
+deleting the corresponding key-value pair from the cache map. Then, it adds the new key to the end of the lru array and sets the corresponding value in the cache map.
+
+The updateLru method takes a key and updates the lru array by removing the key from its current position and adding it to the end.
+
+The time complexity of the get and put methods is O(1) because all operations are performed on the Map and Array data structures, 
+which have constant time complexity for accessing, adding, and removing items.
+
+Fastest solution >
+
+class CacheNode {
+    public key: number;
+    public value: number;
+    public prev?: CacheNode | null;
+    public next?: CacheNode | null;
+
+    constructor(key?: number, val?: number, 
+        prev: CacheNode | null = null, 
+        next: CacheNode | null = null) {
+            this.key = key;
+            this.value = val;
+            this.prev = prev;
+            this.next = next
+    }
+}
+  
+  class LRUCache {
+    private capacity: number;
+    private length: number;
+    private head?: CacheNode;
+    private tail?: CacheNode;
+  
+    private lookup: Map<number, CacheNode>;
+    private reverseLookup: Map<CacheNode, number>;
+  
+    constructor(capacity: number) {
+      this.capacity = capacity;
+      this.length = 0;
+      this.head = this.tail = undefined;
+      this.lookup = new Map<number, CacheNode>();
+    }
+  
+    get(key: number): number {
+        const node = this.lookup.get(key);
+        if(!node) {
+            return -1;
+        }
+        this.detach(node);
+        this.prepend(node);
+
+        return node.value;
+
+    }
+  
+    put(key: number, value: number): void {
+        let node = this.lookup.get(key);
+
+        if(!node) {
+            node = new CacheNode(key, value)
+            this.length++;
+            this.prepend(node);
+            this.trim();
+            this.lookup.set(key, node);
+        } else {
+            this.detach(node);
+            this.prepend(node);
+            node.value = value;
+        }
+
+    }
+  
+    private detach(node: CacheNode): void {
+        if(node.prev) {
+            node.prev.next = node.next;
+        }
+        if(node.next) {
+            node.next.prev = node.prev
+        }
+        if(this.head === node) {
+            this.head = this.head.next
+        }
+        if(this.tail === node) {
+            this.tail = this.tail.prev
+        }
+
+        node.prev = node.next = undefined;
+
+    }
+  
+    private prepend(node: CacheNode): void {
+        if(!this.head) {
+            this.head = this.tail = node;
+            return;
+        }
+
+        node.next = this.head;
+        this.head.prev = node;
+        this.head = node;
+    }
+  
+    private trim(): void {
+        if(this.length <= this.capacity) {
+            return;
+        }
+        const tail = this.tail;
+        this.detach(this.tail);
+        this.lookup.delete(tail.key);
+        this.length--;
+    }
+  }
