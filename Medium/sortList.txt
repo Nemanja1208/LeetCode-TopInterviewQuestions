@@ -1,0 +1,94 @@
+Given the head of a linked list, return the list after sorting it in ascending order.
+
+Example 1:
+Input: head = [4,2,1,3]
+Output: [1,2,3,4]
+
+Example 2:
+Input: head = [-1,5,3,4,0]
+Output: [-1,0,3,4,5]
+
+Example 3:
+Input: head = []
+Output: []
+
+Solution >
+
+function sortList(head: ListNode | null): ListNode | null {
+    if (!head || !head.next) {
+        return head;
+    }
+    
+    let slow = head;
+    let fast = head.next;
+    
+    while (fast && fast.next) {
+        slow = slow.next!;
+        fast = fast.next.next;
+    }
+    
+    let mid = slow.next;
+    slow.next = null;
+    
+    let left = sortList(head);
+    let right = sortList(mid);
+    
+    return merge(left, right);
+}
+
+function merge(l1: ListNode | null, l2: ListNode | null): ListNode | null {
+    let dummy = new ListNode();
+    let current = dummy;
+    
+    while (l1 && l2) {
+        if (l1.val < l2.val) {
+            current.next = l1;
+            l1 = l1.next;
+        } else {
+            current.next = l2;
+            l2 = l2.next;
+        }
+        current = current.next;
+    }
+    
+    if (l1) {
+        current.next = l1;
+    } else {
+        current.next = l2;
+    }
+    
+    return dummy.next;
+}
+
+Explanation >
+
+The function sortList takes in the head of a linked list and returns the sorted linked list. It uses the merge sort algorithm to sort the linked list.
+
+First, it checks if the linked list is empty or only has one element. If so, it returns the linked list as is. 
+Otherwise, it finds the middle of the linked list using the slow and fast pointer technique. 
+It then recursively sorts the left half and the right half of the linked list using the sortList function. 
+Finally, it merges the two sorted linked lists using the merge function and returns the result.
+
+The merge function takes in two sorted linked lists and returns their merged sorted linked list. 
+It uses two pointers to traverse through the two linked lists and compare their values. 
+It then creates a new linked list with the smaller value and moves the pointer of the corresponding linked list forward. 
+It repeats this process until one of the linked lists is empty. 
+It then appends the remaining elements of the non-empty linked list to the end of the merged linked list and returns it.
+
+Fastest solution >
+
+const sortList = (head: ListNode | null): ListNode | null => {
+    const array: number[] = []; 
+    let node: ListNode | null = head;
+    while (head) {
+        array.push(head.val);
+        head = head.next;
+    }
+    array.sort((a: number, b: number) => a - b);
+    head = node; 
+    for (const n of array) {
+        node.val = n;
+        node = node.next;
+    }
+    return head;
+};
