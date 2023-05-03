@@ -1,0 +1,108 @@
+Given an array of points where points[i] = [xi, yi] represents a point on the X-Y plane, 
+return the maximum number of points that lie on the same straight line.
+
+Example 1:
+Input: points = [[1,1],[2,2],[3,3]]
+Output: 3
+
+Example 2:
+Input: points = [[1,1],[3,2],[5,3],[4,1],[2,3],[1,4]]
+Output: 4
+
+Solution >
+
+function maxPoints(points: number[][]): number {
+    if (points.length < 3) {
+        return points.length;
+    }
+    let maxCount = 0;
+    for (let i = 0; i < points.length; i++) {
+        const slopes = new Map<string, number>();
+        let samePointCount = 1;
+        for (let j = 0; j < points.length; j++) {
+            if (i === j) {
+                continue;
+            }
+            if (points[i][0] === points[j][0] && points[i][1] === points[j][1]) {
+                samePointCount++;
+                continue;
+            }
+            const slope = getSlope(points[i], points[j]);
+            const slopeKey = slope.toString();
+            slopes.set(slopeKey, (slopes.get(slopeKey) ?? 0) + 1);
+        }
+        const currMax = Math.max(...slopes.values()) + samePointCount;
+        maxCount = Math.max(maxCount, currMax);
+    }
+    return maxCount;
+}
+
+function getSlope(point1: number[], point2: number[]): number {
+    const deltaY = point2[1] - point1[1];
+    const deltaX = point2[0] - point1[0];
+    if (deltaX === 0) {
+        return Infinity;
+    }
+    return deltaY / deltaX;
+}
+
+
+Explanation >
+
+The maxPoints function takes an array of points as input and returns the maximum number of points that lie on the same straight line. 
+If the input array contains less than 3 points, the function returns the length of the input array as the maximum number of points on a line can only be 1 or 2 
+when there are less than 3 points.
+
+The function then loops through each point in the input array, and for each point, 
+it creates a Map called slopes to store the slopes of all the lines passing through the current point and any other point in the input array. 
+The samePointCount variable keeps track of the number of points that have the same coordinates as the current point.
+
+For each point other than the current point, the function calculates the slope of the line passing through the current point and the other point using the getSlope function.
+If the other point has the same coordinates as the current point, the samePointCount is incremented and the loop moves on to the next point. 
+Otherwise, the slope of the line is added to the slopes map along with the count of how many times that slope has been encountered so far.
+
+After all the slopes have been calculated for the current point, the function finds the maximum count of points that lie on the same line passing through 
+the current point by adding the samePointCount and the maximum count of points with the same slope in the slopes map. 
+The maximum count for all the points is then updated if the current maximum count is greater.
+
+The getSlope function calculates the slope of the line passing through two points using the formula deltaY / deltaX, 
+where deltaY is the difference in the y-coordinates of the two points and deltaX is the difference in the x-coordinates of the two points. 
+If deltaX is zero, it means that the line passing through the two points is vertical and has an undefined slope, so the function returns Infinity.
+
+In summary, the solution loops through all pairs of points and calculates the slope of the line passing through each pair. 
+It then uses a map to keep track of how many points have the same slope, and returns the maximum
+
+Fastest solution >
+
+function maxPoints(points: number[][]): number {
+    if (points.length < 3) {
+        return points.length;
+    }
+
+    let maxPointsOnLine = 0;
+
+    for (let i = 0; i < points.length; i++) {
+        const slopes = new Map<number, number>();
+        let verticalLines = 0;
+        let currentMaxPoints = 0;
+
+        for (let j = i + 1; j < points.length; j++) {
+            const dx = points[j][0] - points[i][0];
+            const dy = points[j][1] - points[i][1];
+
+            if (dx === 0) {
+                // Points lie on the same vertical line
+                verticalLines++;
+                currentMaxPoints = Math.max(currentMaxPoints, verticalLines);
+            } else {
+                const slope = dy / dx;
+                slopes.set(slope, (slopes.get(slope) || 0) + 1);
+                currentMaxPoints = Math.max(currentMaxPoints, slopes.get(slope)!);
+            }
+        }
+
+        maxPointsOnLine = Math.max(maxPointsOnLine, currentMaxPoints + 1);
+    }
+
+    return maxPointsOnLine;
+}
