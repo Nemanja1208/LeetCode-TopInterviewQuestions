@@ -1,0 +1,122 @@
+You are given an array of strings tokens that represents an arithmetic expression in a Reverse Polish Notation.
+
+Evaluate the expression. Return an integer that represents the value of the expression.
+
+Note that:
+
+The valid operators are '+', '-', '*', and '/'.
+Each operand may be an integer or another expression.
+The division between two integers always truncates toward zero.
+There will not be any division by zero.
+The input represents a valid arithmetic expression in a reverse polish notation.
+The answer and all the intermediate calculations can be represented in a 32-bit integer.
+ 
+Example 1:
+Input: tokens = ["2","1","+","3","*"]
+Output: 9
+Explanation: ((2 + 1) * 3) = 9
+
+Example 2:
+Input: tokens = ["4","13","5","/","+"]
+Output: 6
+Explanation: (4 + (13 / 5)) = 6
+
+Example 3:
+Input: tokens = ["10","6","9","3","+","-11","*","/","*","17","+","5","+"]
+Output: 22
+Explanation: ((10 * (6 / ((9 + 3) * -11))) + 17) + 5
+= ((10 * (6 / (12 * -11))) + 17) + 5
+= ((10 * (6 / -132)) + 17) + 5
+= ((10 * 0) + 17) + 5
+= (0 + 17) + 5
+= 17 + 5
+= 22
+
+Solution >
+
+function evalRPN(tokens: string[]): number {
+  const stack: number[] = [];
+  for (const token of tokens) {
+    switch (token) {
+      case '+':
+        stack.push(stack.pop() + stack.pop());
+        break;
+      case '-':
+        const second = stack.pop();
+        const first = stack.pop();
+        stack.push(first - second);
+        break;
+      case '*':
+        stack.push(stack.pop() * stack.pop());
+        break;
+      case '/':
+        const divisor = stack.pop();
+        const dividend = stack.pop();
+        stack.push(Math.trunc(dividend / divisor));
+        break;
+      default:
+        stack.push(Number(token));
+        break;
+    }
+  }
+  return stack.pop();
+}
+
+
+Explanation >
+
+This function uses a stack to keep track of intermediate results as it evaluates the expression. 
+It iterates over each token in the input array, and performs a different action depending on whether the token is an operator or an operand.
+
+If the token is an operator (+, -, *, or /), it pops the top two values off the stack, performs the appropriate operation, and pushes the result back onto the stack. 
+If the token is an operand (i.e., a number), it simply pushes that value onto the stack.
+
+At the end of the iteration, there should be only one value left on the stack, which is the final result of the expression. 
+We pop that value off the stack and return it.
+
+Note that when dividing two integers, the function uses Math.trunc to round towards zero, as required by the problem statement.
+
+To explain the function in more detail:
+
+The function takes an array of strings called tokens as its only argument, and returns a number representing the value of the expression.
+
+It initializes an empty array called stack to store intermediate results.
+
+It iterates over each token in the tokens array using a for...of loop.
+
+For each token, the function uses a switch statement to determine what action to take:
+
+If the token is an operator (+, -, *, or /), the function pops the top two values off the stack using the pop() method, performs the appropriate operation 
+(using +, -, *, or Math.trunc(dividend / divisor)), and pushes the result back onto the stack using the push() method.
+
+If the token is an operand (i.e., a number), the function converts it to a number using Number(), and pushes that value onto the stack using the push() method.
+
+Once the iteration is complete, the function should have only one value left on the stack, which represents the final result of the expression. 
+The function pops that value off the stack using the pop() method, and returns it.
+
+Fastest solution >
+
+function evalRPN(tokens: string[]): number {
+    const stack: number[] = [];
+    for (let i = 0; i < tokens.length; i++) {
+        const token = tokens[i]
+        switch (token) {
+            case '+':
+                stack.push(stack.pop()! + stack.pop()!)
+                break
+            case '-':
+                stack.push(-(stack.pop()! - stack.pop()!))
+                break
+            case '*':
+                stack.push(stack.pop()! * stack.pop()!)
+                break
+            case '/':
+                stack.push(Math.trunc(1 / (stack.pop()! / stack.pop()!)))
+                break
+            default:
+                stack.push(+token)
+        }
+    }
+
+    return stack[stack.length - 1];
+}
