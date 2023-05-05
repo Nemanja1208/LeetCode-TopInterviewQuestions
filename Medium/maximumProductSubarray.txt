@@ -1,0 +1,71 @@
+Given an integer array nums, find a subarray that has the largest product, and return the product.
+
+The test cases are generated so that the answer will fit in a 32-bit integer.
+
+Example 1:
+Input: nums = [2,3,-2,4]
+Output: 6
+Explanation: [2,3] has the largest product 6.
+
+Example 2:
+Input: nums = [-2,0,-1]
+Output: 0
+Explanation: The result cannot be 2, because [-2,-1] is not a subarray
+
+Solution >
+
+function maxProduct(nums: number[]): number {
+    let maxSoFar = nums[0];
+    let minSoFar = nums[0];
+    let result = nums[0];
+    
+    for (let i = 1; i < nums.length; i++) {
+        const num = nums[i];
+        const tempMax = Math.max(num, maxSoFar * num, minSoFar * num);
+        minSoFar = Math.min(num, maxSoFar * num, minSoFar * num);
+        maxSoFar = tempMax;
+        result = Math.max(result, maxSoFar);
+    }
+    
+    return result;
+}
+
+
+Explanation >
+
+This solution uses dynamic programming to keep track of the maximum and minimum subarray products seen so far. 
+It also keeps track of the maximum overall product seen so far. At each iteration, it updates these values based on the current element in the array.
+
+Let's break down how this works step by step:
+
+We initialize maxSoFar, minSoFar, and result to the first element in the array nums[0].
+
+We iterate over the array starting from the second element nums[1].
+
+We calculate the maximum of the current element num multiplied by maxSoFar, minSoFar, and num itself. We store this value in tempMax.
+
+We calculate the minimum of the current element num multiplied by maxSoFar, minSoFar, and num itself. We store this value in minSoFar.
+
+We update maxSoFar to be tempMax.
+
+We update result to be the maximum of result and maxSoFar.
+
+After iterating over the entire array, we return result.
+
+The intuition behind this algorithm is that if we encounter a negative number, the maximum product can be obtained by multiplying the current number 
+with the minimum product so far. 
+On the other hand, if we encounter a positive number, the maximum product can be obtained by multiplying the current number with the maximum product so far. 
+By keeping track of both the maximum and minimum product so far, we can handle both of these cases.
+
+Fastest solution >
+
+function maxProduct(nums: number[]): number {
+  let min=nums[0],max=nums[0],gMax=nums[0];
+  nums.slice(1).forEach(n => {
+    let tmpMax = Math.max(n*max,n*min,n);
+    min = Math.min(n*max,n*min,n);
+    max = tmpMax;
+    gMax = Math.max(gMax,max);
+  });
+  return gMax;
+};
