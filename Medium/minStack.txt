@@ -1,0 +1,105 @@
+Design a stack that supports push, pop, top, and retrieving the minimum element in constant time.
+
+Implement the MinStack class:
+
+MinStack() initializes the stack object.
+void push(int val) pushes the element val onto the stack.
+void pop() removes the element on the top of the stack.
+int top() gets the top element of the stack.
+int getMin() retrieves the minimum element in the stack.
+You must implement a solution with O(1) time complexity for each function.
+
+Solution >
+
+class MinStack {
+  stack: number[];
+  minStack: number[];
+
+  constructor() {
+    this.stack = [];
+    this.minStack = [];
+  }
+
+  push(val: number): void {
+    this.stack.push(val);
+
+    if (this.minStack.length === 0 || val <= this.getMin()) {
+      this.minStack.push(val);
+    }
+  }
+
+  pop(): void {
+    const popped = this.stack.pop();
+
+    if (popped === this.getMin()) {
+      this.minStack.pop();
+    }
+  }
+
+  top(): number {
+    if (this.stack.length === 0) {
+      throw new Error("Stack is empty");
+    }
+
+    return this.stack[this.stack.length - 1];
+  }
+
+  getMin(): number {
+    if (this.minStack.length === 0) {
+      throw new Error("Stack is empty");
+    }
+
+    return this.minStack[this.minStack.length - 1];
+  }
+}
+
+
+Explanation >
+
+The MinStack class uses two separate stacks: stack to store all the elements pushed onto the stack, and minStack to keep track of the minimum elements at any given point.
+
+In the constructor, we initialize both stack and minStack as empty arrays.
+The push operation takes an integer value as a parameter and adds it to the stack using the push method of arrays. 
+If minStack is empty or the value is less than or equal to the current minimum (obtained through getMin), we also push the value onto the minStack.
+The pop operation removes the top element from the stack using the pop method of arrays. If the popped element is the current minimum (obtained through getMin), 
+we also remove it from the minStack.
+The top operation returns the top element of the stack using array indexing. If the stack is empty, an error is thrown.
+The getMin operation returns the top element of the minStack since it always stores the minimum element at the top. If the minStack is empty, an error is thrown.
+By maintaining a separate minStack and updating it whenever a new minimum element is pushed or a current minimum element is popped, 
+we can ensure that retrieving the minimum element is always a constant time operation. The other operations (push, pop, top) 
+also have a constant time complexity as they rely on basic array operations.
+
+Please note that this implementation assumes the stack will only contain integer values.
+
+Fastest solution >
+
+class MinStack {
+  stack: number[];
+  minStack: number[];
+
+  constructor() {
+    this.stack = [];
+    this.minStack = [];
+  }
+
+  push(val: number): void {
+    if (this.stack.length === 0 || this.getMin() >= val) {
+      this.minStack.push(val);
+    }
+    this.stack.push(val);
+  }
+
+  pop(): void {
+    if (this.stack.pop() === this.getMin()) {
+      this.minStack.pop();
+    }
+  }
+
+  top(): number {
+    return this.stack[this.stack.length - 1];
+  }
+
+  getMin(): number {
+    return this.minStack[this.minStack.length - 1];
+  }
+}
