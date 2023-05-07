@@ -1,0 +1,114 @@
+Given the heads of two singly linked-lists headA and headB, return the node at which the two lists intersect. 
+If the two linked lists have no intersection at all, return null.
+
+For example, the following two linked lists begin to intersect at node c1:
+
+
+The test cases are generated such that there are no cycles anywhere in the entire linked structure.
+
+Note that the linked lists must retain their original structure after the function returns.
+
+Custom Judge:
+
+The inputs to the judge are given as follows (your program is not given these inputs):
+
+intersectVal - The value of the node where the intersection occurs. This is 0 if there is no intersected node.
+listA - The first linked list.
+listB - The second linked list.
+skipA - The number of nodes to skip ahead in listA (starting from the head) to get to the intersected node.
+skipB - The number of nodes to skip ahead in listB (starting from the head) to get to the intersected node.
+The judge will then create the linked structure based on these inputs and pass the two heads, headA and headB to your program. 
+If you correctly return the intersected node, then your solution will be accepted.
+
+Example 1:
+Input: intersectVal = 8, listA = [4,1,8,4,5], listB = [5,6,1,8,4,5], skipA = 2, skipB = 3
+Output: Intersected at '8'
+Explanation: The intersected node's value is 8 (note that this must not be 0 if the two lists intersect).
+From the head of A, it reads as [4,1,8,4,5]. From the head of B, it reads as [5,6,1,8,4,5]. There are 2 nodes before the intersected node in A; 
+There are 3 nodes before the intersected node in B.
+- Note that the intersected node's value is not 1 because the nodes with value 1 in A and B (2nd node in A and 3rd node in B) are different node references. 
+In other words, they point to two different locations in memory, while the nodes with value 8 in A and B (3rd node in A and 4th node in B) 
+point to the same location in memory.
+
+Example 2:
+Input: intersectVal = 2, listA = [1,9,1,2,4], listB = [3,2,4], skipA = 3, skipB = 1
+Output: Intersected at '2'
+Explanation: The intersected node's value is 2 (note that this must not be 0 if the two lists intersect).
+From the head of A, it reads as [1,9,1,2,4]. From the head of B, it reads as [3,2,4]. There are 3 nodes before the intersected node in A; 
+There are 1 node before the intersected node in B.
+
+Example 3:
+Input: intersectVal = 0, listA = [2,6,4], listB = [1,5], skipA = 3, skipB = 2
+Output: No intersection
+Explanation: From the head of A, it reads as [2,6,4]. From the head of B, it reads as [1,5]. Since the two lists do not intersect, intersectVal must be 0, 
+while skipA and skipB can be arbitrary values.
+Explanation: The two lists do not intersect, so return null.
+
+Solution >
+
+class ListNode {
+  val: number;
+  next: ListNode | null;
+  
+  constructor(val: number, next: ListNode | null = null) {
+    this.val = val;
+    this.next = next;
+  }
+}
+
+function getIntersectionNode(
+  headA: ListNode | null,
+  headB: ListNode | null
+): ListNode | null {
+  if (!headA || !headB) {
+    return null;
+  }
+  
+  let ptrA: ListNode | null = headA;
+  let ptrB: ListNode | null = headB;
+  
+  while (ptrA !== ptrB) {
+    ptrA = ptrA ? ptrA.next : headB;
+    ptrB = ptrB ? ptrB.next : headA;
+  }
+  
+  return ptrA;
+}
+
+
+Explanation >
+
+Let's go through the code step by step:
+
+We define a ListNode class that represents a node in the linked list. Each node has a value (val) and a reference to the next node (next).
+
+The getIntersectionNode function takes two linked list heads (headA and headB) as input and returns the node at which the two lists intersect.
+
+We start by checking if either of the linked lists is empty. If one of them is empty, it means there is no intersection, so we return null.
+
+We initialize two pointers ptrA and ptrB to the heads of the linked lists.
+
+We iterate through the linked lists until ptrA and ptrB are equal (i.e., they point to the same node). If there is an intersection, they will meet at the intersected node. 
+If there is no intersection, they will reach the end of their respective lists at the same time.
+
+In each iteration, we move ptrA and ptrB to the next nodes in their lists. If ptrA reaches the end of list A, we redirect it to the head of list B. Similarly, 
+if ptrB reaches the end of list B, we redirect it to the head of list A. 
+This allows the pointers to "catch up" with each other when they reach the end of their respective lists.
+
+After the loop terminates, we return ptrA, which is the intersected node if it exists, or null if there is no intersection.
+
+The time complexity of this solution is O(m + n), where m and n are the lengths of the two linked lists. 
+We iterate through both lists once to find the intersection node, and the space complexity is O(1) 
+since we only use a constant amount of extra space regardless of the input size.
+
+Fastest solution >
+
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    let [l1, l2] = [headA, headB];
+    while ( l1 !== l2 ) {
+        l1 = !l1 ? headB: l1.next;
+        l2 = !l2 ? headA: l2.next;
+    }
+    return l1;
+    
+};
