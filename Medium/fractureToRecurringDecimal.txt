@@ -1,0 +1,140 @@
+Given two integers representing the numerator and denominator of a fraction, return the fraction in string format.
+
+If the fractional part is repeating, enclose the repeating part in parentheses.
+
+If multiple answers are possible, return any of them.
+
+It is guaranteed that the length of the answer string is less than 104 for all the given inputs.
+
+Example 1:
+Input: numerator = 1, denominator = 2
+Output: "0.5"
+
+Example 2:
+Input: numerator = 2, denominator = 1
+Output: "2"
+
+Example 3:
+Input: numerator = 4, denominator = 333
+Output: "0.(012)"
+
+
+Solution >
+
+function fractionToDecimal(numerator: number, denominator: number): string {
+  // Handle cases where numerator is 0 or denominator is 1
+  if (numerator === 0) return "0";
+  if (denominator === 1) return numerator.toString();
+
+  // Handle the sign of the result
+  const isNegative = (numerator < 0) !== (denominator < 0);
+  const sign = isNegative ? "-" : "";
+
+  // Convert numerator and denominator to positive values
+  numerator = Math.abs(numerator);
+  denominator = Math.abs(denominator);
+
+  // Calculate the integer part of the result
+  const integerPart = Math.floor(numerator / denominator);
+  let result = integerPart.toString();
+
+  // Calculate the fractional part
+  let remainder = numerator % denominator;
+  if (remainder === 0) {
+    // No fractional part, return the integer part only
+    return sign + result;
+  }
+
+  result += ".";
+
+  // Use a map to store the remainders and their corresponding positions
+  const remainderMap: Map<number, number> = new Map();
+
+  while (remainder !== 0) {
+    // If the current remainder is already in the map, it means we have encountered a repeating pattern
+    if (remainderMap.has(remainder)) {
+      const index = remainderMap.get(remainder)!;
+      result = result.substring(0, index) + "(" + result.substring(index) + ")";
+      break;
+    }
+
+    // Add the current remainder and its position to the map
+    remainderMap.set(remainder, result.length);
+
+    remainder *= 10;
+    const quotient = Math.floor(remainder / denominator);
+    result += quotient.toString();
+    remainder %= denominator;
+  }
+
+  return sign + result;
+}
+
+
+Explanation >
+
+We start by handling some special cases where the numerator is 0 or the denominator is 1, as these cases have straightforward results.
+We handle the sign of the result by checking if the numerator and denominator have different signs.
+We convert the numerator and denominator to positive values to simplify the calculations.
+We calculate the integer part of the result by dividing the numerator by the denominator and taking the floor value.
+If the remainder after the integer division is 0, there is no fractional part, so we return the integer part only.
+If there is a fractional part, we initialize the result string with the integer part and a decimal point.
+We use a map to keep track of the remainders we encounter during the long division process. If we encounter a repeating remainder, 
+it means we have found a repeating pattern in the fractional part.
+We perform long division by multiplying the current remainder by 10, finding the quotient by dividing it by the denominator, and updating the remainder. 
+We repeat this process until the remainder becomes 0 or we find a repeating remainder.
+If we find a repeating remainder, we insert opening and closing parentheses around the repeating part in the result string.
+Finally, we add the sign to the result string and return it.
+Note: This solution assumes that the numerator and denominator are within the range of 32-bit signed integers. 
+It doesn't handle cases where the result exceeds the maximum value that can be represented by a 32-bit signed integer.
+
+Fastest solution >
+
+function fractionToDecimal(numerator: number, denominator: number): string {
+  // Handle cases where numerator is 0 or denominator is 1
+  if (numerator === 0) return "0";
+  if (denominator === 1) return numerator.toString();
+
+  // Handle the sign of the result
+  const isNegative = (numerator < 0) !== (denominator < 0);
+  const sign = isNegative ? "-" : "";
+
+  // Convert numerator and denominator to positive values
+  numerator = Math.abs(numerator);
+  denominator = Math.abs(denominator);
+
+  // Calculate the integer part of the result
+  const integerPart = Math.floor(numerator / denominator);
+  let result = integerPart.toString();
+
+  // Calculate the fractional part
+  let remainder = numerator % denominator;
+  if (remainder === 0) {
+    // No fractional part, return the integer part only
+    return sign + result;
+  }
+
+  result += ".";
+
+  // Use a map to store the remainders and their corresponding positions
+  const remainderMap: Map<number, number> = new Map();
+
+  while (remainder !== 0) {
+    // If the current remainder is already in the map, it means we have encountered a repeating pattern
+    if (remainderMap.has(remainder)) {
+      const index = remainderMap.get(remainder)!;
+      result = result.substring(0, index) + "(" + result.substring(index) + ")";
+      break;
+    }
+
+    // Add the current remainder and its position to the map
+    remainderMap.set(remainder, result.length);
+
+    remainder *= 10;
+    const quotient = Math.floor(remainder / denominator);
+    result += quotient.toString();
+    remainder %= denominator;
+  }
+
+  return sign + result;
+}
