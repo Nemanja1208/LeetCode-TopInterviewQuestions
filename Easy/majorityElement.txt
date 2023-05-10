@@ -1,0 +1,92 @@
+Given an array nums of size n, return the majority element.
+
+The majority element is the element that appears more than ⌊n / 2⌋ times. You may assume that the majority element always exists in the array.
+
+Example 1:
+Input: nums = [3,2,3]
+Output: 3
+
+Example 2:
+Input: nums = [2,2,1,1,1,2,2]
+Output: 2
+
+Solution >
+
+function majorityElement(nums: number[]): number {
+    let count = 0;
+    let candidate: number | undefined;
+
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+            count = 1;
+        } else if (num === candidate) {
+            count++;
+        } else {
+            count--;
+        }
+    }
+
+    return candidate as number;
+}
+
+
+Explanation >
+
+We initialize two variables, count and candidate. count keeps track of the frequency of the candidate element, which is the current potential majority element.
+We iterate through the array nums using a for...of loop.
+Inside the loop, we check if the count is zero. If it is, we update the candidate to the current element num and set count to 1, 
+assuming num as the potential majority element.
+If the count is not zero, we compare the current element num with the candidate. 
+If they are the same, we increment count by 1 since we found another occurrence of the potential majority element.
+If the current element num is different from the candidate, we decrement count by 1, indicating that we found one occurrence of a non-majority element.
+After iterating through all the elements in nums, the candidate will hold the majority element.
+The algorithm works because the majority element always occurs more than ⌊n / 2⌋ times. 
+Therefore, if we cancel out all non-majority elements with majority elements, the remaining element will be the majority element.
+
+The time complexity of this algorithm is O(n), where n is the length of the nums array, as we iterate through the array once. 
+The space complexity is O(1) because we only use a constant amount of additional space to store count and candidate.
+
+Fastest solution >
+
+function majorityElement(nums: number[]): number {
+    return withSorting(nums)
+}
+
+const withHashmap = (nums: number[]): number => {
+    const minCount = Math.floor(nums.length / 2) + 1
+    const map = new Map<number, number>()
+
+    for (const n of nums) {
+        if (!map.has(n)) {
+            map.set(n, 0)
+        }
+        let count = map.get(n)!
+        count++
+        if (count >= minCount)
+            return n
+        map.set(n, count)
+    }
+
+    return minCount
+}
+
+const withSorting = (nums: number[]): number => {
+    nums.sort()
+    const minCount = Math.floor(nums.length / 2) + 1
+
+    let count = 0
+    let last = nums[0]
+
+    for (let i = 0; i < nums.length; i++) {
+        const c = nums[i]
+        if (c !== last) {
+            count = 1
+        } else {
+            count++
+        }
+        if (count === minCount)
+            return c
+        last = c
+    }
+}
