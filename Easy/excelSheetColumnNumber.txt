@@ -1,0 +1,76 @@
+Given a string columnTitle that represents the column title as appears in an Excel sheet, return its corresponding column number.
+
+For example:
+
+A -> 1
+B -> 2
+C -> 3
+...
+Z -> 26
+AA -> 27
+AB -> 28 
+...
+ 
+Example 1:
+Input: columnTitle = "A"
+Output: 1
+
+Example 2:
+Input: columnTitle = "AB"
+Output: 28
+
+Example 3:
+Input: columnTitle = "ZY"
+Output: 701
+
+Solution :
+
+function titleToNumber(columnTitle: string): number {
+  let result = 0;
+  for (let i = 0; i < columnTitle.length; i++) {
+    const charValue = columnTitle.charCodeAt(i) - 64; // ASCII value of 'A' is 65
+    result = result * 26 + charValue;
+  }
+  return result;
+}
+
+
+Explanation :
+
+The given problem requires converting a column title string into its corresponding column number. 
+In Excel, the column titles follow a pattern where each column is identified by a combination of alphabetic characters, 
+starting from 'A' for column 1, 'B' for column 2, and so on. 
+When we exceed the 26-letter range ('Z'), we introduce a new digit position, and the pattern continues ('AA' for column 27, 'AB' for column 28, and so on).
+
+To solve the problem, we iterate over each character in the columnTitle string using a for loop. 
+For each character, we calculate its value based on its position and convert it to a number from 1 to 26. 
+We do this by subtracting the ASCII value of 'A' (65) from the ASCII value of the current character. This gives us a value between 1 and 26 for 'A' to 'Z', respectively.
+
+We then update the result by multiplying it by 26 (to shift the digits to the left) and adding the value of the current character. 
+This accounts for the positional value of each character in the column title. By continuously updating the result for each character, 
+we effectively convert the entire column title into a corresponding column number.
+
+Finally, we return the resulting column number.
+
+Let's test the function with the provided examples:
+
+typescript
+Copy code
+console.log(titleToNumber("A"));   // Output: 1
+console.log(titleToNumber("AB"));  // Output: 28
+console.log(titleToNumber("ZY"));  // Output: 701
+The function correctly converts the column titles to their respective column numbers.
+
+Fastest solution :
+
+function titleToNumber(columnTitle: string): number {
+    let ret = 0;
+    let mult = 1;
+    const a = 'A';
+    const ac = a.charCodeAt(0);
+    for (const c of columnTitle.split("").reverse().join("")) {
+        ret += mult * (c.charCodeAt(0) - ac + 1);
+        mult *= 26;
+    }
+    return ret;
+};
