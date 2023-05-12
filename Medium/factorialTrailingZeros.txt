@@ -1,0 +1,60 @@
+Given an integer n, return the number of trailing zeroes in n!.
+
+Note that n! = n * (n - 1) * (n - 2) * ... * 3 * 2 * 1.
+
+Example 1:
+Input: n = 3
+Output: 0
+Explanation: 3! = 6, no trailing zero.
+
+Example 2:
+Input: n = 5
+Output: 1
+Explanation: 5! = 120, one trailing zero.
+
+Example 3:
+Input: n = 0
+Output: 0
+
+Solution >
+
+function trailingZeroes(n: number): number {
+  let count = 0;
+  
+  // Divide n by 5 and add the quotient to the count
+  // Keep dividing by 5 until the quotient becomes 0
+  while (n > 0) {
+    n = Math.floor(n / 5);
+    count += n;
+  }
+  
+  return count;
+}
+
+
+Explanation >
+
+In this solution, we initialize a variable count to keep track of the number of trailing zeroes. 
+We iterate through a loop while n is greater than 0. In each iteration, we divide n by 5 and add the quotient to the count. 
+This is because every multiple of 5 contributes one trailing zero. For example, in the factorial of 10 (10!), 
+there is one trailing zero contributed by 5 and another trailing zero contributed by 10.
+
+We continue this division until the quotient becomes 0, indicating that there are no more multiples of 5 to consider. 
+Finally, we return the count, which represents the total number of trailing zeroes in n!.
+
+Let's test the solution with the given examples:
+
+typescript
+Copy code
+console.log(trailingZeroes(3)); // Output: 0
+console.log(trailingZeroes(5)); // Output: 1
+console.log(trailingZeroes(0)); // Output: 0
+The output matches the expected results, so the solution appears to be working correctly.
+
+Fastest solution >
+
+function trailingZeroes(n: number): number {
+    let result = 0;
+    for (let i = 5; i <= n; i *= 5) result += Math.floor(n / i);
+    return result;
+};
