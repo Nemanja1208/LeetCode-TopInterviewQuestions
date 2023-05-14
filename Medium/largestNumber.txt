@@ -1,0 +1,60 @@
+Given a list of non-negative integers nums, arrange them such that they form the largest number and return it.
+
+Since the result may be very large, so you need to return a string instead of an integer.
+
+Example 1:
+
+Input: nums = [10,2]
+Output: "210"
+
+Example 2:
+
+Input: nums = [3,30,34,5,9]
+Output: "9534330"
+
+Solution :
+
+function largestNumber(nums: number[]): string {
+  const sortedNums = nums.sort((a, b) => {
+    const order1 = `${a}${b}`;
+    const order2 = `${b}${a}`;
+    return order2.localeCompare(order1);
+  });
+
+  if (sortedNums[0] === 0) {
+    return "0";
+  }
+
+  return sortedNums.join("");
+}
+
+
+Explanation :
+
+To solve this problem, we can sort the numbers in a custom way. The key idea is to compare two numbers a and b by 
+concatenating them both ways (ab and ba), and then compare the resulting strings lexicographically. 
+This way, we can determine which number should come first.
+
+The sorting function takes two numbers a and b. We convert them to strings (order1 and order2) by concatenating them in different orders. 
+We then use the localeCompare() function to compare the strings. If order2 should come before order1 lexicographically, 
+we return a negative value, indicating that a should come before b in the sorted array.
+
+After sorting the numbers, we check if the largest number is 0. If it is, we return "0" because all the numbers in the input are 0.
+
+Finally, we join the sorted numbers into a single string using the join() method and return the result.
+
+Let's test the function with your provided examples:
+
+console.log(largestNumber([10, 2])); // Output: "210"
+console.log(largestNumber([3, 30, 34, 5, 9])); // Output: "9534330"
+The function returns the expected outputs, arranging the numbers in a way that forms the largest possible number.
+
+Fastest solution :
+function largestNumber(nums: number[]): string {
+    let arr = nums.map(x => x.toString());
+    arr.sort((a, b) => {
+        return +(a+b) > +(b+a) ? -1 : 1;
+    });
+    let res = arr.join('');
+    return +res === 0 ? '0' : res;
+};
