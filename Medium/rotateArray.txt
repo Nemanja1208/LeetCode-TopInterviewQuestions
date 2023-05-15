@@ -1,0 +1,119 @@
+Given an integer array nums, rotate the array to the right by k steps, where k is non-negative.
+
+Example 1:
+
+Input: nums = [1,2,3,4,5,6,7], k = 3
+Output: [5,6,7,1,2,3,4]
+Explanation:
+rotate 1 steps to the right: [7,1,2,3,4,5,6]
+rotate 2 steps to the right: [6,7,1,2,3,4,5]
+rotate 3 steps to the right: [5,6,7,1,2,3,4]
+
+Example 2:
+
+Input: nums = [-1,-100,3,99], k = 2
+Output: [3,99,-1,-100]
+Explanation: 
+rotate 1 steps to the right: [99,-1,-100,3]
+rotate 2 steps to the right: [3,99,-1,-100]
+
+Solution >
+
+function rotate(nums: number[], k: number): void {
+  const n = nums.length;
+  k = k % n; // Adjust k if it's larger than n
+
+  // Reverse the entire array
+  reverse(nums, 0, n - 1);
+  // Reverse the first k elements
+  reverse(nums, 0, k - 1);
+  // Reverse the remaining elements
+  reverse(nums, k, n - 1);
+}
+
+function reverse(nums: number[], start: number, end: number): void {
+  while (start < end) {
+    const temp = nums[start];
+    nums[start] = nums[end];
+    nums[end] = temp;
+    start++;
+    end--;
+  }
+}
+
+
+Explanation >
+
+The rotate function takes an array nums and a non-negative integer k as input. It rotates the array to the right by k steps.
+
+First, we obtain the length of the array n and calculate k modulo n. This is done to handle cases where k is larger than the length of the array. 
+Since rotating an array by its length brings it back to the original position, we only need to rotate it by k % n steps.
+
+Next, we define a helper function reverse that reverses a portion of the array. It takes the array nums, a starting index start, 
+and an ending index end as input. It uses a two-pointer approach to swap elements from the start and end, moving towards the middle until they meet.
+
+In the rotate function, we perform three reverse operations to achieve the desired rotation:
+
+We first reverse the entire array. This brings the last k elements to the front, but they are in the reverse order.
+
+Then, we reverse the first k elements. This corrects the order of the last k elements.
+
+Finally, we reverse the remaining elements from index k to n - 1. This ensures that the elements after the first k elements are in their original order.
+
+After these operations, the array nums will be rotated to the right by k steps.
+
+Let's test the code with the provided examples:
+
+const nums1 = [1, 2, 3, 4, 5, 6, 7];
+const k1 = 3;
+rotate(nums1, k1);
+console.log(nums1); // Output: [5, 6, 7, 1, 2, 3, 4]
+
+const nums2 = [-1, -100, 3, 99];
+const k2 = 2;
+rotate(nums2, k2);
+console.log(nums2); // Output: [3, 99, -1, -100]
+The output matches the expected results for both examples.
+
+Note: The input array nums is modified in place, so there's no need to return a new array. The rotate function directly 
+modifies the array passed as an argument.
+
+Fastest solution >
+
+function rotateBy(nums: number[], k: number, start: number): number {
+  let iterations = 0;
+  let current = start;
+  let saved = nums[start];
+
+  do {
+    const next = (current + k) % nums.length;
+
+    const temp = nums[next];
+    nums[next] = saved;
+    saved = temp;
+
+    current = next;
+
+    iterations += 1;
+  } while (current !== start);
+
+  return iterations;
+}
+
+function rotate(nums: number[], k: number): void {
+  if (nums.length === 1) {
+    return;
+  }
+
+  if (nums.length === k) {
+    return;
+  }
+
+  let iterations = 0;
+  let start = 0;
+
+  do {
+    iterations += rotateBy(nums, k, start);
+    start += 1;
+  } while (iterations < nums.length);
+}
