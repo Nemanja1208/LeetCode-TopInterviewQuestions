@@ -1,0 +1,128 @@
+Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands.
+
+An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. 
+You may assume all four edges of the grid are all surrounded by water.
+
+Example 1:
+Input: grid = [
+  ["1","1","1","1","0"],
+  ["1","1","0","1","0"],
+  ["1","1","0","0","0"],
+  ["0","0","0","0","0"]
+]
+Output: 1
+
+Example 2:
+Input: grid = [
+  ["1","1","0","0","0"],
+  ["1","1","0","0","0"],
+  ["0","0","1","0","0"],
+  ["0","0","0","1","1"]
+]
+Output: 3
+
+Solution >
+
+function numIslands(grid: string[][]): number {
+  if (grid.length === 0) {
+    return 0;
+  }
+  
+  const m = grid.length; // Number of rows
+  const n = grid[0].length; // Number of columns
+  let count = 0; // Number of islands
+
+  function dfs(row: number, col: number) {
+    if (row < 0 || col < 0 || row >= m || col >= n || grid[row][col] === '0') {
+      return;
+    }
+
+    grid[row][col] = '0'; // Mark the current cell as visited
+
+    // Explore adjacent cells in all four directions
+    dfs(row - 1, col); // Up
+    dfs(row + 1, col); // Down
+    dfs(row, col - 1); // Left
+    dfs(row, col + 1); // Right
+  }
+
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      if (grid[i][j] === '1') {
+        count++;
+        dfs(i, j);
+      }
+    }
+  }
+
+  return count;
+}
+
+
+Explanation >
+
+We start by defining the numIslands function, which takes the grid as a parameter and returns the number of islands.
+
+We first check if the grid is empty. If it is, there are no islands, so we return 0.
+
+We initialize variables m and n to store the number of rows and columns in the grid, respectively.
+
+We initialize a variable count to keep track of the number of islands.
+
+Next, we define a helper function called dfs (depth-first search). This function takes a row and column as parameters and performs a 
+depth-first search starting from that cell.
+
+Inside the dfs function, we perform the following checks:
+
+If the current cell is out of bounds or contains '0' (water), we return, as there is no island to explore in this case.
+Otherwise, we mark the current cell as '0' to indicate that it has been visited.
+After the checks, we recursively call dfs on the adjacent cells in all four directions: up, down, left, and right. 
+This will explore all the cells connected to the current cell.
+
+Back in the numIslands function, we iterate through each cell in the grid using nested loops.
+
+If we encounter a cell with a value of '1' (land), we increment the count variable and start a depth-first search from that cell.
+
+Finally, we return the count, which represents the total number of islands in the grid.
+
+The solution uses a depth-first search (DFS) algorithm to explore the adjacent cells of each island. 
+By marking visited cells as '0', we ensure that we don't count the same island multiple times. 
+The time complexity of this solution is O(m * n), where m and n are the dimensions of the grid.
+
+Fastest solution >
+
+function numIslands(grid: string[][]): number {
+  if (!grid || grid.length === 0) {
+    return 0;
+  }
+
+  const ROWS = grid.length;
+  const COLS = grid[0].length;
+  let count = 0;
+
+  function dfs(r: number, c: number): void {
+    if (r < 0 || r >= ROWS || c < 0 || c >= COLS || grid[r][c] === '0') {
+      return;
+    }
+
+    grid[r][c] = '0'; // Mark the cell as visited
+
+    // Visit all neighboring cells
+    dfs(r - 1, c); // Top
+    dfs(r + 1, c); // Bottom
+    dfs(r, c - 1); // Left
+    dfs(r, c + 1); // Right
+  }
+
+  // Traverse the grid and call dfs for each unvisited cell
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      if (grid[r][c] === '1') {
+        count++;
+        dfs(r, c);
+      }
+    }
+  }
+
+  return count;
+}
