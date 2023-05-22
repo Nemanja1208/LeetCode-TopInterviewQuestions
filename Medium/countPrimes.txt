@@ -1,0 +1,76 @@
+Given an integer n, return the number of prime numbers that are strictly less than n.
+
+Example 1:
+Input: n = 10
+Output: 4
+Explanation: There are 4 prime numbers less than 10, they are 2, 3, 5, 7.
+
+Example 2:
+Input: n = 0
+Output: 0
+
+Example 3:
+Input: n = 1
+Output: 0
+
+Solution >
+
+function countPrimes(n: number): number {
+  if (n <= 2) {
+    return 0; // There are no prime numbers less than or equal to 2
+  }
+
+  const primes = new Array(n).fill(true); // Initialize an array of size n with all elements set to true
+  primes[0] = false; // 0 is not a prime number
+  primes[1] = false; // 1 is not a prime number
+
+  // Sieve of Eratosthenes algorithm
+  for (let i = 2; i <= Math.sqrt(n); i++) {
+    if (primes[i]) {
+      // If i is prime, mark all its multiples as non-prime
+      for (let j = i * i; j < n; j += i) {
+        primes[j] = false;
+      }
+    }
+  }
+
+  return primes.filter((isPrime) => isPrime).length; // Count the number of true values (prime numbers)
+}
+
+
+Explanation >
+
+We start by handling some base cases. If n is less than or equal to 2, there are no prime numbers less than or equal to n, so we return 0.
+
+We initialize an array called primes of size n and set all elements to true. 
+The value at index i in the primes array will represent whether i is a prime number or not. By default, we assume all numbers are prime.
+
+We set primes[0] and primes[1] to false since 0 and 1 are not prime numbers.
+
+We use the Sieve of Eratosthenes algorithm to find prime numbers up to n. The algorithm works as follows:
+
+We iterate from 2 to the square root of n because all composite numbers less than n will have a factor less than or equal to the square root of n.
+For each prime number i, we mark all its multiples as non-prime. We start marking from i*i 
+because all smaller multiples of i would have already been marked by smaller prime numbers.
+Finally, we count the number of true values in the primes array using the filter function and return the count as the result.
+
+This solution has a time complexity of O(n log log n) due to the Sieve of Eratosthenes algorithm, which is very efficient for finding prime numbers.
+
+Fastest solution >
+
+function countPrimes(n: number): number {
+  if (n <= 2) {
+    return 0;
+  }
+  const isComposite = new Uint8Array(Math.ceil(n / 8));
+  let count = 1;
+  for (let i = 3; i < n; i += 2) {
+    if ((isComposite[Math.floor(i / 8)] & (1 << (i % 8))) === 0) {
+      count++;
+      for (let j = i * i; j < n; j += i * 2) {
+        isComposite[Math.floor(j / 8)] |= 1 << (j % 8);
+      }
+    }
+  }
+  return count;
+}
