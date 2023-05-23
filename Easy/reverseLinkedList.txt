@@ -1,0 +1,104 @@
+Given the head of a singly linked list, reverse the list, and return the reversed list.
+
+Example 1:
+Input: head = [1,2,3,4,5]
+Output: [5,4,3,2,1]
+
+Example 2:
+Input: head = [1,2]
+Output: [2,1]
+
+Example 3:
+Input: head = []
+Output: []
+
+Solution >
+
+/**
+ * Definition for singly-linked list.
+ * class ListNode {
+ *     val: number
+ *     next: ListNode | null
+ *     constructor(val?: number, next?: ListNode | null) {
+ *         this.val = (val===undefined ? 0 : val)
+ *         this.next = (next===undefined ? null : next)
+ *     }
+ * }
+ */
+function reverseList(head: ListNode | null): ListNode | null {
+
+    let n = null, h = head;
+    while(h!==null){
+        n = new ListNode(h.val,n)
+        h = h.next;
+    }
+    return n
+};
+
+Explanation >
+
+The reverseList function takes the head of a singly linked list as input and returns the reversed list.
+It initializes two variables: n (which represents the new head of the reversed list) and h (which is initially set to the head of the original list).
+The code enters a while loop, which iterates until h becomes null, indicating the end of the original list.
+Inside the loop:
+It creates a new node, new ListNode(h.val, n), with the value of the current node h and the next pointer pointing to n (the previously reversed part of the list).
+The next pointer of the new node is set to n, as we want the new node to be the new head of the reversed list.
+The h pointer is moved to the next node in the original list by assigning h.next to h.
+This process continues until we reach the end of the original list.
+Finally, the reversed list is returned by n, which now points to the new head of the reversed list.
+To understand how this code reverses the list, consider the following example:
+
+// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+// Reverse the linked list
+const reversed = reverseList(head);
+
+// Print the reversed list: 5 -> 4 -> 3 -> 2 -> 1
+let current = reversed;
+while (current !== null) {
+  console.log(current.val);
+  current = current.next;
+}
+
+Output:
+5
+4
+3
+2
+1
+
+In this example, the code iterates through the original list, creating a new node for each element and making it the new head of the reversed list. 
+After the loop, the n variable points to the new head of the reversed list, which is returned as the result. 
+Finally, we print the values of the reversed list, which are [5, 4, 3, 2, 1].
+
+Fastest solution >
+
+function reverseList(head: ListNode | null): ListNode | null {
+    
+    if (head===null) {
+        return null; 
+    }
+    let cur: ListNode = null; 
+    let temp: ListNode = null;
+
+
+    while(head){
+
+        temp = head.next;
+        head.next = cur; 
+        //console.log("1",cur,head);
+        cur = head; 
+        //console.log("2", cur,head);
+        head = temp; 
+        //console.log("3", cur,head);
+    }
+
+return cur;
+
+
+};
