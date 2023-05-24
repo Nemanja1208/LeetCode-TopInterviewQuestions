@@ -1,0 +1,125 @@
+There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. 
+You are given an array prerequisites where prerequisites[i] = [ai, bi] 
+indicates that you must take course bi first if you want to take course ai.
+
+For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1.
+Return true if you can finish all courses. Otherwise, return false.
+
+Example 1:
+Input: numCourses = 2, prerequisites = [[1,0]]
+Output: true
+Explanation: There are a total of 2 courses to take. 
+To take course 1 you should have finished course 0. So it is possible.
+
+Example 2:
+Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
+Output: false
+Explanation: There are a total of 2 courses to take. 
+To take course 1 you should have finished course 0, and to take course 0 you should also have finished course 1. So it is impossible.
+
+Solution >
+
+function canFinish(numCourses: number, prerequisites: number[][]): boolean {
+    const adjacencyList: number[][] = new Array(numCourses).fill(0).map(() => []);
+
+    for (const [course, prerequisite] of prerequisites) {
+        adjacencyList[course].push(prerequisite);
+    }
+
+    const visited: boolean[] = new Array(numCourses).fill(false);
+    const visiting: boolean[] = new Array(numCourses).fill(false);
+
+    for (let course = 0; course < numCourses; course++) {
+        if (!visited[course] && hasCycle(course)) {
+            return false;
+        }
+    }
+
+    function hasCycle(course: number): boolean {
+        visiting[course] = true;
+
+        for (const prerequisite of adjacencyList[course]) {
+            if (visiting[prerequisite] || (visited[prerequisite] === false && hasCycle(prerequisite))) {
+                return true;
+            }
+        }
+
+        visiting[course] = false;
+        visited[course] = true;
+        return false;
+    }
+
+    return true;
+}
+
+
+Explanation >
+
+The solution uses a depth-first search (DFS) algorithm to detect if there is a cycle in the course prerequisites. 
+If a cycle exists, it means that it is impossible to finish all courses, and the function returns false. Otherwise, it returns true.
+
+First, we create an adjacency list to represent the courses and their prerequisites. Each course is represented as a node in the adjacency list, 
+and the prerequisites of a course are stored in an array associated with that node.
+
+Next, we define two arrays, visited and visiting, to keep track of the visited nodes during the DFS. 
+The visited array stores whether a node has been visited before, and the visiting array is used to detect cycles by marking the nodes currently being visited.
+
+Then, we iterate over all the courses (nodes) and call the hasCycle function for each course that has not been visited yet. 
+The hasCycle function performs a depth-first search on the graph, starting from the given course.
+
+Inside the hasCycle function, we mark the current course as visiting and then recursively traverse its prerequisites. 
+If we encounter a prerequisite that is already being visited (visiting[prerequisite] === true), 
+it means there is a cycle, and we return true to indicate that it is impossible to finish all courses.
+
+If we encounter a prerequisite that has not been visited (visited[prerequisite] === false), we recursively call hasCycle on that prerequisite. 
+If this recursive call returns true, it means there is a cycle, so we return true as well.
+
+After visiting all the prerequisites of the current course, we mark it as visited and no longer visiting. Finally, we return false to indicate that there is no cycle.
+
+In the main function, if no cycle is found for any course, we return true, indicating that it is possible to finish all courses.
+
+Fastest solution >
+
+function canFinish(numCourses: number, prerequisites: number[][]): boolean {
+
+    const count: number[] = new Array(numCourses).fill(0);
+    const map = new Map<number, number[]>();
+
+    for(let i=0;i<prerequisites.length;i++){
+        const preq = prerequisites[i];
+        if(preq[0] === preq[1]){
+            return false;
+        }
+        count[preq[0]]++;
+        const mapping = map.get(preq[1]);
+        if(!mapping){
+            map.set(preq[1], [preq[0]]);
+        } else{
+            map.set(preq[1], [...mapping, preq[0]]);
+        }
+    }
+
+    const arr: number[] = [];
+
+    for(let i=0;i<numCourses;i++){
+        if(count[i] === 0){
+            arr.push(i);
+        }
+    }
+    let processed = arr.length;
+
+    while(arr.length > 0){
+        const i = arr.shift();
+        const mappedCourse = map.get(i) ?? [];
+        mappedCourse.forEach((c) => {
+            count[c]--;
+            if(count[c] === 0){
+                arr.push(c);
+                processed++;
+            }
+        });
+    }
+
+    return processed !== numCourses ? false : true;
+};
+
