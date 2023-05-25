@@ -1,0 +1,160 @@
+A trie (pronounced as "try") or prefix tree is a tree data structure used to efficiently store and retrieve keys in a dataset of strings. 
+There are various applications of this data structure, such as autocomplete and spellchecker.
+
+Implement the Trie class:
+
+Trie() Initializes the trie object.
+void insert(String word) Inserts the string word into the trie.
+boolean search(String word) Returns true if the string word is in the trie (i.e., was inserted before), and false otherwise.
+boolean startsWith(String prefix) Returns true if there is a previously inserted string word that has the prefix prefix, and false otherwise.
+ 
+
+Example 1:
+
+Input
+["Trie", "insert", "search", "search", "startsWith", "insert", "search"]
+[[], ["apple"], ["apple"], ["app"], ["app"], ["app"], ["app"]]
+Output
+[null, null, true, false, true, null, true]
+
+Explanation
+Trie trie = new Trie();
+trie.insert("apple");
+trie.search("apple");   // return True
+trie.search("app");     // return False
+trie.startsWith("app"); // return True
+trie.insert("app");
+trie.search("app");     // return True
+
+
+Solution >
+
+class TrieNode {
+  children: Map<string, TrieNode>;
+  isEndOfWord: boolean;
+
+  constructor() {
+    this.children = new Map();
+    this.isEndOfWord = false;
+  }
+}
+
+class Trie {
+  root: TrieNode;
+
+  constructor() {
+    this.root = new TrieNode();
+  }
+
+  insert(word: string): void {
+    let currentNode = this.root;
+    for (const char of word) {
+      if (!currentNode.children.has(char)) {
+        currentNode.children.set(char, new TrieNode());
+      }
+      currentNode = currentNode.children.get(char)!;
+    }
+    currentNode.isEndOfWord = true;
+  }
+
+  search(word: string): boolean {
+    let currentNode = this.root;
+    for (const char of word) {
+      if (!currentNode.children.has(char)) {
+        return false;
+      }
+      currentNode = currentNode.children.get(char)!;
+    }
+    return currentNode.isEndOfWord;
+  }
+
+  startsWith(prefix: string): boolean {
+    let currentNode = this.root;
+    for (const char of prefix) {
+      if (!currentNode.children.has(char)) {
+        return false;
+      }
+      currentNode = currentNode.children.get(char)!;
+    }
+    return true;
+  }
+}
+
+Explanation >
+
+We define a TrieNode class that represents a node in the trie. Each node has a children property, which is a map of characters to their corresponding child nodes, 
+and an isEndOfWord property, which indicates if the current node marks the end of a word.
+
+The Trie class is defined with a root property, which is the root node of the trie. We initialize it in the constructor by creating a new TrieNode object.
+
+The insert method takes a word parameter and inserts it into the trie. We start from the root node and iterate over each character in the word. 
+If the current character doesn't exist as a child node, we create a new node and add it to the children map of the current node. 
+We then move to the newly created child node. After processing all the characters in the word, we mark the last node as the end of a word by setting its isEndOfWord property to true.
+
+The search method takes a word parameter and returns true if the word exists in the trie, and false otherwise. We start from the root node and traverse the trie character by character. 
+If, at any point, we encounter a character that doesn't exist as a child node, we conclude that the word doesn't exist in the trie and return false. 
+Otherwise, if we reach the end of the word and the last node is marked as the end of a word, we return true.
+
+The startsWith method takes a prefix parameter and returns true if there is a previously inserted word that has the given prefix, and false otherwise. 
+It follows a similar logic as the search method, but it doesn't require the last node to be marked as the end of a word. 
+As long as all characters of the prefix exist in the trie, we return true.
+
+You can test this implementation with the example you provided:
+
+typescript
+Copy code
+const trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple"));   // true
+console.log(trie.search("app"));     // false
+console.log(trie.startsWith("app")); // true
+trie.insert("app");
+console.log(trie.search("app
+
+
+
+Fastest solution >
+
+interface treeNode {
+    [key: string]: treeNode,
+}
+
+class Trie {
+    root: treeNode;
+    set: Set<string>;
+    constructor() {
+        this.root = {};
+        this.set = new Set();
+    }
+
+    insert(word: string): void {
+        let current: treeNode = this.root;
+        for (const char of word) {
+            // current[char] = {...current[char]};
+            current[char] = current[char] ?? {}
+            current = current[char];
+        }
+        this.set.add(word);
+    }
+
+    search(word: string): boolean {
+        if (this.set.has(word)) return true;
+        else return false;
+    }
+
+    startsWith(prefix: string): boolean {
+        let current = this.root;
+        for (const char of prefix) {
+            if (!current[char]) return false;
+            current = current[char];
+        }
+        return true;
+    }
+}
+/**
+ * Your Trie object will be instantiated and called as such:
+ * var obj = new Trie()
+ * obj.insert(word)
+ * var param_2 = obj.search(word)
+ * var param_3 = obj.startsWith(prefix)
+ */
