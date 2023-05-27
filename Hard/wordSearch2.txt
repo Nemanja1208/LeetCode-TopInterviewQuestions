@@ -1,0 +1,215 @@
+Given an m x n board of characters and a list of strings words, return all words on the board.
+
+Each word must be constructed from letters of sequentially adjacent cells, where adjacent cells are horizontally or vertically neighboring. 
+The same letter cell may not be used more than once in a word.
+
+Example 1:
+Input: board = [["o","a","a","n"],["e","t","a","e"],["i","h","k","r"],["i","f","l","v"]], words = ["oath","pea","eat","rain"]
+Output: ["eat","oath"]
+
+Example 2:
+Input: board = [["a","b"],["c","d"]], words = ["abcb"]
+Output: []
+
+Solution :
+
+class TrieNode {
+    links: Map<string, TrieNode>;
+    word: string;
+    end: boolean;
+
+    constructor () {
+        this.links = new Map();
+        this.word = null;
+        this.end = false;
+    }
+}
+
+
+
+function findWords(board: string[][], words: string[]): string[] {
+
+    let answer = [];
+    let row = board.length;
+    let col = board[0].length;
+    let root = new TrieNode();
+    
+    
+    for (let i = 0; i < words.length; i++) {
+        let word = words[i];
+        let cur = root;
+        for (let j = 0; j < word.length; j++) {
+            let ch = word[j];
+            if (!cur.links.has(ch)) {
+                let newNode = new TrieNode();
+                cur.links.set(ch, newNode);
+                cur = newNode;
+            } else {
+                cur = cur.links.get(ch);
+            }
+        }
+        cur.word = word;
+        cur.end = true;
+    }
+    
+    for (let i = 0; i < row; i++) {
+        for (let j = 0; j < col; j++) {
+            if (root.links.has(board[i][j])) {
+                backTrack(root, i, j );
+            }
+        }
+    }
+    
+    return answer;    
+    
+    function backTrack (node: TrieNode, i: number, j: number): void {                
+        let letter = board[i][j];
+        let curNode = node.links.get(letter);
+        
+        if (curNode.end) {
+            answer.push(curNode.word);
+            curNode.end = false;
+        }
+        
+        let ch = board[i][j];
+        board[i][j] = "#";
+        
+        if (i+1 < row && curNode.links.has(board[i+1][j])) {
+            backTrack(curNode, i+1, j);
+        }
+        
+        if (i-1 >= 0 && curNode.links.has(board[i-1][j])) {
+            backTrack(curNode, i-1, j);
+        }
+    
+        if (j+1 < col && curNode.links.has(board[i][j+1])) {
+            backTrack(curNode, i, j+1);
+        }
+    
+        if (j-1 >= 0 && curNode.links.has(board[i][j-1])) {
+            backTrack(curNode, i, j-1);
+        }
+    
+        board[i][j] = ch;
+    
+        if (curNode.links.size === 0) {
+            node.links.delete(letter);
+        }
+    }
+
+};
+
+Explanation :
+
+The TrieNode class represents a node in the Trie. It has three properties:
+
+links: A map that maps characters to child TrieNodes.
+word: A string representing a word stored at the current node (null if it's not the end of a word).
+end: A boolean indicating whether the current node represents the end of a word.
+The findWords function takes the board and words as input and returns an array of words found on the board. Here's how the code works:
+
+It initializes an empty array called answer to store the words found.
+It retrieves the number of rows (row) and columns (col) from the board.
+It creates a root TrieNode.
+It iterates over each word in the words array and adds it to the Trie. It starts from the root and traverses the Trie, creating new TrieNodes if necessary, 
+until it reaches the end of the word. At the end of the loop, it sets the word property of the last TrieNode to the current word and marks it as the end of a word.
+It iterates over each cell in the board. If the character at the current cell is a valid starting character in the Trie (found in the root's links), 
+it calls the backTrack function.
+The backTrack function is a recursive function that takes a node (current TrieNode), i (row index), and j (column index) as input. It performs the following steps:
+It retrieves the character at the current board cell (letter) and gets the corresponding child TrieNode (curNode) from the links map of the current node.
+If the current node represents the end of a word, it adds the word to the answer array and marks the end flag as false to avoid duplicate results.
+It replaces the character in the board with # to mark it as visited.
+It recursively calls the backTrack function for each neighboring cell (up, down, left, right) that exists in the Trie.
+After backtracking, it restores the character in the board and checks if the current node has any child nodes. If not, 
+it removes the corresponding entry from the parent node's links map.
+Finally, it returns the answer array containing the words found on the board.
+This solution utilizes the Trie data structure to efficiently search for words on the board by exploring only valid paths. 
+The backtracking technique is used to explore all possible paths on the board, making sure not to revisit the same cell or use the same letter multiple times in a word.
+
+Fastest solution :
+
+class TrieNode {
+    links: Map<string, TrieNode>;
+    word: string;
+    end: boolean;
+
+    constructor () {
+        this.links = new Map();
+        this.word = null;
+        this.end = false;
+    }
+}
+
+
+
+function findWords(board: string[][], words: string[]): string[] {
+
+    let answer = [];
+    let row = board.length;
+    let col = board[0].length;
+    let root = new TrieNode();
+    
+    
+    for (let i = 0; i < words.length; i++) {
+        let word = words[i];
+        let cur = root;
+        for (let j = 0; j < word.length; j++) {
+            let ch = word[j];
+            if (!cur.links.has(ch)) {
+                let newNode = new TrieNode();
+                cur.links.set(ch, newNode);
+                cur = newNode;
+            } else {
+                cur = cur.links.get(ch);
+            }
+        }
+        cur.word = word;
+        cur.end = true;
+    }
+    
+    for (let i = 0; i < row; i++) {
+        for (let j = 0; j < col; j++) {
+            if (root.links.has(board[i][j])) {
+                backTrack(root, i, j );
+            }
+        }
+    }
+    
+    return answer;    
+    
+    function backTrack (node: TrieNode, i: number, j: number): void {                
+        let letter = board[i][j];
+        let curNode = node.links.get(letter);
+        
+        if (curNode.end) {
+            answer.push(curNode.word);
+            curNode.end = false;
+        }
+        
+        let ch = board[i][j];
+        board[i][j] = "#";
+        
+        if (i+1 < row && curNode.links.has(board[i+1][j])) {
+            backTrack(curNode, i+1, j);
+        }
+        
+        if (i-1 >= 0 && curNode.links.has(board[i-1][j])) {
+            backTrack(curNode, i-1, j);
+        }
+    
+        if (j+1 < col && curNode.links.has(board[i][j+1])) {
+            backTrack(curNode, i, j+1);
+        }
+    
+        if (j-1 >= 0 && curNode.links.has(board[i][j-1])) {
+            backTrack(curNode, i, j-1);
+        }
+    
+        board[i][j] = ch;
+    
+        if (curNode.links.size === 0) {
+            node.links.delete(letter);
+        }
+    }
+
+};
