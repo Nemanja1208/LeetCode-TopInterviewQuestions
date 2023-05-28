@@ -1,0 +1,54 @@
+Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.
+
+Example 1:
+Input: nums = [1,2,3,1]
+Output: true
+
+Example 2:
+Input: nums = [1,2,3,4]
+Output: false
+
+Example 3:
+Input: nums = [1,1,1,3,3,4,3,2,4,2]
+Output: true
+
+Solution :
+
+function containsDuplicate(nums: number[]): boolean {
+    const numSet = new Set<number>();
+
+    for (const num of nums) {
+        if (numSet.has(num)) {
+            return true;
+        }
+        numSet.add(num);
+    }
+
+    return false;
+}
+
+
+Explanation :
+
+We define a function containsDuplicate that takes in an array of numbers (nums) and returns a boolean indicating whether any value appears at least twice.
+
+Inside the function, we create a new Set called numSet. A Set is a collection of unique values, meaning it automatically removes any duplicate values that are added to it.
+
+We then iterate through each number (num) in the input array nums using a for...of loop.
+
+For each number, we check if it already exists in the numSet using the has() method of the Set. If it does, we immediately return true, as this means we have found a duplicate.
+
+If the number is not already in the numSet, we add it to the set using the add() method.
+
+After the loop completes, if we haven't found any duplicates, we return false.
+
+By using a Set, we can efficiently check for duplicates in the array. The has() method of a Set has an average time complexity of O(1), 
+which makes the overall time complexity of this solution O(n), where n is the length of the input array nums.
+
+Fastest solution :
+
+function containsDuplicate(nums: number[]): boolean {
+    const noDup = new Set(nums)
+    if (noDup.size === nums.length) return false
+    return true
+};
