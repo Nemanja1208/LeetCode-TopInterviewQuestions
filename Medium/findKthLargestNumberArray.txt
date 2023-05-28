@@ -1,0 +1,129 @@
+Given an integer array nums and an integer k, return the kth largest element in the array.
+
+Note that it is the kth largest element in the sorted order, not the kth distinct element.
+
+You must solve it in O(n) time complexity.
+
+Example 1:
+Input: nums = [3,2,1,5,6,4], k = 2
+Output: 5
+
+Example 2:
+Input: nums = [3,2,3,1,2,4,5,5,6], k = 4
+Output: 4
+
+
+Solution >
+
+function findKthLargest(nums: number[], k: number): number {
+  // Convert k to the index of the kth largest element
+  const kIndex = nums.length - k;
+
+  return quickSelect(nums, 0, nums.length - 1, kIndex);
+}
+
+function quickSelect(nums: number[], left: number, right: number, kIndex: number): number {
+  // Use the Quickselect algorithm to partition the array
+
+  // Randomly choose a pivot index
+  const randomIndex = Math.floor(Math.random() * (right - left + 1)) + left;
+  swap(nums, randomIndex, right); // Move the pivot element to the end
+
+  const pivot = nums[right]; // Choose the pivot element
+
+  let i = left;
+  for (let j = left; j < right; j++) {
+    if (nums[j] <= pivot) {
+      swap(nums, i, j);
+      i++;
+    }
+  }
+
+  swap(nums, i, right); // Move the pivot element to its final position
+
+  // Recursively partition the subarray
+  if (i === kIndex) {
+    return nums[i]; // Found the kth largest element
+  } else if (i < kIndex) {
+    return quickSelect(nums, i + 1, right, kIndex);
+  } else {
+    return quickSelect(nums, left, i - 1, kIndex);
+  }
+}
+
+function swap(nums: number[], i: number, j: number): void {
+  const temp = nums[i];
+  nums[i] = nums[j];
+  nums[j] = temp;
+}
+
+
+Explanation >
+
+The solution uses the Quickselect algorithm, which is an efficient algorithm for finding the kth smallest or kth largest element in an unsorted array. 
+It is similar to the QuickSort algorithm but only recursively explores the partition that contains the desired element.
+
+The findKthLargest function serves as a wrapper function that converts the problem of finding the kth largest element to finding the 
+(n - k)th smallest element, where n is the length of the array.
+
+The quickSelect function performs the actual partitioning of the array. It takes the input array nums, 
+the left and right indices of the subarray to partition (left and right), and the desired index kIndex of the kth largest element.
+
+In each recursive call of quickSelect, it randomly chooses a pivot element from the subarray and moves it to the end of the subarray. 
+Then, it iterates through the subarray from left to right and swaps elements smaller than or equal to the pivot to the left side of the pivot.
+
+After the loop, it moves the pivot element to its final sorted position by swapping it with the element at index i. At this point, 
+all elements to the left of the pivot are smaller than or equal to the pivot, and all elements to the right are larger than the pivot.
+
+The function checks if i (the final position of the pivot) is equal to kIndex. If it is, it means the kth largest element has been found, 
+and the function returns that element. Otherwise, if i is smaller than kIndex, the function recursively calls itself on the right subarray 
+(elements larger than the pivot). If i is greater than kIndex, it recursively calls itself on the left subarray (elements smaller than the pivot).
+
+The swap function is a helper function that swaps two elements in the array.
+
+By using the Quickselect algorithm, the solution achieves O(n) average time complexity since, on average, 
+it eliminates half of the remaining elements at each recursive step. 
+However, in the worst-case scenario, the time complexity can be O(n^2) if the pivot selection is consistently poor. 
+To mitigate this, the solution uses a random pivot selection strategy, which improves the average-case performance.
+
+
+Fastest solution >
+
+function findKthLargest(nums: number[], k: number): number {
+    return findKathSmallest(nums, 0, nums.length - 1, nums.length - k);
+};
+
+function findKathSmallest(nums: number[], l:number, r:number, k_smallest: number): number{
+    if(l >= r) return nums[l]
+    let pivotIdx = l + Math.floor(Math.random() * (r - l));
+    pivotIdx = partition(nums, pivotIdx, l, r);
+    // meaning there are k_smallest numbers on the left;
+    if(pivotIdx === k_smallest){
+        return nums[pivotIdx]
+    }else if(pivotIdx > k_smallest){
+        return findKathSmallest(nums, l, pivotIdx - 1, k_smallest);
+    }else{
+        return findKathSmallest(nums, pivotIdx + 1, r, k_smallest);
+    }
+}  
+
+function partition(nums: number[], pivotIdx: number, l:number, r:number): number{
+    const pivot = nums[pivotIdx];
+    swap(nums, pivotIdx, r);
+    let storeIdx = l
+    for(let i = l; i <= r; i++){
+        if(nums[i] < pivot){
+            swap(nums, i, storeIdx)
+            storeIdx++;
+        }
+    }
+    swap(nums, storeIdx, r);
+    return storeIdx;
+}
+
+function swap(nums: number[], l:number, r:number){
+    if(l === r) return;
+    let temp = nums[l]
+    nums[l] = nums[r]
+    nums[r] = temp;
+}
