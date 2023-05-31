@@ -1,0 +1,156 @@
+Given a string s which represents an expression, evaluate this expression and return its value. 
+
+The integer division should truncate toward zero.
+
+You may assume that the given expression is always valid. All intermediate results will be in the range of [-231, 231 - 1].
+
+Note: You are not allowed to use any built-in function which evaluates strings as mathematical expressions, such as eval().
+
+Example 1:
+Input: s = "3+2*2"
+Output: 7
+
+Example 2:
+Input: s = " 3/2 "
+Output: 1
+
+Example 3:
+Input: s = " 3+5 / 2 "
+Output: 5
+
+Solution >
+
+function calculate(s: string): number {
+  // Remove any whitespace from the input string
+  s = s.replace(/\s/g, '');
+
+  const stack: number[] = [];
+  let num = 0;
+  let operator = '+';
+
+  for (let i = 0; i < s.length; i++) {
+    const char = s[i];
+
+    if (isDigit(char)) {
+      num = num * 10 + parseInt(char);
+    }
+
+    if ((!isDigit(char) && char !== ' ') || i === s.length - 1) {
+      if (operator === '+') {
+        stack.push(num);
+      } else if (operator === '-') {
+        stack.push(-num);
+      } else if (operator === '*') {
+        const prevNum = stack.pop()!;
+        stack.push(prevNum * num);
+      } else if (operator === '/') {
+        const prevNum = stack.pop()!;
+        const result = Math.trunc(prevNum / num);
+        stack.push(result);
+      }
+
+      operator = char;
+      num = 0;
+    }
+  }
+
+  let result = 0;
+  while (stack.length > 0) {
+    result += stack.pop()!;
+  }
+
+  return result;
+}
+
+function isDigit(char: string): boolean {
+  return /^\d+$/.test(char);
+}
+
+
+
+Explanation >
+
+The calculate function takes the input string s and evaluates the expression. 
+We start by removing any whitespace from the input string using the replace method with a regular expression.
+
+We define a stack to store the intermediate results as we evaluate the expression.
+
+We initialize the num variable to keep track of the current number being processed and the operator variable to store the current operator.
+
+We iterate through each character in the input string.
+
+If the character is a digit, we update the num variable by multiplying it by 10 and adding the parsed integer value of the character.
+
+If the character is not a digit or a space, or if we have reached the end of the input string, it means we have encountered an operator. 
+We perform the corresponding operation based on the previous operator and push the result onto the stack.
+
+After the loop ends, we have processed all the numbers and operators in the expression. 
+Now, we need to sum up the values in the stack to get the final result. We initialize the result variable to 0.
+
+We repeatedly pop values from the stack and add them to the result variable until the stack is empty.
+
+Finally, we return the result as the evaluated value of the expression.
+
+The time complexity of this solution is O(n), where n is the length of the input string.
+
+
+Fastest solution >
+
+
+function calculate(s: string): number {
+    // temporary values and char pointer
+    let frontTemp: number = 0;
+    let backTemp: number = 0;
+    let i: number = 0
+    
+    // temporary values setup
+    while (s.charCodeAt(i) === 32) i++;
+    while (i < s.length){
+        const charCode: number = s.charCodeAt(i);
+        if (charCode < 48 || charCode > 57) break;
+        frontTemp = 10 * frontTemp + charCode - 48;
+        i++;
+    }
+
+    // expression evaluation
+    while (true){
+        // terminate loop if end reached
+        while (i < s.length && s.charCodeAt(i) === 32) i++;
+        if (i === s.length) break;
+
+        // reading in the operator
+        const operatorCode = s.charCodeAt(i);
+        i++;
+        while (s.charCodeAt(i) === 32) i++;
+        
+        // reading in the number
+        let num: number = 0;
+        while (i < s.length){
+            const charCode: number = s.charCodeAt(i);
+            if (charCode < 48 || charCode > 57) break;
+            num = 10 * num + charCode - 48;
+            i++;
+        }
+
+        // update temporaries
+        switch (operatorCode){
+            case 43: // +
+                backTemp += frontTemp;
+                frontTemp = num;
+                break;
+            case 45: // -
+                backTemp += frontTemp;
+                frontTemp = -num;
+                break;
+            case 42: // *
+                frontTemp *= num;
+                break;
+            case 47: // /
+                frontTemp = Math.trunc(frontTemp / num);
+                break;
+        }
+    }
+
+    // return the composite result
+    return backTemp + frontTemp;
+};
