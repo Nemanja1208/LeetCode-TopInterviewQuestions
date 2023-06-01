@@ -1,0 +1,89 @@
+Given the root of a binary search tree, and an integer k, 
+return the kth smallest value (1-indexed) of all the values of the nodes in the tree.
+
+Example 1:
+Input: root = [3,1,4,null,2], k = 1
+Output: 1
+
+Example 2:
+Input: root = [5,3,6,2,4,null,null,1], k = 3
+Output: 3
+
+Solution >
+
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+
+  constructor(val: number) {
+    this.val = val;
+    this.left = this.right = null;
+  }
+}
+
+function kthSmallest(root: TreeNode | null, k: number): number {
+  const stack: TreeNode[] = [];
+
+  while (root || stack.length > 0) {
+    while (root) {
+      stack.push(root);
+      root = root.left;
+    }
+
+    root = stack.pop();
+    k--;
+
+    if (k === 0) {
+      return root.val;
+    }
+
+    root = root.right;
+  }
+
+  return -1; // Return -1 if k is out of range
+}
+
+Explanation >
+
+We define a TreeNode class to represent the nodes in the binary search tree. Each node has a value (val), 
+and left and right child pointers (left and right) that point to other TreeNode instances or null if there's no child.
+
+The kthSmallest function takes the root of the binary search tree (root) and the value of k as input and returns the kth smallest value.
+
+We use an iterative approach using a stack to traverse the binary search tree in an inorder manner.
+
+We start with the root node and push all the left child nodes onto the stack until we reach the leftmost node.
+
+Once we reach the leftmost node, we pop a node from the stack, decrement the value of k by 1, and check if k has reached 0. If k is 0, 
+we have found the kth smallest value, so we return the value of the current node.
+
+If k is not 0, we move to the right child of the current node and continue the inorder traversal by repeating steps 4-6.
+
+If we traverse the entire tree and haven't found the kth smallest value, we return -1 to indicate that k is out of range.
+
+This solution has a time complexity of O(N), where N is the number of nodes in the binary search tree, as we need to visit each node once during the inorder traversal.
+
+Fastest solution >
+
+function kthSmallest(root: TreeNode | null, k: number): number {
+  let numsFound = 0
+
+  const traverse = (node: TreeNode): TreeNode | null => {
+    if(!node) return null
+
+    let left = traverse(node.left)
+    if(left) return left
+
+    numsFound += 1
+    if(numsFound === k) return node
+    
+    let right = traverse(node.right)
+    if(right) return right
+    
+    return null
+  }
+
+  const res = traverse(root)
+  return res ? res.val : null
+};
