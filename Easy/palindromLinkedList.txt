@@ -1,0 +1,126 @@
+Given the head of a singly linked list, return true if it is a palindrome or false otherwise.
+
+Example 1:
+Input: head = [1,2,2,1]
+Output: true
+
+Example 2:
+Input: head = [1,2]
+Output: false
+
+Solution >
+
+class ListNode {
+  val: number;
+  next: ListNode | null;
+
+  constructor(val?: number, next?: ListNode | null) {
+    this.val = val === undefined ? 0 : val;
+    this.next = next === undefined ? null : next;
+  }
+}
+
+function isPalindrome(head: ListNode | null): boolean {
+  if (head === null || head.next === null) {
+    return true; // An empty list or a list with a single node is considered a palindrome
+  }
+
+  let slow: ListNode | null = head;
+  let fast: ListNode | null = head;
+
+  // Find the middle of the linked list using the slow and fast pointers
+  while (fast !== null && fast.next !== null) {
+    slow = slow!.next;
+    fast = fast.next.next;
+  }
+
+  // Reverse the second half of the linked list
+  let prev: ListNode | null = null;
+  let curr: ListNode | null = slow;
+  let next: ListNode | null = null;
+
+  while (curr !== null) {
+    next = curr.next;
+    curr.next = prev;
+    prev = curr;
+    curr = next;
+  }
+
+  // Compare the first half of the linked list with the reversed second half
+  let left: ListNode | null = head;
+  let right: ListNode | null = prev;
+
+  while (right !== null) {
+    if (left!.val !== right.val) {
+      return false; // If values don't match, it's not a palindrome
+    }
+    left = left!.next;
+    right = right.next;
+  }
+
+  return true; // All values matched, it's a palindrome
+}
+
+
+Explanation >
+
+We start by checking if the given head is null or if it is the only node in the list. In both cases, we can consider it as a palindrome and return true.
+
+Next, we initialize two pointers, slow and fast, both pointing to the head node. We use the concept of a slow pointer and a fast pointer to find the middle of the linked list. 
+The slow pointer moves one step at a time, while the fast pointer moves two steps at a time. By the time the fast pointer reaches the end of the list, 
+the slow pointer will be at the middle node (or the middle-left node if the list has an odd number of nodes).
+
+After finding the middle node, we reverse the second half of the linked list. We maintain three pointers: prev, curr, and next. 
+We start with prev and curr as null, and curr as the middle node (slow). 
+We iterate through the second half of the list, updating the next pointer, reversing the curr node's next pointer to prev, and then moving all three pointers one step ahead.
+
+Once the second half is reversed, we compare the first half of the linked list (from head to slow) with the reversed second half (from prev to the end). 
+We initialize left as head and right as prev, and iterate until right reaches the end. 
+If at any point the values of left and right nodes don't match, we know that the linked list is not a palindrome and return false. 
+Otherwise, we continue moving both pointers towards the end of the list.
+
+If the iteration completes without finding any mismatched values, we can conclude that the linked list is a palindrome and return true.
+
+This solution has a time complexity of O(n) and a space complexity of O(1), where n is the number of nodes in the linked list.
+
+Fastest solution >
+
+function isPalindrome(head: ListNode | null): boolean {
+    // We're using the slow and fast pointer technique
+    // Slow pointer moves by 1 node, fast pointer moves by 2 nodes
+    let slowPointer = head
+    let previousSlowPointer = null
+    let fastPointer = head
+    
+    // Find the middle of the list and reverse the first part of the linked list
+    while (fastPointer?.next) {
+        fastPointer = fastPointer.next.next
+        
+        const nextSlowPointer = slowPointer.next
+        slowPointer.next = previousSlowPointer
+        previousSlowPointer = slowPointer
+        slowPointer = nextSlowPointer
+    }
+    
+    // If we have an odd count of items in a list, then skip the middle node (move left)
+    if (fastPointer !== null) {
+        slowPointer = slowPointer.next
+    }
+    
+    // from middle to left (we've reversed the left part of the list)
+    let leftPartPointer = previousSlowPointer
+    
+    // from middle to right
+    let rightPartPointer = slowPointer
+    
+    while (leftPartPointer) {
+        if (leftPartPointer.val !== rightPartPointer.val) {
+            return false
+        }
+        
+        leftPartPointer = leftPartPointer.next
+        rightPartPointer = rightPartPointer.next
+    }
+    
+    return true
+}
