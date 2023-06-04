@@ -1,0 +1,91 @@
+There is a singly-linked list head and we want to delete a node node in it.
+
+You are given the node to be deleted node. You will not be given access to the first node of head.
+
+All the values of the linked list are unique, and it is guaranteed that the given node node is not the last node in the linked list.
+
+Delete the given node. Note that by deleting the node, we do not mean removing it from memory. We mean:
+
+The value of the given node should not exist in the linked list.
+The number of nodes in the linked list should decrease by one.
+All the values before node should be in the same order.
+All the values after node should be in the same order.
+Custom testing:
+
+For the input, you should provide the entire linked list head and the node to be given node. node should not be the last node of the list and should be an actual node in the list.
+We will build the linked list and pass the node to your function.
+The output will be the entire list after calling your function.
+ 
+Example 1:
+Input: head = [4,5,1,9], node = 5
+Output: [4,1,9]
+Explanation: You are given the second node with value 5, the linked list should become 4 -> 1 -> 9 after calling your function.
+
+Example 2:
+Input: head = [4,5,1,9], node = 1
+Output: [4,5,9]
+Explanation: You are given the third node with value 1, the linked list should become 4 -> 5 -> 9 after calling your function.
+
+Solution >
+
+class ListNode {
+  val: number;
+  next: ListNode | null;
+
+  constructor(val: number, next: ListNode | null = null) {
+    this.val = val;
+    this.next = next;
+  }
+}
+
+function deleteNode(node: ListNode | null): void {
+  if (node === null || node.next === null) {
+    return; // Invalid input, cannot delete the last node
+  }
+
+  const nextNode = node.next;
+  node.val = nextNode.val;
+  node.next = nextNode.next;
+}
+
+
+Explanation >
+
+The given problem assumes that we don't have access to the first node of the linked list, and we need to delete the given node.
+
+The solution is implemented using the ListNode class, which represents a node in the linked list. Each node has a value val and a reference to the next node next.
+
+The deleteNode function takes the node to be deleted as input. 
+We first check if the given node is null or if it's the last node in the list (node.next === null). In either of these cases, we can't delete the node, so we simply return.
+
+To delete the node, we need to bypass it by modifying the values and references of the nodes. 
+We assign the value of the next node to the current node (node.val = nextNode.val) 
+and update the next reference of the current node to point to the next node's next reference (node.next = nextNode.next). 
+Essentially, we are overwriting the current node with the next node and bypassing the next node.
+
+After calling the deleteNode function, the linked list will have the given node removed, and all the values before and after the node will remain in the same order.
+
+Let's see how the examples provided in the problem would work with this solution:
+Example 1: 
+const head = new ListNode(4, new ListNode(5, new ListNode(1, new ListNode(9))));
+const node = head.next; // The second node with value 5
+deleteNode(node);
+// The linked list becomes 4 -> 1 -> 9
+// The first node (4) is unchanged, and the next node (5) is deleted
+
+
+Example 2:
+const head = new ListNode(4, new ListNode(5, new ListNode(1, new ListNode(9))));
+const node = head.next.next; // The third node with value 1
+deleteNode(node);
+// The linked list becomes 4 -> 5 -> 9
+// The first two nodes (4 and 5) are unchanged, and the next node (1) is deleted
+
+
+
+Fastest solution >
+
+function deleteNode(node: ListNode | null): void {
+    node.val = node.next.val;
+    node.next = node.next.next;
+};
