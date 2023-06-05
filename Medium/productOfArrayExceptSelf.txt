@@ -1,0 +1,71 @@
+Given an integer array nums, return an array answer such that answer[i] is equal to the product of all the elements of nums except nums[i].
+
+The product of any prefix or suffix of nums is guaranteed to fit in a 32-bit integer.
+
+You must write an algorithm that runs in O(n) time and without using the division operation.
+
+Example 1:
+Input: nums = [1,2,3,4]
+Output: [24,12,8,6]
+
+Example 2:
+Input: nums = [-1,1,0,-3,3]
+Output: [0,0,9,0,0]
+
+Solution >
+
+function productExceptSelf(nums: number[]): number[] {
+  const n = nums.length;
+  const answer: number[] = new Array(n);
+  
+  // Calculate the prefix products
+  answer[0] = 1;
+  for (let i = 1; i < n; i++) {
+    answer[i] = answer[i - 1] * nums[i - 1];
+  }
+  
+  // Calculate the suffix products and multiply with prefix products
+  let suffixProduct = 1;
+  for (let i = n - 1; i >= 0; i--) {
+    answer[i] *= suffixProduct;
+    suffixProduct *= nums[i];
+  }
+  
+  return answer;
+}
+
+
+Explanation >
+
+We start by initializing the answer array with the same length as nums. This array will store the result.
+
+Next, we calculate the prefix products. We iterate through the nums array and populate the answer array with the prefix product at each index. 
+The prefix product at index i is the product of all elements before i in the nums array. 
+We start the loop from index 1 and set answer[0] to 1 because there are no elements before the first element.
+
+After calculating the prefix products, we need to calculate the suffix products. We use a variable called suffixProduct and initialize it to 1. 
+We iterate backwards through the nums array and update the answer array by multiplying each element with the suffixProduct. 
+The suffix product at index i is the product of all elements after i in the nums array. We also update the suffixProduct by multiplying it with the current element.
+
+Finally, we have the answer array populated with the product of all elements except the current element. We return the answer array as the result.
+
+The time complexity of this solution is O(n) since we iterate through the nums array twice, and the space complexity is O(n) to store the answer array.
+
+
+Fastest solution >
+
+function productExceptSelf(nums: number[]): number[] {
+    let n = nums.length;
+    let res : number[] = [];
+    res[0] = 1;
+    for(let i = 1; i < n; i++) {
+        res[i] = res[i-1] * nums[i-1];
+    }
+
+    let right = 1;
+    for(let i = n - 1; i >= 0; i--) {
+        res[i] *= right;
+        right *= nums[i];
+    }
+    return res;
+};
