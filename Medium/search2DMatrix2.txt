@@ -1,0 +1,71 @@
+Write an efficient algorithm that searches for a value target in an m x n integer matrix matrix. This matrix has the following properties:
+
+Integers in each row are sorted in ascending from left to right.
+Integers in each column are sorted in ascending from top to bottom.
+ 
+Example 1:
+Input: matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 5
+Output: true
+
+Example 2:
+Input: matrix = [[1,4,7,11,15],[2,5,8,12,19],[3,6,9,16,22],[10,13,14,17,24],[18,21,23,26,30]], target = 20
+Output: false
+
+
+Solution >
+
+function searchMatrix(matrix: number[][], target: number): boolean {
+  if (matrix.length === 0 || matrix[0].length === 0) {
+    return false;
+  }
+
+  const m = matrix.length; // number of rows
+  const n = matrix[0].length; // number of columns
+
+  let row = 0; // start from the top-right corner
+  let col = n - 1;
+
+  while (row < m && col >= 0) {
+    if (matrix[row][col] === target) {
+      return true; // target found
+    } else if (matrix[row][col] < target) {
+      // current element is smaller, move down to the next row
+      row++;
+    } else {
+      // current element is larger, move left to the previous column
+      col--;
+    }
+  }
+
+  return false; // target not found
+}
+
+
+Explanation >
+
+First, we handle the base case where the matrix is empty or has no columns. In such cases, the target value cannot be found, so we return false.
+We initialize variables row and col to point to the top-right corner of the matrix.
+We enter a while loop that continues until we either find the target value or exhaust all possible elements in the matrix.
+Inside the loop, we compare the current element matrix[row][col] with the target value:
+If they are equal, we have found the target, so we return true.
+If the current element is smaller than the target, it means the target could only be present in the rows below the current row. So, we increment row to move down.
+If the current element is larger than the target, it means the target could only be present in the columns to the left of the current column. So, we decrement col to move left.
+If we exit the while loop without finding the target, we return false.
+This algorithm takes advantage of the matrix's properties by starting from the top-right corner, where the values are maximized. 
+By comparing the target with the current element, we can eliminate entire rows or columns in each step, resulting in an efficient search. 
+The time complexity of this algorithm is O(m + n), where m is the number of rows and n is the number of columns in the matrix.
+
+Fastest solution >
+
+function searchMatrix(matrix: number[][], target: number): boolean {
+    let columnIndex = 1000
+    for(let i = 0; i < matrix.length; i++) {
+        for(let j = 0; j < matrix[i].length; j++) {
+            if(j >= columnIndex) break
+            if(matrix[i][j] > target) columnIndex = j
+            if(matrix[i][0] > target) return false
+            if(matrix[i][j] === target) return true
+        }
+    }
+    return false
+};
