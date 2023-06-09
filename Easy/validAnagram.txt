@@ -1,0 +1,88 @@
+Given two strings s and t, return true if t is an anagram of s, and false otherwise.
+
+An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
+
+Example 1:
+Input: s = "anagram", t = "nagaram"
+Output: true
+
+Example 2:
+Input: s = "rat", t = "car"
+Output: false
+
+
+Solution >
+
+function isAnagram(s: string, t: string): boolean {
+  // If the lengths of the strings are different, they cannot be anagrams
+  if (s.length !== t.length) {
+    return false;
+  }
+
+  // Create frequency maps for each string
+  const sMap: { [key: string]: number } = {};
+  const tMap: { [key: string]: number } = {};
+
+  // Populate frequency map for string s
+  for (let i = 0; i < s.length; i++) {
+    const char = s[i];
+    sMap[char] = (sMap[char] || 0) + 1;
+  }
+
+  // Populate frequency map for string t
+  for (let i = 0; i < t.length; i++) {
+    const char = t[i];
+    tMap[char] = (tMap[char] || 0) + 1;
+  }
+
+  // Compare the frequency maps
+  for (const key in sMap) {
+    if (sMap[key] !== tMap[key]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
+Explanation >
+
+The function isAnagram takes in two strings s and t and returns a boolean indicating whether t is an anagram of s.
+
+First, we check if the lengths of the two strings are different. If they are, we know they cannot be anagrams, so we return false.
+
+Next, we create two frequency maps, sMap and tMap, to keep track of the count of each character in the respective strings.
+
+We then iterate over each character in string s and populate the sMap by incrementing the count for each character.
+
+Similarly, we iterate over each character in string t and populate the tMap.
+
+Finally, we compare the frequency maps. If any character has a different count in sMap and tMap, we know they are not anagrams, so we return false. 
+If all the characters have the same count, we return true.
+
+This solution has a time complexity of O(n), where n is the length of the strings, as we iterate over each character only once.
+
+Fastest solution >
+
+function isAnagram(s: string, t: string): boolean {
+    if (s.length !== t.length) {
+        return false;
+    }
+    
+    let s_count = new Array(26).fill(0);
+    let t_count = new Array(26).fill(0);
+
+    for (let i = 0; i < s.length; i ++) {
+        s_count[s[i].charCodeAt(0) - 97]++;
+        t_count[t[i].charCodeAt(0) - 97]++;
+    }
+
+    for (let i = 0; i < s_count.length; i ++) {
+        if (s_count[i] !== t_count[i]) {
+            return false;
+        }
+    }
+
+    return true;
+};
