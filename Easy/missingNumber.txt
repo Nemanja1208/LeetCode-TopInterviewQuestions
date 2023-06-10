@@ -1,0 +1,67 @@
+Given an array nums containing n distinct numbers in the range [0, n], return the only number in the range that is missing from the array.
+
+Example 1:
+Input: nums = [3,0,1]
+Output: 2
+Explanation: n = 3 since there are 3 numbers, so all numbers are in the range [0,3]. 2 is the missing number in the range since it does not appear in nums.
+
+Example 2:
+Input: nums = [0,1]
+Output: 2
+Explanation: n = 2 since there are 2 numbers, so all numbers are in the range [0,2]. 2 is the missing number in the range since it does not appear in nums.
+
+Example 3:
+Input: nums = [9,6,4,2,3,5,7,0,1]
+Output: 8
+Explanation: n = 9 since there are 9 numbers, so all numbers are in the range [0,9]. 8 is the missing number in the range since it does not appear in nums.
+
+
+Solution >
+
+function missingNumber(nums: number[]): number {
+  const n = nums.length;
+  let missingNumber = n; // Initialize missingNumber as the last number in the range
+
+  // XOR all numbers from 0 to n and all numbers in the array
+  for (let i = 0; i < n; i++) {
+    missingNumber ^= i ^ nums[i];
+  }
+
+  return missingNumber;
+}
+
+
+Explanation >
+
+We start by initializing n as the length of the nums array. Since the array contains n distinct numbers in the range [0, n], n represents the maximum possible number in the range.
+
+We initialize missingNumber as n. This is because if all the numbers in the range [0, n] were present in the nums array, then the missing number would be n.
+
+We iterate over the array using a for loop. For each index i, we perform an XOR operation between missingNumber, i, and nums[i].
+
+XOR (exclusive OR) is a bitwise operation that returns 1 if the corresponding bits in the two operands are different, and 0 if they are the same.
+The reason we use XOR here is that it is both commutative and associative. This means that the order in which the XOR operations are performed does not matter. 
+Additionally, XORing a number with itself results in 0.
+After the loop, missingNumber will hold the XOR of all the numbers from 0 to n and all the numbers in the array. Since XORing a number with itself results in 0, 
+the remaining value in missingNumber will be the missing number in the range.
+
+We return missingNumber, which represents the missing number in the range [0, n].
+
+Let's run the first example to see the solution in action:
+
+const nums = [3, 0, 1];
+const result = missingNumber(nums);
+console.log(result); // Output: 2
+In this example, the input array nums has a length of 3, representing the range [0, 3]. The missing number in the range is 2 since it does not appear in the array.
+
+Similarly, you can test the solution with the other examples you provided and it should return the correct missing number.
+
+Fastest solution >
+
+function missingNumber(nums: number[]): number {
+    let sum = nums.length * (nums.length + 1 )/ 2;
+    for(let i=0;i<nums.length;i++) {
+        sum-=nums[i]
+    }
+    return sum;
+};
