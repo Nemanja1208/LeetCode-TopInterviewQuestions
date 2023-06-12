@@ -1,0 +1,70 @@
+Given an integer array nums, move all 0's to the end of it while maintaining the relative order of the non-zero elements.
+
+Note that you must do this in-place without making a copy of the array.
+
+Example 1:
+Input: nums = [0,1,0,3,12]
+Output: [1,3,12,0,0]
+
+Example 2:
+Input: nums = [0]
+Output: [0]
+
+Solution >
+
+function moveZeroes(nums: number[]): void {
+    let insertPos = 0;
+    
+    // Move all non-zero elements to the beginning of the array
+    for (const num of nums) {
+        if (num !== 0) {
+            nums[insertPos] = num;
+            insertPos++;
+        }
+    }
+    
+    // Fill the remaining positions with zeroes
+    while (insertPos < nums.length) {
+        nums[insertPos] = 0;
+        insertPos++;
+    }
+}
+
+
+Explanation >
+
+The function moveZeroes takes an array of integers, nums, as its input and returns void (nothing). 
+It uses the two-pointer approach to move all the non-zero elements to the beginning of the array while keeping their relative order.
+
+We start by initializing insertPos to 0, which represents the index where the next non-zero element should be inserted.
+
+Next, we iterate through each element in the nums array using a for-each loop. If the current element is non-zero, 
+we assign it to the insertPos index in the array and increment insertPos. 
+This effectively moves all the non-zero elements to the beginning of the array, maintaining their relative order.
+
+Once the loop is finished, all the non-zero elements have been placed at the front of the array, starting from index 0 up to insertPos - 1. 
+Now, we need to fill the remaining positions with zeroes.
+
+We use a while loop to continue from where we left off, starting from insertPos and going up to the end of the array (nums.length). 
+In each iteration, we assign the value 0 to the current index, effectively filling the remaining positions with zeroes.
+
+After the while loop finishes, the array nums will have all the non-zero elements at the beginning, followed by the zeroes, while maintaining their relative order. 
+The function modifies the array in-place, without creating a copy.
+
+Fastest solution >
+
+function moveZeroes(nums: number[]): void {
+    let nonZero = 0;
+
+    for(let i = 0; i < nums.length; i++){
+        if(nums[i] !== 0){
+            nums[nonZero] = nums[i];
+            nonZero++;
+        }
+    }
+
+    while(nonZero < nums.length){
+        nums[nonZero] = 0;
+        nonZero++;
+    }
+};
