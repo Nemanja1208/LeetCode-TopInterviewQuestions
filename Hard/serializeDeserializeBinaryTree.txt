@@ -1,0 +1,336 @@
+Serialization is the process of converting a data structure or object into a sequence of bits so that it can be stored in a file or memory buffer, 
+or transmitted across a network connection link to be reconstructed later in the same or another computer environment.
+
+Design an algorithm to serialize and deserialize a binary tree. There is no restriction on how your serialization/deserialization algorithm should work. 
+You just need to ensure that a binary tree can be serialized to a string and this string can be deserialized to the original tree structure.
+
+Clarification: The input/output format is the same as how LeetCode serializes a binary tree. You do not necessarily need to follow this format,
+so please be creative and come up with different approaches yourself.
+
+Example 1:
+Input: root = [1,2,3,null,null,4,5]
+Output: [1,2,3,null,null,4,5]
+
+Example 2:
+Input: root = []
+Output: []
+
+Solution >
+
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     val: number
+ *     left: TreeNode | null
+ *     right: TreeNode | null
+ *     constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+ *         this.val = (val===undefined ? 0 : val)
+ *         this.left = (left===undefined ? null : left)
+ *         this.right = (right===undefined ? null : right)
+ *     }
+ * }
+ */
+
+/*
+ * Encodes a tree to a single string.
+ */
+function serialize(root: TreeNode | null): string {
+  if (root === null) {
+    return '';
+  }
+
+  const queue: (TreeNode | null)[] = [root];
+  const serialized: string[] = [];
+
+  while (queue.length > 0) {
+    const node = queue.shift();
+
+    if (node === null) {
+      serialized.push('null');
+    } else {
+      serialized.push(String(node.val));
+      queue.push(node.left);
+      queue.push(node.right);
+    }
+  }
+
+  return serialized.join(',');
+}
+
+function deserialize(data: string): TreeNode | null {
+  if (data === '') {
+    return null;
+  }
+
+  const values = data.split(',');
+  const rootValue = parseInt(values[0]);
+  const root = new TreeNode(rootValue);
+  const queue: TreeNode[] = [root];
+  let index = 1;
+
+  while (queue.length > 0) {
+    const node = queue.shift();
+
+    if (values[index] !== 'null') {
+      const leftValue = parseInt(values[index]);
+      const leftNode = new TreeNode(leftValue);
+      node.left = leftNode;
+      queue.push(leftNode);
+    }
+    index++;
+
+    if (values[index] !== 'null') {
+      const rightValue = parseInt(values[index]);
+      const rightNode = new TreeNode(rightValue);
+      node.right = rightNode;
+      queue.push(rightNode);
+    }
+    index++;
+  }
+
+  return root;
+}
+
+
+/**
+ * Your functions will be called as such:
+ * deserialize(serialize(root));
+ */
+
+Explanation >
+
+The TreeNode class represents a node in the binary tree, with a value (val) and references to its left and right children (left and right).
+
+The serialize function takes a root node as input and returns a serialized string representation of the binary tree. 
+It performs a level-order traversal of the tree using a queue. Starting with the root node, it dequeues nodes from the queue one by one. 
+If the dequeued node is null, it appends the string "null" to the serialized array. 
+Otherwise, it appends the string representation of the node's value (String(node.val)) and enqueues its left and right children, if they exist. 
+Finally, it joins the elements of the serialized array with commas and returns the resulting string.
+
+The deserialize function takes a serialized string as input and reconstructs the binary tree from it. If the input string is empty, it returns null. 
+It splits the string by commas to obtain an array of values. The first value corresponds to the value of the root node. 
+It creates a new TreeNode instance with this value as the root. It initializes a queue with the root node and sets the index variable to 1.
+
+The function then enters a loop where it dequeues nodes from the queue. For each dequeued node, it checks if the value at values[index] is not equal to "null". 
+If it's not "null", it converts the value to an integer and creates a new TreeNode instance for the left child of the current node. 
+It sets the left child of the current node and enqueues it into the queue. After processing the left child, it increments index.
+
+Next, it checks if the value at values[index] is not equal to "null". If it's not "null", it converts the value to an integer and creates 
+a new TreeNode instance for the right child of the current node. It sets the right child of the current node and enqueues it into the queue. 
+After processing the right child, it increments index again.
+
+The loop continues until there are no more nodes in the queue. Finally, it returns the root node of the reconstructed binary tree.
+
+The solution uses a level-order traversal to ensure that the structure of the original binary tree is preserved during serialization and deserialization.
+
+
+Fastest solution >
+
+LeetCode Logo
+Top Interview Questions
+Premium
+0
+
+avatar
+Accepted
+Next question
+300. Longest Increasing Subsequence
+More challenges
+271. Encode and Decode Strings
+449. Serialize and Deserialize BST
+652. Find Duplicate Subtrees
+All statuses
+All languages
+Accepted
+a few seconds ago
+TypeScript
+
+
+nevaljao994
+nevaljao994
+Jun 19, 2023 09:56
+Details
+Solution
+TypeScript
+Runtime
+123 ms
+Beats
+58.72%
+Memory
+56.9 MB
+Beats
+14.68%
+Click the distribution chart to view more details
+Notes
+Write your notes here
+Related Tags
+Select tags
+0/5
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     val: number
+ *     left: TreeNode | null
+ *     right: TreeNode | null
+ *     constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+ *         this.val = (val===undefined ? 0 : val)
+ *         this.left = (left===undefined ? null : left)
+ *         this.right = (right===undefined ? null : right)
+ *     }
+ * }
+ */
+
+/*
+ * Encodes a tree to a single string.
+ */
+function serialize(root: TreeNode | null): string {
+  if (root === null) {
+    return '';
+  }
+
+  const queue: (TreeNode | null)[] = [root];
+  const serialized: string[] = [];
+
+  while (queue.length > 0) {
+    const node = queue.shift();
+
+    if (node === null) {
+      serialized.push('null');
+    } else {
+      serialized.push(String(node.val));
+      queue.push(node.left);
+      queue.push(node.right);
+    }
+  }
+
+  return serialized.join(',');
+}
+
+function deserialize(data: string): TreeNode | null {
+  if (data === '') {
+    return null;
+  }
+
+  const values = data.split(',');
+  const rootValue = parseInt(values[0]);
+  const root = new TreeNode(rootValue);
+  const queue: TreeNode[] = [root];
+  let index = 1;
+
+  while (queue.length > 0) {
+    const node = queue.shift();
+
+    if (values[index] !== 'null') {
+      const leftValue = parseInt(values[index]);
+      const leftNode = new TreeNode(leftValue);
+      node.left = leftNode;
+      queue.push(leftNode);
+    }
+    index++;
+
+    if (values[index] !== 'null') {
+      const rightValue = parseInt(values[index]);
+      const rightNode = new TreeNode(rightValue);
+      node.right = rightNode;
+      queue.push(rightNode);
+    }
+    index++;
+  }
+
+  return root;
+}
+
+
+/**
+ * Your functions will be called as such:
+ * deserialize(serialize(root));
+ */
+
+Runtime
+Memory
+Runtime
+123 ms
+Beats
+58.72%
+Accepted Solutions Runtime Distribution (%)
+Click on the chart to check sample codes
+Sample 89 ms submission
+
+
+
+/**
+ * Definition for a binary tree node.
+ * class TreeNode {
+ *     val: number
+ *     left: TreeNode | null
+ *     right: TreeNode | null
+ *     constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+ *         this.val = (val===undefined ? 0 : val)
+ *         this.left = (left===undefined ? null : left)
+ *         this.right = (right===undefined ? null : right)
+ *     }
+ * }
+ */
+
+/*
+ * Encodes a tree to a single string.
+ */
+function serialize(root: TreeNode | null): string {
+  // const result: string[] = [];
+
+  // function dfs(node: TreeNode | null) {
+  //   if (!node) {
+  //     result.push('N');
+  //     return;
+  //   }
+
+  //   result.push(node.val.toString());
+
+  //   dfs(node.left);
+  //   dfs(node.right);
+  // }
+
+  // dfs(root);
+
+  // return result.join(',');
+
+  if (!root) return 'N';
+
+  const serializedLeft = serialize(root.left);
+  const serializedRight = serialize(root.right);
+
+  return `${root.val},${serializedLeft},${serializedRight}`;
+};
+
+/*
+ * Decodes your encoded data to tree.
+ */
+function deserialize(data: string): TreeNode | null {
+  const vals = data.split(',');
+  let i = 0;
+
+  function dfs() {
+    if (vals[i] === 'N') {
+      i++;
+      return null;
+    }
+    const node = new TreeNode(Number(vals[i]));
+    i++;
+
+    node.left = dfs();
+    node.right = dfs()
+
+    return node;
+  }
+
+  return dfs();
+};
+
+
+/**
+ * Your functions will be called as such:
+ * deserialize(serialize(root));
+ */
+Console
+
+LeetCode - The World's Leading Online Programming Learning Platform
