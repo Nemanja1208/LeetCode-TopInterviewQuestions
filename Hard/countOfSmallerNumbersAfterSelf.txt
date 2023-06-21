@@ -1,0 +1,120 @@
+Given an integer array nums, return an integer array counts where counts[i] is the number of smaller elements to the right of nums[i].
+
+Example 1:
+Input: nums = [5,2,6,1]
+Output: [2,1,1,0]
+Explanation:
+To the right of 5 there are 2 smaller elements (2 and 1).
+To the right of 2 there is only 1 smaller element (1).
+To the right of 6 there is 1 smaller element (1).
+To the right of 1 there is 0 smaller element.
+
+Example 2:
+Input: nums = [-1]
+Output: [0]
+
+Example 3:
+Input: nums = [-1,-1]
+Output: [0,0]
+
+
+Solution >
+
+function countSmaller(nums: number[]): number[] {
+  const n = nums.length;
+  const result: number[] = new Array(n);
+  const sortedNums: number[] = [];
+  
+  for (let i = n - 1; i >= 0; i--) {
+    const num = nums[i];
+    const index = findInsertionIndex(sortedNums, num);
+    result[i] = index;
+    sortedNums.splice(index, 0, num);
+  }
+  
+  return result;
+}
+
+function findInsertionIndex(nums: number[], target: number): number {
+  let left = 0;
+  let right = nums.length;
+  
+  while (left < right) {
+    const mid = Math.floor((left + right) / 2);
+    
+    if (nums[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid;
+    }
+  }
+  
+  return left;
+}
+
+
+
+
+Explanation >
+
+This approach uses a sorted array (sortedNums) to keep track of the elements encountered so far while traversing the input array in reverse order. 
+We use the findInsertionIndex function to find the correct position to insert the current number in the sorted array, which gives us the count of smaller elements on the right side.
+
+Here's how the solution works:
+
+We initialize an empty array sortedNums to store the encountered numbers in sorted order and create an empty result array result of the same length as the input array nums.
+We iterate over the input array nums in reverse order using a for loop.
+For each element num at index i, we find the insertion index using the findInsertionIndex function. This function performs a binary search on sortedNums to find the index where num should be inserted to maintain the sorted order.
+We assign the insertion index to result[i], which represents the count of smaller elements on the right side of num.
+We insert num at the calculated insertion index using splice method, which maintains the sorted order of sortedNums.
+Finally, we return the result array result.
+The findInsertionIndex function uses a binary search approach to find the correct index for insertion in the sorted array. 
+It compares the middle element with the target number and adjusts the search range (left and right) accordingly until it finds the correct index.
+
+This implementation achieves a time complexity of O(n log n), where n is the length of the input array nums. 
+The binary search operation inside findInsertionIndex takes O(log n) time, and we perform it n times during the iteration.
+
+
+Fastest solution >
+
+function countSmaller(nums: number[]): number[] {
+  const res = new Array(nums.length).fill(0);
+  const sortedNums = [...nums].sort((a, b) => a - b);
+  const ranks = new Map();
+  let rank = 0;
+
+  for (let i = 0; i < sortedNums.length; i++) {
+    if (!ranks.has(sortedNums[i])) {
+      ranks.set(sortedNums[i], ++rank);
+    }
+  }
+
+  const binaryIndexedTree = new Array(ranks.size + 1).fill(0);
+
+  function lowbit(x: number) {
+    return x & -x;
+  }
+
+  function update(x: number) {
+    while (x <= ranks.size) {
+      binaryIndexedTree[x]++;
+      x += lowbit(x);
+    }
+  }
+
+  function query(x: number) {
+    let sum = 0;
+    while (x > 0) {
+      sum += binaryIndexedTree[x];
+      x -= lowbit(x);
+    }
+    return sum;
+  }
+
+  for (let i = nums.length - 1; i >= 0; i--) {
+    res[i] = query(ranks.get(nums[i]) - 1);
+    update(ranks.get(nums[i]));
+  }
+
+  return res;
+}
