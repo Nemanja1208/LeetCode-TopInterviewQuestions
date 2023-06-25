@@ -1,0 +1,80 @@
+Given an integer n, return true if it is a power of three. Otherwise, return false.
+
+An integer n is a power of three, if there exists an integer x such that n == 3x.
+
+Example 1:
+Input: n = 27
+Output: true
+Explanation: 27 = 33
+
+Example 2:
+Input: n = 0
+Output: false
+Explanation: There is no x where 3x = 0.
+
+Example 3:
+Input: n = -1
+Output: false
+Explanation: There is no x where 3x = (-1).
+ 
+
+Constraints:
+
+-231 <= n <= 231 - 1
+ 
+Follow up: Could you solve it without loops/recursion?
+
+
+Solution >
+
+function isPowerOfThree(n: number): boolean {
+    if (n <= 0) {
+        return false;
+    }
+    
+    while (n % 3 === 0) {
+        n /= 3;
+    }
+    
+    return n === 1;
+}
+
+
+Explanation >
+
+The function isPowerOfThree takes an integer n as input and returns a boolean indicating whether n is a power of three or not.
+
+First, we check if n is less than or equal to zero. If it is, we can immediately return false because a power of three cannot be zero or negative.
+
+Next, we enter a while loop. In each iteration, we check if n is divisible by 3. If it is, we divide n by 3. This process continues until n is no longer divisible by 3.
+
+After the loop, we check if n is equal to 1. If it is, then n was originally a power of three, and all the divisions by 3 reduced it to 1. 
+In that case, we return true. Otherwise, n is not a power of three, and we return false.
+
+This solution uses a loop to continuously divide n by 3 until it is no longer divisible. However, if you want to solve it without loops or recursion, you can use the logarithmic approach:
+
+function isPowerOfThree(n: number): boolean {
+    if (n <= 0) {
+        return false;
+    }
+    
+    const x = Math.log10(n) / Math.log10(3);
+    
+    return Math.floor(x) === x;
+}
+In this approach, we calculate the logarithm base 3 of n using the change of base formula: log3(n) = log10(n) / log10(3). 
+If x is an integer, then n is a power of three. 
+We check if the floor of x is equal to x to determine if it is an integer. If it is, we return true; otherwise, we return false.
+
+Fastest solution >
+
+function isPowerOfThree(n: number): boolean {
+   
+    if ( n <= 0) return false
+    while (n > 1) {
+        n = n/3
+        //console.log(n)
+    }
+    if (n === 1) return true
+    else return false
+};
