@@ -1,0 +1,171 @@
+Given an m x n integers matrix, return the length of the longest increasing path in matrix.
+
+From each cell, you can either move in four directions: left, right, up, or down. 
+You may not move diagonally or move outside the boundary (i.e., wrap-around is not allowed).
+
+Example 1:
+Input: matrix = [[9,9,4],[6,6,8],[2,1,1]]
+Output: 4
+Explanation: The longest increasing path is [1, 2, 6, 9].
+
+Example 2:
+Input: matrix = [[3,4,5],[3,2,6],[2,2,1]]
+Output: 4
+Explanation: The longest increasing path is [3, 4, 5, 6]. Moving diagonally is not allowed.
+
+Example 3:
+Input: matrix = [[1]]
+Output: 1
+
+Constraints:
+
+m == matrix.length
+n == matrix[i].length
+1 <= m, n <= 200
+0 <= matrix[i][j] <= 231 - 1
+
+Solution >
+
+function longestIncreasingPath(matrix: number[][]): number {
+  if (matrix.length === 0) return 0;
+
+  const m = matrix.length;
+  const n = matrix[0].length;
+  const memo: number[][] = [];
+
+  let maxLength = 0;
+
+  for (let i = 0; i < m; i++) {
+    memo.push(new Array(n).fill(0));
+  }
+
+  for (let i = 0; i < m; i++) {
+    for (let j = 0; j < n; j++) {
+      const length = dfs(matrix, i, j, memo);
+      maxLength = Math.max(maxLength, length);
+    }
+  }
+
+  return maxLength;
+}
+
+function dfs(matrix: number[][], i: number, j: number, memo: number[][]): number {
+  if (memo[i][j] !== 0) {
+    return memo[i][j];
+  }
+
+  const directions: [number, number][] = [
+    [-1, 0], // up
+    [1, 0],  // down
+    [0, -1], // left
+    [0, 1]   // right
+  ];
+
+  let maxLength = 1;
+
+  for (const [dx, dy] of directions) {
+    const newRow = i + dx;
+    const newCol = j + dy;
+
+    if (
+      newRow >= 0 &&
+      newRow < matrix.length &&
+      newCol >= 0 &&
+      newCol < matrix[0].length &&
+      matrix[newRow][newCol] > matrix[i][j]
+    ) {
+      const length = 1 + dfs(matrix, newRow, newCol, memo);
+      maxLength = Math.max(maxLength, length);
+    }
+  }
+
+  memo[i][j] = maxLength;
+  return maxLength;
+}
+
+Explanation >
+
+To solve this problem, we can use a depth-first search (DFS) approach with memoization. 
+The main idea is to start from each cell in the matrix and perform a depth-first search to find the longest increasing path starting from that cell. 
+We can use memoization to store the length of the longest increasing path starting from each cell so that if the same cell is encountered again, 
+we can retrieve the result from the memo instead of recomputing it.
+
+Here are the steps of the solution:
+
+Define the function longestIncreasingPath that takes the matrix as input and returns the length of the longest increasing path.
+
+Check if the matrix is empty. If it is, return 0, as there are no cells to traverse.
+
+Initialize variables m and n to store the number of rows and columns in the matrix, respectively. Set them as matrix.length and matrix[0].length.
+
+Create a memoization array memo of size m by n. This array will store the length of the longest increasing path starting from each cell. 
+Initialize all values in the memo array to 0.
+
+Initialize a variable maxLength to 0. This variable will keep track of the maximum length of the increasing path found so far.
+
+Iterate over each cell in the matrix using two nested loops. Use variables i and j to represent the current cell's coordinates.
+
+For each cell, call the dfs function to perform a depth-first search and find the length of the longest increasing path starting from that cell. 
+Pass the matrix, i, j, and memo as arguments to the dfs function.
+
+Update the maxLength variable with the maximum value between its current value and the length obtained from the dfs function.
+
+After the iteration is complete, return the value of maxLength, which represents the length of the longest increasing path in the matrix.
+
+Define the dfs function that takes the matrix, current cell coordinates i and j, and the memo array as arguments. 
+This function will perform a depth-first search starting from the current cell.
+
+Inside the dfs function, check if the memo value for the current cell is already calculated. 
+If it is not 0, return the memoized value instead of recomputing it. 
+This step ensures that we avoid redundant computations and use the previously calculated results.
+
+Define a directions array that contains the four possible movements: up, down, left, and right. 
+Each movement is represented by a pair [dx, dy], where dx represents the change in the row coordinate and dy represents the change in the column coordinate.
+
+Initialize a variable maxLength to 1. This variable represents the length of the longest increasing path starting from the current cell. 
+It is initially set to 1 because the current cell itself is part of the increasing path.
+
+Iterate over each direction in the directions array.
+
+For each direction, calculate the new row and column coordinates by adding dx and dy to the current coordinates i and j, respectively.
+
+Check if the new coordinates are within the bounds of the matrix and if the value in the new cell is greater than the value in the current cell.
+
+If the conditions are satisfied, recursively call the dfs function with the new coordinates to continue the depth-first search.
+
+Calculate the length of the increasing path starting from the new cell as 1 plus the length obtained from the recursive call.
+
+Update the maxLength variable with the maximum value between its current value and the length obtained from the recursive call.
+
+After the loop is complete, store the value of maxLength in the memo array for the current cell.
+
+Finally, return the value of maxLength, which represents the length of the longest increasing path starting from the current cell.
+
+This solution ensures that each cell is visited only once and the length of the longest increasing path is calculated and stored in the memoization array 
+for efficient retrieval. By exploring all possible starting cells, we can find the maximum length of the increasing path in the matrix.
+
+Fastest solution >
+
+function longestIncreasingPath(matrix: number[][]): number {
+    let cache = Array.from(
+        Array(matrix.length), 
+        _=> Array(matrix[0].length).fill(-1))
+
+    let dfs = (i: number, j: number) : number=> {
+        if (cache[i][j] != -1) return cache[i][j]
+        let res = 1
+        if (i > 0 && matrix[i][j] > matrix[i - 1][j]) res = Math.max(res, dfs(i - 1, j) + 1)
+        if (i < matrix.length - 1 && matrix[i][j] > matrix[i + 1][j]) res = Math.max(res, dfs(i + 1, j) + 1)
+        if (j > 0 && matrix[i][j] > matrix[i][j - 1]) res = Math.max(res, dfs(i, j - 1) + 1)
+        if (j < matrix[0].length - 1 && matrix[i][j] > matrix[i][j + 1]) res = Math.max(res, dfs(i, j + 1) + 1)
+        cache[i][j] = res
+        return res
+    }
+    let res = 1
+    for (let i = 0; i < matrix.length; i ++) {
+        for (let j = 0; j < matrix[0].length; j ++) {
+            res = Math.max(dfs(i, j), res)
+        }
+    }
+    return res
+};
