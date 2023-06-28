@@ -1,0 +1,82 @@
+Given an integer array nums, return true if there exists a triple of indices (i, j, k) 
+such that i < j < k and nums[i] < nums[j] < nums[k]. If no such indices exists, return false.
+
+Example 1:
+Input: nums = [1,2,3,4,5]
+Output: true
+Explanation: Any triplet where i < j < k is valid.
+
+Example 2:
+Input: nums = [5,4,3,2,1]
+Output: false
+Explanation: No triplet exists.
+
+Example 3:
+Input: nums = [2,1,5,0,4,6]
+Output: true
+Explanation: The triplet (3, 4, 5) is valid because nums[3] == 0 < nums[4] == 4 < nums[5] == 6.
+ 
+Constraints:
+
+1 <= nums.length <= 5 * 105
+-231 <= nums[i] <= 231 - 1
+ 
+Follow up: Could you implement a solution that runs in O(n) time complexity and O(1) space complexity?
+
+
+Solution >
+
+function increasingTriplet(nums: number[]): boolean {
+  let firstMin = Infinity;  // Smallest element encountered so far
+  let secondMin = Infinity; // Second smallest element encountered so far
+
+  for (const num of nums) {
+    if (num <= firstMin) {
+      // Update the smallest element
+      firstMin = num;
+    } else if (num <= secondMin) {
+      // Update the second smallest element
+      secondMin = num;
+    } else {
+      // We found a number greater than both firstMin and secondMin
+      return true;
+    }
+  }
+
+  return false; // No increasing triplet found
+}
+
+
+
+Explanation >
+
+The idea behind this solution is to keep track of the smallest and second smallest elements encountered so far. If we find a number greater than both of them, we have found an increasing triplet.
+
+Initially, we set firstMin and secondMin to Infinity to ensure that any number encountered will be smaller than them. 
+Then, for each number num in the array nums, we update firstMin, secondMin, or return true depending on the comparison:
+
+If num is smaller than or equal to firstMin, we update firstMin to num.
+If num is smaller than or equal to secondMin, we update secondMin to num.
+If num is greater than both firstMin and secondMin, we have found an increasing triplet, and we return true.
+If we finish iterating through the entire array without finding an increasing triplet, we return false.
+
+This solution ensures O(n) time complexity because we only iterate through the array once. 
+Additionally, it has O(1) space complexity because it uses a constant amount of extra space to store firstMin and secondMin, regardless of the size of the input array.
+
+Fastest solution >
+
+function increasingTriplet(nums: number[]): boolean {
+    let first = Infinity, second = Infinity;
+    
+    for (let i = 0; i < nums.length; i++) {
+        if (nums[i] <= first) {
+            first = nums[i];
+        } else if (nums[i] <= second) {
+            second = nums[i];
+        } else {
+            return true;
+        }
+    }
+    
+    return false;
+};
