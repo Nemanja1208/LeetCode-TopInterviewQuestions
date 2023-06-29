@@ -1,0 +1,171 @@
+You are given a nested list of integers nestedList. 
+Each element is either an integer or a list whose elements may also be integers or other lists. 
+Implement an iterator to flatten it.
+
+Implement the NestedIterator class:
+
+NestedIterator(List<NestedInteger> nestedList) Initializes the iterator with the nested list nestedList.
+int next() Returns the next integer in the nested list.
+boolean hasNext() Returns true if there are still some integers in the nested list and false otherwise.
+Your code will be tested with the following pseudocode:
+
+initialize iterator with nestedList
+res = []
+while iterator.hasNext()
+    append iterator.next() to the end of res
+return res
+If res matches the expected flattened list, then your code will be judged as correct.
+
+Example 1:
+Input: nestedList = [[1,1],2,[1,1]]
+Output: [1,1,2,1,1]
+Explanation: By calling next repeatedly until hasNext returns false, the order of elements returned by next should be: [1,1,2,1,1].
+
+Example 2:
+Input: nestedList = [1,[4,[6]]]
+Output: [1,4,6]
+Explanation: By calling next repeatedly until hasNext returns false, the order of elements returned by next should be: [1,4,6].
+ 
+Constraints:
+
+1 <= nestedList.length <= 500
+The values of the integers in the nested list is in the range [-106, 106].
+
+
+Solution :
+
+/**
+ * // This is the interface that allows for creating nested lists.
+ * // You should not implement it, or speculate about its implementation
+ * class NestedInteger {
+ *     If value is provided, then it holds a single integer
+ *     Otherwise it holds an empty nested list
+ *     constructor(value?: number) {
+ *         ...
+ *     };
+ *
+ *     Return true if this NestedInteger holds a single integer, rather than a nested list.
+ *     isInteger(): boolean {
+ *         ...
+ *     };
+ *
+ *     Return the single integer that this NestedInteger holds, if it holds a single integer
+ *     Return null if this NestedInteger holds a nested list
+ *     getInteger(): number | null {
+ *         ...
+ *     };
+ *
+ *     Set this NestedInteger to hold a single integer equal to value.
+ *     setInteger(value: number) {
+ *         ...
+ *     };
+ *
+ *     Set this NestedInteger to hold a nested list and adds a nested integer elem to it.
+ *     add(elem: NestedInteger) {
+ *         ...
+ *     };
+ *
+ *     Return the nested list that this NestedInteger holds,
+ *     or an empty list if this NestedInteger holds a single integer
+ *     getList(): NestedInteger[] {
+ *         ...
+ *     };
+ * };
+ */
+
+class NestedIterator {
+  stack: NestedInteger[];
+
+  constructor(nestedList: NestedInteger[]) {
+    // Initialize the stack with the provided nestedList in reverse order
+    this.stack = nestedList.reverse();
+  }
+
+  hasNext(): boolean {
+    // Continue iterating until the stack is empty or an integer is found
+    while (this.stack.length !== 0) {
+      // If the top element of the stack is an integer, return true
+      if (this.stack[this.stack.length - 1].isInteger()) {
+        return true;
+      } else {
+        // If the top element is a nested list, flatten it and add its elements to the stack
+        const nestedList = this.stack.pop().getList();
+        for (let i = nestedList.length - 1; i >= 0; i--) {
+          this.stack.push(nestedList[i]);
+        }
+      }
+    }
+    return false;
+  }
+
+  next(): number {
+    // Ensure that hasNext() is called before calling next()
+    if (!this.hasNext()) {
+      throw new Error("No more elements");
+    }
+
+    // Return the top element of the stack (which is an integer) and remove it
+    return this.stack.pop().getInteger()!;
+  }
+}
+
+
+/**
+ * Your ParkingSystem object will be instantiated and called as such:
+ * var obj = new NestedIterator(nestedList)
+ * var a: number[] = []
+ * while (obj.hasNext()) a.push(obj.next());
+ */
+
+Explanation :
+
+In the constructor, we initialize the stack with the provided nestedList. To simplify the iteration process, we reverse the list so that elements can be popped from the end efficiently.
+
+The hasNext() method checks if there are still elements in the stack. It continues the iteration until the stack is empty or an integer is found. 
+If the top element of the stack is an integer, it returns true. 
+If the top element is a nested list, we flatten it by popping it from the stack, retrieving its nested list using getList(), 
+and pushing its elements back to the stack in reverse order.
+
+The next() method returns the next integer in the nested list. Before calling next(), it's necessary to ensure that there are more elements available by calling hasNext(). 
+If no more elements are available, an exception is thrown. Otherwise, we pop the top element of the stack (which is an integer) and return its value using getInteger().
+
+The usage of the NestedIterator class would be as follows:
+
+const nestedList = [new NestedInteger([1, 1]), new NestedInteger(2), new NestedInteger([1, 1])];
+const iterator = new NestedIterator(nestedList);
+const res: number[] = [];
+while (iterator.hasNext()) {
+  res.push(iterator.next());
+}
+console.log(res); // Output: [1, 1, 2, 1, 1]
+In this example, we create a nested list with three elements: [1, 1], 2, and [1, 1]. 
+We initialize the iterator with this nested list and repeatedly call next() and append the returned integer to the res array until hasNext() returns false.
+ Finally, we print the resulting array, which should match the expected flattened list [1, 1, 2, 1, 1].
+
+
+Fastest solution :
+
+class NestedIterator {
+    flatList:number[];
+    constructor(nestedList: NestedInteger[]) {
+		this.flatList = [];
+        const stack:NestedInteger[] = [...nestedList];
+        while(stack.length){
+            const next = stack.pop();
+            if(next.isInteger()){
+                this.flatList.push(next.getInteger());
+            }else{
+                stack.push(...next.getList());
+            }
+        }
+        
+    }
+
+    hasNext(): boolean {
+		return this.flatList.length > 0;
+    }
+
+	next(): number {
+		return this.flatList.pop();
+    }
+}
