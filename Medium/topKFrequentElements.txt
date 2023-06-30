@@ -1,0 +1,81 @@
+Given an integer array nums and an integer k, return the k most frequent elements. 
+You may return the answer in any order.
+
+Example 1:
+Input: nums = [1,1,1,2,2,3], k = 2
+Output: [1,2]
+
+Example 2:
+Input: nums = [1], k = 1
+Output: [1]
+ 
+Constraints:
+
+1 <= nums.length <= 105
+-104 <= nums[i] <= 104
+k is in the range [1, the number of unique elements in the array].
+It is guaranteed that the answer is unique.
+ 
+
+Follow up: Your algorithm's time complexity must be better than O(n log n), where n is the array's size.
+
+
+Solution >
+
+function topKFrequent(nums: number[], k: number): number[] {
+    // Step 1: Count the frequency of each number using a hashmap
+    const frequencyMap: Map<number, number> = new Map();
+    for (const num of nums) {
+        frequencyMap.set(num, (frequencyMap.get(num) || 0) + 1);
+    }
+
+    // Step 2: Create an array of [number, frequency] pairs
+    const frequencyPairs: [number, number][] = [];
+    for (const [num, frequency] of frequencyMap.entries()) {
+        frequencyPairs.push([num, frequency]);
+    }
+
+    // Step 3: Sort the frequencyPairs array based on frequency in descending order
+    frequencyPairs.sort((a, b) => b[1] - a[1]);
+
+    // Step 4: Extract the k most frequent elements
+    const result: number[] = [];
+    for (let i = 0; i < k; i++) {
+        result.push(frequencyPairs[i][0]);
+    }
+
+    return result;
+}
+
+
+
+Explanation >
+
+We start by creating a frequencyMap using a Map object. This map will store each number as a key and its frequency as the value. 
+We iterate through the input nums array and update the frequency in the map accordingly.
+
+Next, we create an array of [number, frequency] pairs called frequencyPairs. 
+We iterate over the frequencyMap entries and push each entry as a pair into the frequencyPairs array.
+
+We sort the frequencyPairs array based on the frequency in descending order. This step ensures that the most frequent elements are at the beginning of the array.
+
+Finally, we extract the first k elements from the sorted frequencyPairs array and return them as the result.
+
+The time complexity of this solution is determined by the number of elements in the nums array, which is denoted as n. 
+Constructing the frequencyMap takes O(n) time, sorting the frequencyPairs array takes O(n log n) time, and extracting the first k elements takes O(k) time. 
+Since k is generally smaller than n, the overall time complexity is better than O(n log n), as required.
+
+
+Fastest Solution >
+
+function topKFrequent(nums: number[], k: number): number[] {
+    const cache = new Map<number, number>();
+    nums.forEach(num => {
+        cache.has(num) ? cache.set(num, cache.get(num) + 1) : cache.set(num, 1);
+    });
+    return Array.from(cache)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, k)
+        .map(entry => Number(entry[0]));
+   
+};
