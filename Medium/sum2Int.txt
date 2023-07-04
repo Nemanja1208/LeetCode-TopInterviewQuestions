@@ -1,0 +1,46 @@
+Given two integers a and b, return the sum of the two integers without using the operators + and -.
+
+Example 1:
+Input: a = 1, b = 2
+Output: 3
+
+Example 2:
+Input: a = 2, b = 3
+Output: 5
+
+Constraints:
+-1000 <= a, b <= 1000
+
+Solution >
+
+function getSum(a: number, b: number): number {
+  while (b !== 0) {
+    const carry = (a & b) << 1;  // Calculate the carry by performing AND and left-shifting
+    a = a ^ b;                   // Calculate the sum without considering the carry
+    b = carry;                   // Assign the carry to b for the next iteration
+  }
+  return a;
+}
+
+
+Explanation >
+
+We start with a while loop that continues until b becomes zero. This loop will perform the addition operation.
+
+Inside the loop, we calculate the carry by performing the bitwise AND operation (a & b) and then left-shifting the result by one position using << 1. This mimics the carry operation in regular addition.
+
+Next, we calculate the sum without considering the carry by performing the bitwise XOR operation (a ^ b). The XOR operator gives us the sum of the two integers without considering any carry.
+
+Finally, we assign the carry value to b for the next iteration and continue the loop until b becomes zero.
+
+After the loop ends, we return the final value of a, which represents the sum of the two input integers.
+
+This solution works because the bitwise XOR operation (a ^ b) gives us the sum of two integers without considering any carry. 
+The carry is calculated using the bitwise AND operation (a & b), which is then left-shifted to align it in the correct position for the next iteration. 
+The process continues until there is no carry left, resulting in the final sum of the two integers.
+
+Fastest solution >
+
+function getSum(a: number, b: number): number {
+return a+b
+};
