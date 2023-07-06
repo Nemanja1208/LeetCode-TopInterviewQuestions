@@ -1,0 +1,160 @@
+Implement the RandomizedSet class:
+
+RandomizedSet() Initializes the RandomizedSet object.
+bool insert(int val) Inserts an item val into the set if not present. Returns true if the item was not present, false otherwise.
+bool remove(int val) Removes an item val from the set if present. Returns true if the item was present, false otherwise.
+int getRandom() Returns a random element from the current set of elements 
+(it's guaranteed that at least one element exists when this method is called). 
+Each element must have the same probability of being returned.
+You must implement the functions of the class such that each function works in average O(1) time complexity.
+
+Example 1:
+Input
+["RandomizedSet", "insert", "remove", "insert", "getRandom", "remove", "insert", "getRandom"]
+[[], [1], [2], [2], [], [1], [2], []]
+Output
+[null, true, false, true, 2, true, false, 2]
+
+Explanation
+RandomizedSet randomizedSet = new RandomizedSet();
+randomizedSet.insert(1); // Inserts 1 to the set. Returns true as 1 was inserted successfully.
+randomizedSet.remove(2); // Returns false as 2 does not exist in the set.
+randomizedSet.insert(2); // Inserts 2 to the set, returns true. Set now contains [1,2].
+randomizedSet.getRandom(); // getRandom() should return either 1 or 2 randomly.
+randomizedSet.remove(1); // Removes 1 from the set, returns true. Set now contains [2].
+randomizedSet.insert(2); // 2 was already in the set, so return false.
+randomizedSet.getRandom(); // Since 2 is the only number in the set, getRandom() will always return 2.
+ 
+Constraints:
+
+-231 <= val <= 231 - 1
+At most 2 * 105 calls will be made to insert, remove, and getRandom.
+There will be at least one element in the data structure when getRandom is called.
+
+
+Solution >
+
+class RandomizedSet {
+  private values: number[];
+  private indices: Map<number, number>;
+
+  constructor() {
+    // Initialize an empty array to store the values
+    this.values = [];
+
+    // Initialize an empty map to store the indices of the values
+    this.indices = new Map<number, number>();
+  }
+
+  insert(val: number): boolean {
+    // Check if the value already exists in the set
+    if (this.indices.has(val)) {
+      return false; // Value already present, return false
+    }
+
+    // Add the value to the end of the values array
+    this.values.push(val);
+
+    // Store the index of the value in the indices map
+    this.indices.set(val, this.values.length - 1);
+
+    return true; // Value inserted successfully, return true
+  }
+
+  remove(val: number): boolean {
+    // Check if the value exists in the set
+    if (!this.indices.has(val)) {
+      return false; // Value not present, return false
+    }
+
+    // Retrieve the index of the value from the indices map
+    const index = this.indices.get(val)!;
+
+    // Replace the value with the last value in the values array
+    const lastValue = this.values[this.values.length - 1];
+    this.values[index] = lastValue;
+
+    // Update the index of the last value in the indices map
+    this.indices.set(lastValue, index);
+
+    // Remove the value from the values array and the indices map
+    this.values.pop();
+    this.indices.delete(val);
+
+    return true; // Value removed successfully, return true
+  }
+
+  getRandom(): number {
+    // Generate a random index within the range of valid indices
+    const randomIndex = Math.floor(Math.random() * this.values.length);
+
+    // Return the value at the random index
+    return this.values[randomIndex];
+  }
+}
+
+
+
+Explanation >
+
+The RandomizedSet class maintains an array called values to store the elements and a Map called indices to store the indices of each element in the array.
+The insert function checks if the value already exists in the set by using the indices map. If the value already exists, it returns false to indicate that the value was not inserted. 
+Otherwise, it adds the value to the end of the values array, updates its index in the indices map, and returns true to indicate successful insertion.
+The remove function checks if the value exists in the set by using the indices map. If the value doesn't exist, it returns false to indicate that the value was not removed. 
+Otherwise, it retrieves the index of the value from the indices map and replaces the value with the last value in the values array. 
+It then updates the index of the last value in the indices map, removes the last value from the array, and deletes the value's entry from the indices map. 
+Finally, it returns true to indicate successful removal.
+The getRandom function generates a random index within the range of valid indices in the values array and returns the corresponding element. 
+Since each element has an equal probability of being chosen, this function satisfies the requirement of returning a random element with the same probability.
+
+The time complexity of each function isThe time complexity of each function is O(1) on average:
+
+The insert function performs operations that take constant time: adding an element to the end of the values array and setting a value in the indices map.
+The remove function also performs operations that take constant time: replacing an element in the values array, updating the index in the indices map, 
+and removing the last element from the array and deleting a value from the indices map.
+The getRandom function simply generates a random index and retrieves the element at that index from the values array, which both take constant time.
+Therefore, all the operations in the RandomizedSet class have an average time complexity of O(1), as required.
+
+Fastest solution > 
+
+class RandomizedSet {
+    private values;
+    private index;
+
+    constructor() {
+        this.values = new Array();
+        this.index = new Map<number, number>();
+    }
+
+    insert(val: number): boolean {
+        if (this.index.has(val)) return false;
+
+        this.values.push(val);
+        this.index.set(val, this.values.length - 1);
+        return true;
+    }
+
+    remove(val: number): boolean {
+        if (!this.index.has(val)) return false;
+
+        const idx = this.index.get(val);
+        const temp = this.values[this.values.length - 1];
+        this.values[idx] = temp;
+        this.values.pop();
+
+        // update last value index
+        this.index.delete(val);
+        this.index.delete(temp);
+        // when not the only value in values
+        (idx !== this.values.length) && this.index.set(temp, idx);
+        
+        return true;
+    }
+
+    getRandom(): number {
+        const l = 0;
+        const h = this.values.length - 1;
+        const idx = Math.floor(Math.random() * (h - l + 1) + l);
+        return this.values[idx];
+    }
+}
