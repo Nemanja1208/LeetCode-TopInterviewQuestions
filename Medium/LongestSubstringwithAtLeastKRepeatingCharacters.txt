@@ -1,0 +1,127 @@
+Given a string s and an integer k, return the length of the longest substring of s 
+such that the frequency of each character in this substring is greater than or equal to k.
+
+Example 1:
+Input: s = "aaabb", k = 3
+Output: 3
+Explanation: The longest substring is "aaa", as 'a' is repeated 3 times.
+
+Example 2:
+Input: s = "ababbc", k = 2
+Output: 5
+Explanation: The longest substring is "ababb", as 'a' is repeated 2 times and 'b' is repeated 3 times.
+ 
+Constraints:
+
+1 <= s.length <= 104
+s consists of only lowercase English letters.
+1 <= k <= 105
+
+Solution >
+
+function longestSubstring(s: string, k: number): number {
+  const n = s.length;
+  let maxLen = 0;
+
+  for (let uniqueChars = 1; uniqueChars <= 26; uniqueChars++) {
+    const charCountMap: number[] = Array(26).fill(0); // Count of each character
+    let atLeastKCount = 0; // Count of characters with at least k frequency
+    let uniqueCount = 0; // Count of unique characters
+
+    let left = 0; // Left pointer of the sliding window
+
+    for (let right = 0; right < n; right++) {
+      const charIndex = s.charCodeAt(right) - 97; // Convert character to index (0-25)
+
+      if (charCountMap[charIndex] === 0) {
+        // Found a new character
+        uniqueCount++;
+      }
+
+      charCountMap[charIndex]++; // Increment character count
+
+      if (charCountMap[charIndex] === k) {
+        // Found a character with at least k frequency
+        atLeastKCount++;
+      }
+
+      while (uniqueCount > uniqueChars) {
+        // Shrink the window until uniqueCount <= uniqueChars
+        const leftCharIndex = s.charCodeAt(left) - 97; // Convert character to index (0-25)
+
+        if (charCountMap[leftCharIndex] === k) {
+          // Decrease atLeastKCount if the character had at least k frequency
+          atLeastKCount--;
+        }
+
+        charCountMap[leftCharIndex]--; // Decrement character count
+
+        if (charCountMap[leftCharIndex] === 0) {
+          // No more occurrences of the character
+          uniqueCount--;
+        }
+
+        left++; // Move the left pointer
+      }
+
+      if (uniqueCount === atLeastKCount) {
+        // All unique characters have at least k frequency
+        maxLen = Math.max(maxLen, right - left + 1);
+      }
+    }
+  }
+
+  return maxLen;
+}
+
+
+Explanation >
+
+We start by iterating through the number of unique characters (uniqueChars) from 1 to 26. This is because there are only 26 lowercase English letters.
+
+Inside the loop, we initialize three variables: charCountMap, atLeastKCount, and uniqueCount. charCountMap is an array of size 26, 
+used to count the occurrences of each character. atLeastKCount keeps track of the count of characters with at least k frequency, and uniqueCount keeps track of the count of unique characters.
+
+We also initialize the left pointer left to 0, which represents the start of the sliding window.
+
+Next, we iterate through the string using the right pointer right from 0 to n-1, where n is the length of the string.
+
+For each character at s[right], we convert it to an index using s.charCodeAt(right) - 97 
+(since the lowercase English letters have ASCII values from 97 to 122). 
+We increment the count of that character in charCountMap and update uniqueCount and atLeastKCount accordingly.
+
+After updating the counts, we enter a while loop to shrink the window if the number of unique characters exceeds uniqueChars. 
+We move the left pointer left and decrement the counts of characters until uniqueCount becomes less than or equal to uniqueChars.
+
+Inside the while loop, we also check if the character being removed had a count of k, in which case we decrement atLeastKCount.
+
+Once we have a valid window where the number of unique characters is equal to uniqueChars and all unique characters have at least k frequency, 
+we update maxLen by comparing it with the length of the current window (right - left + 1).
+
+After the loop, we return the maximum length maxLen, which represents the length of the longest substring satisfying the given conditions.
+
+Fastest solution >
+
+function longestSubstring(s: string, k: number): number {
+    function findSubStrLen(s: string, start: number, end: number, k: number): number {
+        if (end - start < k) return 0;
+        const hash: any = {};
+        for (let i: number = start; i < end; i++) {
+            hash[s[i]] = hash[s[i]] ? hash[s[i]] + 1 : 1;
+        }
+
+        for (let left: number = start; left < end; left++) {
+            if (hash[s[left]] < k) {
+                let right: number = left + 1;
+
+                while(right < end && hash[s[right]] < k) {
+                    right++;
+                }
+                return Math.max(findSubStrLen(s, start, left, k), findSubStrLen(s, right, end, k));
+            }
+        }
+        return end - start;
+    }
+
+    return findSubStrLen(s, 0, s.length, k);
+};
