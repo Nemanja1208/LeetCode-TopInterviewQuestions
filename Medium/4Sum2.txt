@@ -1,0 +1,101 @@
+Given four integer arrays nums1, nums2, nums3, and nums4 all of length n, return the number of tuples (i, j, k, l) such that:
+
+0 <= i, j, k, l < n
+nums1[i] + nums2[j] + nums3[k] + nums4[l] == 0
+
+Example 1:
+Input: nums1 = [1,2], nums2 = [-2,-1], nums3 = [-1,2], nums4 = [0,2]
+Output: 2
+Explanation:
+The two tuples are:
+1. (0, 0, 0, 1) -> nums1[0] + nums2[0] + nums3[0] + nums4[1] = 1 + (-2) + (-1) + 2 = 0
+2. (1, 1, 0, 0) -> nums1[1] + nums2[1] + nums3[0] + nums4[0] = 2 + (-1) + (-1) + 0 = 0
+
+Example 2:
+Input: nums1 = [0], nums2 = [0], nums3 = [0], nums4 = [0]
+Output: 1
+ 
+Constraints:
+
+n == nums1.length
+n == nums2.length
+n == nums3.length
+n == nums4.length
+1 <= n <= 200
+-228 <= nums1[i], nums2[i], nums3[i], nums4[i] <= 228
+
+
+Solution >
+
+function fourSumCount(
+  nums1: number[],
+  nums2: number[],
+  nums3: number[],
+  nums4: number[]
+): number {
+  const sumMap: Map<number, number> = new Map();
+
+  // Count the frequency of sums of nums1 and nums2
+  for (const num1 of nums1) {
+    for (const num2 of nums2) {
+      const sum = num1 + num2;
+      sumMap.set(sum, (sumMap.get(sum) || 0) + 1);
+    }
+  }
+
+  let count = 0;
+
+  // Count the tuples where the sum of nums3 and nums4 cancels out the previous sums
+  for (const num3 of nums3) {
+    for (const num4 of nums4) {
+      const sum = -(num3 + num4);
+      if (sumMap.has(sum)) {
+        count += sumMap.get(sum)!;
+      }
+    }
+  }
+
+  return count;
+}
+
+
+
+Explanation >
+
+The solution uses a hash map (sumMap) to store the frequency of sums of elements from nums1 and nums2. 
+This map will help us quickly find how many tuples in nums3 and nums4 can cancel out a specific sum.
+
+First, we iterate through nums1 and nums2 using nested loops and calculate the sum of each pair. 
+We store the sum in the map and increment its count if it already exists.
+
+Next, we iterate through nums3 and nums4 using nested loops. 
+For each pair, we calculate the sum and check if the hash map contains the negative of that sum. 
+If it does, it means we have found tuples in nums1, nums2, nums3, and nums4 that add up to zero. 
+We add the frequency of that sum from the hash map to the count variable.
+
+Finally, we return the count as the result, which represents the number of tuples that satisfy the given conditions.
+
+This solution has a time complexity of O(n^2) because we iterate through each pair of elements from nums1 and nums2 and each pair of elements from nums3 and nums4. 
+The space complexity is also O(n^2) because the hash map can store up to n^2 unique sums.
+
+Fastest soluton >
+
+function fourSumCount(nums1: number[], nums2: number[], nums3: number[], nums4: number[]): number {
+    let count = 0;
+    let twoSumResults = new Map<number, number>();
+
+
+    for(let i = 0; i < nums1.length; i++) {
+        for(let j = 0; j < nums2.length; j++) {
+            twoSumResults.set(nums1[i] + nums2[j], (twoSumResults.get(nums1[i] + nums2[j]) ?? 0) + 1);
+        }
+    }
+
+    for(let k = 0; k < nums1.length; k++) {
+        for(let l = 0; l < nums2.length; l++) {
+            count += twoSumResults.get(-nums3[k] - nums4[l]) ?? 0;
+        }
+    }
+
+    return count;
+};
